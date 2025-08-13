@@ -7,23 +7,25 @@ import component
 import ecsSeq
 import query
 
-type World = object
-  entities: EcsSeq[Entity] = EcsSeq[Entity]()
-  archetypes: Table[ArchetypeId, Archetype]
-
 type Id* = object
   id: int
 
 type Not*[T] = distinct T
 
+type World = object
+  entities: EcsSeq[Entity] = EcsSeq[Entity]()
+  archetypes: Table[ArchetypeId, Archetype]
+  builders: Table[ComponentId, proc(): EcsSeqAny]
+  nextComponentId: int
+
 proc hash*(id: ArchetypeId): Hash {.borrow.}
 proc `==`*(a, b: ArchetypeId): bool {.borrow.}
 
 proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Archetype =
-  let archetypeId = archetypeIdFrom T
+  let archetypeId = world.archetypeIdFrom T
 
   if not world.archetypes.hasKey(archetypeId):
-    world.archetypes[archetypeId] = makeArchetype T
+    world.archetypes[archetypeId] = makeArchetype(archetypeId, world.builders)
 
   return world.archetypes[archetypeId]
 
@@ -39,7 +41,7 @@ macro varTuple*(t: typedesc): untyped =
       result[i] = nnkVarTy.newTree(x)
   result = newCall("typeof", result)
 
-macro buildVarTuple(t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
+macro buildVarTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
   var tupleExprs = nnkTupleConstr.newTree()
   
@@ -48,12 +50,27 @@ macro buildVarTuple(t: typedesc, archetype: untyped, archetypeEntityId: untyped)
     
     let fieldExpr = quote do:
       cast[EcsSeq[`fieldType`]](
-        `archetype`.componentLists[componentIdFrom typeof `fieldType`]
+        `archetype`.componentLists[world.componentIdFrom typeof `fieldType`]
       )[`archetypeEntityId`]
     
     tupleExprs.add(fieldExpr)
 
   result = tupleExprs
+
+proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
+  var id {.global.}: int
+  once:
+    id = world.nextComponentId
+    inc world.nextComponentId
+    world.builders[id.ComponentId] = ecsSeqBuilder[T]()
+  id.ComponentId
+
+proc archetypeIdFrom*[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
+  var id = 0.uint64
+  for name, typ in fieldPairs default T:
+    let compId = world.componentIdFrom typeof typ
+    id = id or (1.uint64 shl compId.int)
+  id.ArchetypeId
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   var archetype = world.archetypeFrom T
@@ -71,7 +88,7 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[T]): var T =
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
-  let compId = componentIdFrom typeof compDesc
+  let compId = world.componentIdFrom typeof compDesc
 
   if not archetype.componentLists.hasKey(compId):
     raise newException(ValueError, "Component " & $compDesc & " not found in Entity " & $id)
@@ -86,12 +103,12 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
   let archetypeEntityId = entity.archetypeEntityId
 
   tup.fieldTypes:
-    let compId = componentIdFrom typeof FieldType
+    let compId = world.componentIdFrom typeof FieldType
 
     if not archetype.componentLists.hasKey(compId):
       raise newException(ValueError, "Component " & $FieldType & " not found in Entity " & $id)
 
-  yield tup.buildVarTuple(archetype, archetypeEntityId)
+  yield world.buildVarTuple(tup, archetype, archetypeEntityId)
 
 proc addComponent*[T](world: var World, id: Id, component: T) =
   let entity = world.entities[id.id]
@@ -111,7 +128,7 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
   if world.archetypes.len != query.lastArchetypeCount:
     for archetypeId, archetype in world.archetypes.pairs:
-      if archetype.matches(T):
+      if archetype.matches(world.archetypeIdFrom T):
         query.matchedArchetypes.add archetypeId
 
     query.lastArchetypeCount = world.archetypes.len
@@ -119,7 +136,7 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
   for archetypeId in query.matchedArchetypes:
     let archetype = world.archetypes[archetypeId]
     for index in 0..<archetype.entityCount:
-      yield (typeof T).buildVarTuple(archetype, index)
+      yield world.buildVarTuple(typeof T, archetype, index)
 
 proc `$`*(entities: seq[Entity]): string =
   result &= "@[\n"
@@ -263,7 +280,13 @@ when isMainModule:
   for (character, skillset) in world.query(characterSkillsQuery):
     skillset.skills.add "Tracking"
     echo "  ", character.name, " learned Tracking!"
-    echo "  ", character.name, "'s skills are:  ", skillset.skills, "\n"
+
+  echo ""
+
+  for (character, skillset) in world.query(characterSkillsQuery):
+    echo "  ", character.name, "'s skills are:  ", skillset.skills
+
+  echo ""
 
   echo ".--------------------."
   echo "| Removing an entity |"
@@ -280,7 +303,9 @@ when isMainModule:
 
   echo "  Characters:"
   for (character, health) in world.query(charactersQuery):
-    echo "  ", character.name, " ", health, "\n"
+    echo "  ", character.name, " ", health
+
+  echo ""
 
   echo ".--------------------."
   echo "| Adding a component |"

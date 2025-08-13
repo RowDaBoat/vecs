@@ -5,6 +5,9 @@ type EcsSeqAny* = ref object of RootObj
 type EcsSeq*[T] = ref object of EcsSeqAny
   data: seq[T]
 
+proc ecsSeqBuilder*[T](): proc(): EcsSeqAny =
+  proc(): EcsSeqAny = EcsSeq[T]()
+
 proc add*[T](self: EcsSeq[T], item: T): int {.discardable.} =
   if self.free.len > 0:
     let index = self.free.pop()

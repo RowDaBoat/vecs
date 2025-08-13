@@ -18,6 +18,7 @@ proc `==`*(a, b: ComponentId): bool {.borrow.}
 
 type Archetype* = ref object
   id*: ArchetypeId
+  componentIds*: seq[ComponentId]
   entityCount*: int
   componentLists*: Table[ComponentId, EcsSeqAny]
 
@@ -37,29 +38,26 @@ macro fieldTypes*(tup: typed, body: untyped): untyped =
     result.add nnkIfStmt.newTree(nnkElifBranch.newTree(newLit(true), body))
   result = nnkBlockStmt.newTree(newEmptyNode(), result)
 
-proc archetypeIdFrom*[T: tuple](desc: typedesc[T]): ArchetypeId =
-  var id = 0.uint64
-  for name, typ in fieldPairs default T:
-    let compId = componentIdFrom typeof typ
-    id = id or (1.uint64 shl compId.int)
-  id.ArchetypeId
-
-proc makeArchetype*[T: tuple](tup: typedesc[T]): Archetype =
-  let archetypeId = archetypeIdFrom T
+proc makeArchetype*(archetypeId: ArchetypeId, builders: Table[ComponentId, proc(): EcsSeqAny]): Archetype =
+  var componentIds: seq[ComponentId] = @[]
   var componentLists = initTable[ComponentId, EcsSeqAny]()
 
-  tup.fieldTypes:
-    let compId = componentIdFrom FieldType
-    componentLists[compId] = EcsSeq[FieldType]()
+  for i in 0..<64: #TODO: change ArchetypeId to a PackedSet? have list of compid?
+    if (archetypeId.uint64 and (1.uint64 shl i)) != 0:
+      let compId = i.ComponentId
+      componentIds.add compId
+      componentLists[compId] = builders[compId]()
 
   Archetype(
     id: archetypeId,
+    componentIds: componentIds,
     componentLists: componentLists
   )
 
 proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
+  var index = 0
   T.fieldTypes:
-    let compId = componentIdFrom FieldType
+    let compId = archetype.componentIds[index]
     let ecsSeqAny = archetype.componentLists[compId]
     type Retype = EcsSeq[FieldType]
 
@@ -68,6 +66,7 @@ proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
         cast[Retype](ecsSeqAny).add field
 
     result = cast[Retype](ecsSeqAny).len - 1
+    inc index
 
   archetype.entityCount = result + 1
 
@@ -77,8 +76,7 @@ proc remove*(archetype: var Archetype, archetypeEntityId: int) =
 
   archetype.entityCount = archetype.entityCount - 1
 
-proc matches*[T: tuple](archetype: Archetype, tup: typedesc[T]): bool =
-  let candidateId = archetypeIdFrom tup
+proc matches*(archetype: Archetype, candidateId: ArchetypeId): bool =
   (candidateId.uint64 and archetype.id.uint64) == candidateId.uint64
 
 proc `$`*(componentLists: Table[ComponentId, EcsSeqAny]): string =
