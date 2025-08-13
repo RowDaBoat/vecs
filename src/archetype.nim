@@ -3,16 +3,7 @@ import tables
 import ecsSeq
 import component
 
-type ArchetypeId* = distinct uint64
-type ArchetypeId2* = distinct IntSet
-
-proc add*(id: ArchetypeId, compId: ComponentId): ArchetypeId =
-  let bitId = 1.uint64 shl compId.int
-  let newId = id.uint64 or bitId
-  newId.ArchetypeId
-
-proc `$`*(id: ArchetypeId): string =
-  $id.uint64
+type ArchetypeId* = PackedSet[ComponentId]
 
 proc hash*(id: ComponentId): Hash {.borrow.}
 proc `==`*(a, b: ComponentId): bool {.borrow.}
@@ -39,15 +30,13 @@ macro fieldTypes*(tup: typed, body: untyped): untyped =
     result.add nnkIfStmt.newTree(nnkElifBranch.newTree(newLit(true), body))
   result = nnkBlockStmt.newTree(newEmptyNode(), result)
 
-proc makeArchetype*(archetypeId: ArchetypeId, builders: Table[ComponentId, proc(): EcsSeqAny]): Archetype =
+proc makeArchetype*(archetypeId: ArchetypeId, compIdsAndBuilders: seq[(ComponentId, proc(): EcsSeqAny)]): Archetype =
   var componentIds: seq[ComponentId] = @[]
   var componentLists = initTable[ComponentId, EcsSeqAny]()
 
-  for i in 0..<64: #TODO: change ArchetypeId to a PackedSet? have list of compid?
-    if (archetypeId.uint64 and (1.uint64 shl i)) != 0:
-      let compId = i.ComponentId
-      componentIds.add compId
-      componentLists[compId] = builders[compId]()
+  for (compId, builder) in compIdsAndBuilders:
+    componentIds.add compId
+    componentLists[compId] = builder()
 
   Archetype(
     id: archetypeId,
@@ -78,7 +67,7 @@ proc remove*(archetype: var Archetype, archetypeEntityId: int) =
   archetype.entityCount = archetype.entityCount - 1
 
 proc matches*(archetype: Archetype, candidateId: ArchetypeId): bool =
-  (candidateId.uint64 and archetype.id.uint64) == candidateId.uint64
+  candidateId <= archetype.id
 
 proc `$`*(componentLists: Table[ComponentId, EcsSeqAny]): string =
   result &= "@{\n"
