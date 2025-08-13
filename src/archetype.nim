@@ -1,9 +1,10 @@
-import std/[macros, genasts, hashes]
+import std/[macros, genasts, hashes, intsets]
 import tables
 import ecsSeq
 import component
 
 type ArchetypeId* = distinct uint64
+type ArchetypeId2* = distinct IntSet
 
 proc add*(id: ArchetypeId, compId: ComponentId): ArchetypeId =
   let bitId = 1.uint64 shl compId.int

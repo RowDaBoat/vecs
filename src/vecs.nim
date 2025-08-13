@@ -1,4 +1,4 @@
-import std/[packedsets, hashes, macros]
+import std/[packedsets, hashes, macros, intsets]
 import typetraits
 import tables
 import archetype
@@ -15,17 +15,40 @@ type Not*[T] = distinct T
 type World = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
   archetypes: Table[ArchetypeId, Archetype]
+  archetypes2: Table[ArchetypeId2, Archetype]
   builders: Table[ComponentId, proc(): EcsSeqAny]
   nextComponentId: int
 
 proc hash*(id: ArchetypeId): Hash {.borrow.}
 proc `==`*(a, b: ArchetypeId): bool {.borrow.}
 
+proc hash*(id: ArchetypeId2): Hash =
+  for i in id.IntSet.items:
+    result = result xor (i mod 32)
+
+proc `==`*(a, b: ArchetypeId2): bool {.borrow.}
+
+proc archetypeIdFrom*[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
+  var id = 0.uint64
+  for name, typ in fieldPairs default T:
+    let compId = world.componentIdFrom typeof typ
+    id = id or (1.uint64 shl compId.int)
+  id.ArchetypeId
+
+proc archetypeIdFrom2*[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId2 =
+  var id = IntSet()
+  for name, typ in fieldPairs default T:
+    let compId = world.componentIdFrom typeof typ
+    id.incl compId.int
+  id.ArchetypeId2
+
 proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Archetype =
   let archetypeId = world.archetypeIdFrom T
+  let archetypeId2 = world.archetypeIdFrom2 T
 
   if not world.archetypes.hasKey(archetypeId):
     world.archetypes[archetypeId] = makeArchetype(archetypeId, world.builders)
+    world.archetypes2[archetypeId2] = makeArchetype(archetypeId, world.builders)
 
   return world.archetypes[archetypeId]
 
@@ -64,13 +87,6 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
     inc world.nextComponentId
     world.builders[id.ComponentId] = ecsSeqBuilder[T]()
   id.ComponentId
-
-proc archetypeIdFrom*[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
-  var id = 0.uint64
-  for name, typ in fieldPairs default T:
-    let compId = world.componentIdFrom typeof typ
-    id = id or (1.uint64 shl compId.int)
-  id.ArchetypeId
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   var archetype = world.archetypeFrom T
