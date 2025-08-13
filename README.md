@@ -47,13 +47,17 @@ world.removeEntity entityId
 - [x] Archetypes
 - [x] Queries
 - [x] Remove entities
+- [x] Support dynamic archetypes
 - [ ] Add component
 - [ ] Remove component
 - [ ] Special Id component
 - [ ] 'Not' Queries
-- [ ] Filters? Foreach?
 - [ ] Stable ids for components
-- [ ] Support dynamic archetypes
+- [ ] Foreach or non-caching queries
+- [ ] Text serialization
+- [ ] Binary serialization
+- [ ] Zero-allocation?
+- [ ] Spatial queries
 
 ## Notes on static/dynamic archetypes
 Building the archetypes with macros that iterate on tuple fields limits what the system can do in runtime, for example, anything combining components on an archetype that's not existing in compile-time (ie: getting an unexpected combination from an edited save-file), will absolutely fail in runtime.

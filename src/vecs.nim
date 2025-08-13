@@ -31,13 +31,15 @@ proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arc
   let archetypeId = world.archetypeIdFrom T
 
   if not world.archetypes.hasKey(archetypeId):
-    var compIdsAndBuilders: seq[(ComponentId, proc(): EcsSeqAny)] = @[]
+    var componentIds: seq[ComponentId] = @[]
+    var builders: seq[proc(): EcsSeqAny] = @[]
 
     for name, typ in fieldPairs default T:
       let compId = world.componentIdFrom typeof typ
-      compIdsAndBuilders.add (compId, world.builders[compId])
+      componentIds.add compId
+      builders.add world.builders[compId]
 
-    world.archetypes[archetypeId] = makeArchetype(archetypeId, compIdsAndBuilders)
+    world.archetypes[archetypeId] = makeArchetype(componentIds, builders)
 
   return world.archetypes[archetypeId]
 
@@ -80,8 +82,8 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   var archetype = world.archetypeFrom T
   let archetypeEntityId = archetype.add components
-  world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  Id(id: world.entities.len - 1)
+  let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  Id(id: id)
 
 proc removeEntity*(world: var World, id: Id) =
   let entity = world.entities[id.id]
@@ -129,6 +131,23 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   #previousArchetype.del id
   #nextArchetype.add component
 
+#TODO use this code to implement addComponent using archetype.add(componentIds, adders)
+proc addEntity2[T: tuple](world: var World, components: T): Id {.discardable.} =
+  var archetype = world.archetypeFrom T
+  var componentIds: seq[ComponentId] = @[]
+  var adders: seq[proc(ecsSeq: var EcsSeqAny)] = @[]
+
+  T.fieldTypes:
+    let compId = world.componentIdFrom FieldType
+    componentIds.add compId
+    adders.add proc(ecsSeq: var EcsSeqAny) =
+      for field in components.fields:
+        when field is FieldType:
+          cast[EcsSeq[FieldType]](ecsSeq).add field
+
+  let archetypeEntityId = archetype.add(componentIds, adders)
+  world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  Id(id: world.entities.len - 1)
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
   if world.archetypes.len != query.lastArchetypeCount:

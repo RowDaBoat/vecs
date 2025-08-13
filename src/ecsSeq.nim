@@ -8,7 +8,7 @@ type EcsSeq*[T] = ref object of EcsSeqAny
 proc ecsSeqBuilder*[T](): proc(): EcsSeqAny =
   proc(): EcsSeqAny = EcsSeq[T]()
 
-proc add*[T](self: EcsSeq[T], item: T): int {.discardable.} =
+proc add*[T](self: EcsSeq[T], item: T): int =
   if self.free.len > 0:
     let index = self.free.pop()
     self.data[index] = item
