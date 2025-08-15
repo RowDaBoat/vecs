@@ -44,17 +44,19 @@ proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arc
 
     world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers)
 
-  return world.archetypes[archetypeId]
+  world.archetypes[archetypeId]
 
-proc nextArchetypeFrom[T](world: var World, previousArchetype: Archetype, componentId: ComponentId, compType: typedesc[T]): Archetype =
+proc nextArchetypeFrom(world: var World, previousArchetype: Archetype, componentId: ComponentId): var Archetype =
   let previousArchetypeId = previousArchetype.id
+  var nextArchetypeId = previousArchetypeId
+  nextArchetypeId.incl componentId
 
-  if previousArchetypeId.contains(componentId):
-    raise newException(ValueError, "Component " & $T & " already exists in Archetype " & $previousArchetypeId)
+  if not world.archetypes.hasKey(nextArchetypeId):
+    let builder = world.builders[componentId]
+    let mover = world.movers[componentId]
+    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(@[componentId], @[builder], @[mover])
 
-  let builder = world.builders[componentId]
-  let mover = world.movers[componentId]
-  previousArchetype.makeNextAdding(@[componentId], @[builder], @[mover])
+  world.archetypes[nextArchetypeId]
 
 macro varTuple*(t: typedesc): untyped =
   result = t.getTypeInst[^1].copyNimTree
@@ -135,9 +137,11 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
 
+  if entity.archetypeId.contains(componentId):
+    raise newException(ValueError, "Component " & $T & " already exists in Entity " & $id)
+
   var previousArchetype = world.archetypes[entity.archetypeId]
-  var nextArchetype = world.nextArchetypeFrom(previousArchetype, componentId, T)
-  world.archetypes[nextArchetype.id] = nextArchetype
+  var nextArchetype = world.nextArchetypeFrom(previousArchetype, componentId)
 
   let adder = proc(ecsSeq: var EcsSeqAny): int =
     cast[EcsSeq[T]](ecsSeq).add component
@@ -147,6 +151,15 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.move(entity.archetypeEntityId, nextArchetype, adders)
+
+#proc removeComponent*[T](world: var World, id: Id) =
+#  var entity = world.entities[id.id]
+#  let componentId = world.componentIdFrom typeof T
+
+#  let previousArchetype = world.archetypes[entity.archetypeId]
+#  let archetypeEntityId = entity.archetypeEntityId
+#  let mover = world.movers[componentId]
+#  mover(archetype.componentLists[componentId], archetypeEntityId, archetype.componentLists[componentId])
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
   if world.archetypes.len != query.lastArchetypeCount:
