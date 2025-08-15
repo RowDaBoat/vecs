@@ -48,12 +48,13 @@ world.removeEntity entityId
 - [x] Queries
 - [x] Remove entities
 - [x] Support dynamic archetypes
-- [ ] Add component
+- [x] Add component
 - [ ] Remove component
 - [ ] Special Id component
 - [ ] 'Not' Queries
 - [ ] Stable ids for components
 - [ ] Foreach or non-caching queries
+- [ ] Add and Remove multiple components
 - [ ] Text serialization
 - [ ] Polish console output
 - [ ] Binary serialization

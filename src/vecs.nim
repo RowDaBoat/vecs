@@ -46,6 +46,16 @@ proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arc
 
   return world.archetypes[archetypeId]
 
+proc nextArchetypeFrom[T](world: var World, previousArchetype: Archetype, componentId: ComponentId, compType: typedesc[T]): Archetype =
+  let previousArchetypeId = previousArchetype.id
+
+  if previousArchetypeId.contains(componentId):
+    raise newException(ValueError, "Component " & $T & " already exists in Archetype " & $previousArchetypeId)
+
+  let builder = world.builders[componentId]
+  let mover = world.movers[componentId]
+  previousArchetype.makeNextAdding(@[componentId], @[builder], @[mover])
+
 macro varTuple*(t: typedesc): untyped =
   result = t.getTypeInst[^1].copyNimTree
 
@@ -124,19 +134,10 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
 proc addComponent*[T](world: var World, id: Id, component: T) =
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
+
   var previousArchetype = world.archetypes[entity.archetypeId]
-  let previousArchetypeId = previousArchetype.id
-  var nextArchetypeId = previousArchetypeId
-  nextArchetypeId.incl componentId
-
-  if previousArchetypeId == nextArchetypeId:
-    raise newException(ValueError, "Component " & $T & " already exists in Entity " & $id)
-
-  let builder = world.builders[componentId]
-  let mover = world.movers[componentId]
-  var nextArchetype = previousArchetype.makeNextAdding(@[componentId], @[builder], @[mover])
-  world.archetypes[nextArchetypeId] = nextArchetype
-  entity.archetypeId = nextArchetype.id
+  var nextArchetype = world.nextArchetypeFrom(previousArchetype, componentId, T)
+  world.archetypes[nextArchetype.id] = nextArchetype
 
   let adder = proc(ecsSeq: var EcsSeqAny): int =
     cast[EcsSeq[T]](ecsSeq).add component
@@ -144,6 +145,7 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   var adders = initTable[ComponentId, Adder]()
   adders[componentId] = adder
 
+  entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.move(entity.archetypeEntityId, nextArchetype, adders)
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
