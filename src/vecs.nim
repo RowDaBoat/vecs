@@ -15,7 +15,8 @@ type Not*[T] = distinct T
 type World = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
   archetypes: Table[ArchetypeId, Archetype]
-  builders: Table[ComponentId, proc(): EcsSeqAny]
+  builders: Table[ComponentId, Builder]
+  movers: Table[ComponentId, Mover]
   nextComponentId: int
 
 proc hash*(id: ArchetypeId): Hash =
@@ -32,14 +33,16 @@ proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arc
 
   if not world.archetypes.hasKey(archetypeId):
     var componentIds: seq[ComponentId] = @[]
-    var builders: seq[proc(): EcsSeqAny] = @[]
+    var builders: seq[Builder] = @[]
+    var movers: seq[Mover] = @[]
 
     for name, typ in fieldPairs default T:
       let compId = world.componentIdFrom typeof typ
       componentIds.add compId
       builders.add world.builders[compId]
+      movers.add world.movers[compId]
 
-    world.archetypes[archetypeId] = makeArchetype(componentIds, builders)
+    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers)
 
   return world.archetypes[archetypeId]
 
@@ -77,6 +80,7 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
     id = world.nextComponentId
     inc world.nextComponentId
     world.builders[id.ComponentId] = ecsSeqBuilder[T]()
+    world.movers[id.ComponentId] = ecsSeqMover[T]()
   id.ComponentId
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
@@ -118,36 +122,29 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
   yield world.buildVarTuple(tup, archetype, archetypeEntityId)
 
 proc addComponent*[T](world: var World, id: Id, component: T) =
-  let entity = world.entities[id.id]
-  let componentId = componentIdFrom typeof T
-  let previousArchetype = world.archetypes[entity.archetypeId]
+  var entity = world.entities[id.id]
+  let componentId = world.componentIdFrom typeof T
+  var previousArchetype = world.archetypes[entity.archetypeId]
   let previousArchetypeId = previousArchetype.id
-  let nextArchetypeId = previousArchetypeId.add componentId
+  var nextArchetypeId = previousArchetypeId
+  nextArchetypeId.incl componentId
 
   if previousArchetypeId == nextArchetypeId:
     raise newException(ValueError, "Component " & $T & " already exists in Entity " & $id)
 
-  let nextArchetype = world.archetypeFromAdding(previousArchetype, componentId)
-  #previousArchetype.del id
-  #nextArchetype.add component
+  let builder = world.builders[componentId]
+  let mover = world.movers[componentId]
+  var nextArchetype = previousArchetype.makeNextAdding(@[componentId], @[builder], @[mover])
+  world.archetypes[nextArchetypeId] = nextArchetype
+  entity.archetypeId = nextArchetype.id
 
-#TODO use this code to implement addComponent using archetype.add(componentIds, adders)
-proc addEntity2[T: tuple](world: var World, components: T): Id {.discardable.} =
-  var archetype = world.archetypeFrom T
-  var componentIds: seq[ComponentId] = @[]
-  var adders: seq[proc(ecsSeq: var EcsSeqAny)] = @[]
+  let adder = proc(ecsSeq: var EcsSeqAny): int =
+    cast[EcsSeq[T]](ecsSeq).add component
 
-  T.fieldTypes:
-    let compId = world.componentIdFrom FieldType
-    componentIds.add compId
-    adders.add proc(ecsSeq: var EcsSeqAny) =
-      for field in components.fields:
-        when field is FieldType:
-          cast[EcsSeq[FieldType]](ecsSeq).add field
+  var adders = initTable[ComponentId, Adder]()
+  adders[componentId] = adder
 
-  let archetypeEntityId = archetype.add(componentIds, adders)
-  world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  Id(id: world.entities.len - 1)
+  entity.archetypeEntityId = previousArchetype.move(entity.archetypeEntityId, nextArchetype, adders)
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
   if world.archetypes.len != query.lastArchetypeCount:
@@ -339,8 +336,8 @@ when isMainModule:
   for (character, skillset) in world.query(characterSkillsQuery):
     echo "  ", character.name, "'s skills are: ", skillset.skills
 
-  #world.addComponent(ids[0], Skillset(skills: @["Parry", "Bash", "Riposte"]))
-  #echo "Marcus has learned a skillset!\n"
+  world.addComponent(ids[0], Skillset(skills: @["Parry", "Bash", "Riposte"]))
+  echo "Marcus has learned a skillset!\n"
 
   echo "\n  Skilled characters:"
   for (character, skillset) in world.query(characterSkillsQuery):

@@ -55,6 +55,7 @@ world.removeEntity entityId
 - [ ] Stable ids for components
 - [ ] Foreach or non-caching queries
 - [ ] Text serialization
+- [ ] Polish console output
 - [ ] Binary serialization
 - [ ] Zero-allocation?
 - [ ] Spatial queries

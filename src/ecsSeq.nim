@@ -5,8 +5,11 @@ type EcsSeqAny* = ref object of RootObj
 type EcsSeq*[T] = ref object of EcsSeqAny
   data: seq[T]
 
-proc ecsSeqBuilder*[T](): proc(): EcsSeqAny =
-  proc(): EcsSeqAny = EcsSeq[T]()
+type Builder* = proc(): EcsSeqAny
+
+type Adder* = proc(ecsSeq: var EcsSeqAny): int
+
+type Mover* = proc(fromEcsSeq: var EcsSeqAny, index: int, toEcsSeq: var EcsSeqAny): int
 
 proc add*[T](self: EcsSeq[T], item: T): int =
   if self.free.len > 0:
@@ -19,7 +22,7 @@ proc add*[T](self: EcsSeq[T], item: T): int =
     self.deleted.add false
     result = self.data.len - 1
 
-proc del*(self: EcsSeqAny, index: Natural) =
+proc del*(self: EcsSeqAny, index: int) =
   self.deleted[index] = true
   self.free.add index
 
@@ -42,3 +45,14 @@ proc `$`*[T](self: EcsSeq[T]): string =
       result &= ", "
 
   result &= "]"
+
+proc ecsSeqBuilder*[T](): proc(): EcsSeqAny =
+  proc(): EcsSeqAny = EcsSeq[T]()
+
+proc ecsSeqMover*[T](): Mover =
+  proc(fromEcsSeq: var EcsSeqAny, index: int, toEcsSeq: var EcsSeqAny): int =
+    var typedFromEcsSeq = cast[EcsSeq[T]](fromEcsSeq)
+    var typedToEcsSeq = cast[EcsSeq[T]](toEcsSeq)
+    let element = typedFromEcsSeq[index]
+    fromEcsSeq.del index
+    result = typedToEcsSeq.add element

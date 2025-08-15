@@ -17,7 +17,8 @@ type Archetype* = ref object
   componentIds*: seq[ComponentId]
   entityCount*: int
   componentLists*: Table[ComponentId, EcsSeqAny]
-  builders: seq[proc(): EcsSeqAny]
+  builders: seq[Builder]
+  movers: seq[Mover]
 
 macro fieldTypes*(tup: typed, body: untyped): untyped =
   result = newStmtList()
@@ -35,7 +36,7 @@ macro fieldTypes*(tup: typed, body: untyped): untyped =
     result.add nnkIfStmt.newTree(nnkElifBranch.newTree(newLit(true), body))
   result = nnkBlockStmt.newTree(newEmptyNode(), result)
 
-proc makeArchetype*(compIds: seq[ComponentId], builders: seq[proc(): EcsSeqAny]): Archetype =
+proc makeArchetype*(compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover]): Archetype =
   let archetypeId = archetypeIdFrom compIds
   var componentIds: seq[ComponentId] = @[]
   var componentLists = initTable[ComponentId, EcsSeqAny]()
@@ -49,8 +50,34 @@ proc makeArchetype*(compIds: seq[ComponentId], builders: seq[proc(): EcsSeqAny])
     id: archetypeId,
     componentIds: componentIds,
     componentLists: componentLists,
-    builders: builders
+    builders: builders,
+    movers: movers
   )
+
+proc makeNextAdding*(archetype: Archetype, compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover]): Archetype =
+  let newCompIds = archetype.componentIds & compIds
+  let newBuilders = archetype.builders & builders
+  let newMovers = archetype.movers & movers
+  makeArchetype(newCompIds, newBuilders, newMovers)
+
+proc makeNextRemoving*(archetype: Archetype, compIds: seq[ComponentId]): Archetype =
+  var newCompIds: seq[ComponentId] = @[]
+  var newBuilders: seq[Builder] = @[]
+  var newMovers: seq[Mover] = @[]
+
+  for index in 0..<compIds.len:
+    let compId = compIds[index]
+    let builder = archetype.builders[index]
+    let mover = archetype.movers[index]
+
+    if compId notin archetype.id:
+      raise newException(ValueError, "Component " & $compId & " not in archetype")
+
+    newCompIds.add compId
+    newBuilders.add builder
+    newMovers.add mover
+
+  makeArchetype(newCompIds, newBuilders, newMovers)
 
 proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
   var index = 0
@@ -67,14 +94,8 @@ proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
 
   inc archetype.entityCount
 
-proc add*(
-  archetype: var Archetype,
-  compIds: seq[ComponentId],
-  adders: seq[proc(ecsSeq: var EcsSeqAny): int]
-): int =
-  for index in 0..<compIds.len:
-    let compId = compIds[index]
-    let adder = adders[index]
+proc add*(archetype: var Archetype, adders: Table[ComponentId, Adder]): int =
+  for compId, adder in adders.pairs:
     result = adder(archetype.componentLists[compId])
 
   inc archetype.entityCount
@@ -84,6 +105,20 @@ proc remove*(archetype: var Archetype, archetypeEntityId: int) =
     components.del archetypeEntityId
 
   dec archetype.entityCount
+
+proc move*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArchetype: var Archetype, adders: Table[ComponentId, Adder]): int =
+  for index in 0..<fromArchetype.componentIds.len:
+    let compId = fromArchetype.componentIds[index]
+    let mover = fromArchetype.movers[index]
+    var fromEcsSeq = fromArchetype.componentLists[compId]
+    var toEcsSeq = toArchetype.componentLists[compId]
+    result = mover(fromEcsSeq, fromArchetypeEntityId, toEcsSeq)
+
+  for compId, adder in adders.pairs:
+    assert result == adder(toArchetype.componentLists[compId])
+
+  dec fromArchetype.entityCount
+  inc toArchetype.entityCount
 
 proc matches*(archetype: Archetype, candidateId: ArchetypeId): bool =
   candidateId <= archetype.id
