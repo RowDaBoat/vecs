@@ -9,6 +9,5 @@ license       = "MIT"
 srcDir        = "src"
 binDir        = "bin"
 skipFiles     = @[]
-bin           = @["vecs"]
 
 requires "nim >= 2.0.0"
