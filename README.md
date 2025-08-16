@@ -49,6 +49,14 @@ world.addComponent(entityId, Shield(name: "Steel Shield", defense: 15))
 # Removing a component
 world.removeComponent(entityId, Shield)
 ```
+```nim
+# Using an Id component fills it with the Id of the entity
+# This is useful for embedding references to other entities into components
+let entityId = world.addEntity (Id(), Character(name: "Leon", class: "Paladin"))
+
+for idComponent in world.component(entityId, Id):
+  assert entityId == idComponent
+```
 
 ## Roadmap
 - [x] Add entities
