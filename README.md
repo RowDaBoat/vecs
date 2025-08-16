@@ -41,6 +41,14 @@ for (character, sword) in world.query(characterWithSwordsQuery):
 # Removing an entity
 world.removeEntity entityId
 ```
+```nim
+# Adding a component
+world.addComponent(entityId, Shield(name: "Steel Shield", defense: 15))
+```
+```nim
+# Removing a component
+world.removeComponent(entityId, Shield)
+```
 
 ## Roadmap
 - [x] Add entities
@@ -49,7 +57,7 @@ world.removeEntity entityId
 - [x] Remove entities
 - [x] Support dynamic archetypes
 - [x] Add component
-- [ ] Remove component
+- [x] Remove component
 - [ ] Special Id component
 - [ ] 'Not' Queries
 - [ ] Stable ids for components
