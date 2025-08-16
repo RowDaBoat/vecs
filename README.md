@@ -58,7 +58,7 @@ world.removeComponent(entityId, Shield)
 - [x] Support dynamic archetypes
 - [x] Add component
 - [x] Remove component
-- [ ] Special Id component
+- [x] Special Id component
 - [ ] 'Not' Queries
 - [ ] Stable ids for components
 - [ ] Foreach or non-caching queries

@@ -118,17 +118,10 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
 
   id.ComponentId
 
-proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
-  var archetype = world.archetypeFrom T
-  let archetypeEntityId = archetype.add components
-  let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  Id(id: id)
-
-proc removeEntity*(world: var World, id: Id) =
+proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
   let entity = world.entities[id.id]
-  var archetype = world.archetypes[entity.archetypeId]
-  archetype.remove entity.archetypeEntityId
-  world.entities.del id.id
+  let compId = world.componentIdFrom typeof compDesc
+  compId in entity.archetypeId
 
 iterator component*[T](world: var World, id: Id, compDesc: typedesc[T]): var T =
   let entity = world.entities[id.id]
@@ -136,25 +129,39 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[T]): var T =
   let archetypeEntityId = entity.archetypeEntityId
   let compId = world.componentIdFrom typeof compDesc
 
-  if not archetype.componentLists.hasKey(compId):
-    raise newException(ValueError, "Component " & $compDesc & " not found in Entity " & $id)
-
-  let ecsSeqAny = archetype.componentLists[compId]
-  type Retype = EcsSeq[T]
-  yield cast[Retype](ecsSeqAny)[archetypeEntityId]
+  if archetype.componentLists.hasKey(compId):
+    let ecsSeqAny = archetype.componentLists[compId]
+    type Retype = EcsSeq[T]
+    yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
 iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.varTuple =
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
 
+  var found = true
+
   tup.fieldTypes:
     let compId = world.componentIdFrom typeof FieldType
+    found = found and archetype.componentLists.hasKey(compId)
 
-    if not archetype.componentLists.hasKey(compId):
-      raise newException(ValueError, "Component " & $FieldType & " not found in Entity " & $id)
+  if found:
+    yield world.buildVarTuple(tup, archetype, archetypeEntityId)
 
-  yield world.buildVarTuple(tup, archetype, archetypeEntityId)
+proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
+  var archetype = world.archetypeFrom T
+  let archetypeEntityId = archetype.add components
+  let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  result = Id(id: id)
+
+  for idComponent in world.component(result, Id):
+    idComponent.id = id
+
+proc removeEntity*(world: var World, id: Id) =
+  let entity = world.entities[id.id]
+  var archetype = world.archetypes[entity.archetypeId]
+  archetype.remove entity.archetypeEntityId
+  world.entities.del id.id
 
 proc addComponent*[T](world: var World, id: Id, component: T) =
   var entity = world.entities[id.id]
@@ -166,11 +173,14 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   var previousArchetype = world.archetypes[entity.archetypeId]
   var nextArchetype = world.nextArchetypeAddingFrom(previousArchetype, componentId)
 
+  let idAdder = proc(ecsSeq: var EcsSeqAny): int =
+    cast[EcsSeq[Id]](ecsSeq).add id
+
   let adder = proc(ecsSeq: var EcsSeqAny): int =
     cast[EcsSeq[T]](ecsSeq).add component
 
   var adders = initTable[ComponentId, Adder]()
-  adders[componentId] = adder
+  adders[componentId] = if T is Id: idAdder else: adder
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
@@ -409,11 +419,24 @@ when isMainModule:
   for (character, skillset) in world.query(characterSkillsQuery):
     echo "  ", character.name, "'s skills are: ", skillset.skills
 
+  echo ""
+  echo ".-------------------------."
+  echo "| Using Id as a component |"
+  echo "'-------------------------'"
+
+  let id = world.addEntity (Id(), Character(name: "Leon", class: "Paladin"))
+
+  echo "  A character with Id: ", id
+
+  for (id, character) in world.components(id, (Id, Character)):
+    echo "  ", character.name, " has a component Id with character's id: ", id
+
+  echo ""
   echo "entities:"
   for index in 0..<world.entities.len:
     echo "  ", world.entities[index]
-  echo ""
 
+  echo ""
   echo "archetypes:"
   for (id, archetype) in world.archetypes.pairs:
     echo id, ": "
