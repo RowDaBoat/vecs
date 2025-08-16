@@ -14,9 +14,11 @@ type Not*[T] = distinct T
 
 type World = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
+  archetypeIds: seq[ArchetypeId] = @[]
   archetypes: Table[ArchetypeId, Archetype]
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
+  showers: Table[ComponentId, Shower]
   nextComponentId: int
 
 proc hash*(id: ArchetypeId): Hash =
@@ -35,26 +37,43 @@ proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arc
     var componentIds: seq[ComponentId] = @[]
     var builders: seq[Builder] = @[]
     var movers: seq[Mover] = @[]
+    var showers: seq[Shower] = @[]
 
     for name, typ in fieldPairs default T:
       let compId = world.componentIdFrom typeof typ
       componentIds.add compId
       builders.add world.builders[compId]
       movers.add world.movers[compId]
+      showers.add world.showers[compId]
 
-    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers)
+    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers, showers)
+    world.archetypeIds.add archetypeId
 
   world.archetypes[archetypeId]
 
-proc nextArchetypeFrom(world: var World, previousArchetype: Archetype, componentId: ComponentId): var Archetype =
+proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
   let previousArchetypeId = previousArchetype.id
   var nextArchetypeId = previousArchetypeId
-  nextArchetypeId.incl componentId
+  nextArchetypeId.incl componentIdToAdd
 
   if not world.archetypes.hasKey(nextArchetypeId):
-    let builder = world.builders[componentId]
-    let mover = world.movers[componentId]
-    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(@[componentId], @[builder], @[mover])
+    let builder = world.builders[componentIdToAdd]
+    let mover = world.movers[componentIdToAdd]
+    let shower = world.showers[componentIdToAdd]
+
+    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(@[componentIdToAdd], @[builder], @[mover], @[shower])
+    world.archetypeIds.add nextArchetypeId
+
+  world.archetypes[nextArchetypeId]
+
+proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdToRemove: ComponentId): var Archetype =
+  let previousArchetypeId = previousArchetype.id
+  var nextArchetypeId = previousArchetypeId
+  nextArchetypeId.excl componentIdToRemove
+
+  if not world.archetypes.hasKey(nextArchetypeId):
+    world.archetypes[nextArchetypeId] = previousArchetype.makeNextRemoving(@[componentIdToRemove])
+    world.archetypeIds.add nextArchetypeId
 
   world.archetypes[nextArchetypeId]
 
@@ -73,15 +92,15 @@ macro varTuple*(t: typedesc): untyped =
 macro buildVarTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
   var tupleExprs = nnkTupleConstr.newTree()
-  
+
   for i in 0..<tupleType.len:
     let fieldType = tupleType[i]
-    
+
     let fieldExpr = quote do:
       cast[EcsSeq[`fieldType`]](
         `archetype`.componentLists[world.componentIdFrom typeof `fieldType`]
       )[`archetypeEntityId`]
-    
+
     tupleExprs.add(fieldExpr)
 
   result = tupleExprs
@@ -91,8 +110,12 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   once:
     id = world.nextComponentId
     inc world.nextComponentId
+
+  if not world.builders.hasKey(id.ComponentId):
     world.builders[id.ComponentId] = ecsSeqBuilder[T]()
     world.movers[id.ComponentId] = ecsSeqMover[T]()
+    world.showers[id.ComponentId] = ecsSeqShower[T]()
+
   id.ComponentId
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
@@ -141,7 +164,7 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
     raise newException(ValueError, "Component " & $T & " already exists in Entity " & $id)
 
   var previousArchetype = world.archetypes[entity.archetypeId]
-  var nextArchetype = world.nextArchetypeFrom(previousArchetype, componentId)
+  var nextArchetype = world.nextArchetypeAddingFrom(previousArchetype, componentId)
 
   let adder = proc(ecsSeq: var EcsSeqAny): int =
     cast[EcsSeq[T]](ecsSeq).add component
@@ -150,29 +173,38 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   adders[componentId] = adder
 
   entity.archetypeId = nextArchetype.id
-  entity.archetypeEntityId = previousArchetype.move(entity.archetypeEntityId, nextArchetype, adders)
+  entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
 
-#proc removeComponent*[T](world: var World, id: Id) =
-#  var entity = world.entities[id.id]
-#  let componentId = world.componentIdFrom typeof T
+proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
+  var entity = world.entities[id.id]
+  let componentId = world.componentIdFrom typeof T
 
-#  let previousArchetype = world.archetypes[entity.archetypeId]
-#  let archetypeEntityId = entity.archetypeEntityId
-#  let mover = world.movers[componentId]
-#  mover(archetype.componentLists[componentId], archetypeEntityId, archetype.componentLists[componentId])
+  if not entity.archetypeId.contains(componentId):
+    raise newException(ValueError, "Component " & $T & " not found in Entity " & $id)
+
+  var previousArchetype = world.archetypes[entity.archetypeId]
+  var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentId)
+
+  entity.archetypeId = nextArchetype.id
+  entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
+  world.entities[id.id] = entity
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
   if world.archetypes.len != query.lastArchetypeCount:
-    for archetypeId, archetype in world.archetypes.pairs:
-      if archetype.matches(world.archetypeIdFrom T):
+    let queryArchetypeId = world.archetypeIdFrom T
+
+    for index in query.lastArchetypeCount..<world.archetypeIds.len:
+      let archetypeId = world.archetypeIds[index]
+
+      if world.archetypes[archetypeId].matches(queryArchetypeId):
         query.matchedArchetypes.add archetypeId
 
     query.lastArchetypeCount = world.archetypes.len
 
   for archetypeId in query.matchedArchetypes:
     let archetype = world.archetypes[archetypeId]
-    for index in 0..<archetype.entityCount:
-      yield world.buildVarTuple(typeof T, archetype, index)
+    for archetypeEntityId in archetype.entities:
+      yield world.buildVarTuple(typeof T, archetype, archetypeEntityId)
 
 proc `$`*(entities: seq[Entity]): string =
   result &= "@[\n"
@@ -278,29 +310,34 @@ when isMainModule:
     )
   ]
 
-  echo "The world:\n", world, "\n\n"
-
+  let marcus = ids[0]
   let grimm = ids[2]
+  let zara = ids[3]
 
+  echo ""
   echo ".-----------------------------."
   echo "| Single component r/w access |"
   echo "'-----------------------------'"
+
   for health in world.component(grimm, Health):
     echo "  Grimm's health: ", health
     health.health += 75
     echo "  Grimm was cured 75 hit points!"
-    echo "  Grimm's health: ", health, "\n"
+    echo "  Grimm's health: ", health
 
+  echo ""
   echo ".--------------------------------."
   echo "| Multiple components r/w access |"
   echo "'--------------------------------'"
+
   for (character, sword, shield, armor) in world.components(grimm, (Character, Sword, Shield, Armor)):
     echo "  ", character.name, "'s items are:\n  sword: ", sword, "\n  shield: ", shield, "\n  armor: ", armor, "\n"
     sword.attack = 28
     sword.name = "Holy Avenger"
     echo "  Grimm's sword was repaired!\n"
-    echo "  ", character.name, "'s items are:\n  sword: ", sword, "\n  shield: ", shield, "\n  armor: ", armor, "\n"
+    echo "  ", character.name, "'s items are:\n  sword: ", sword, "\n  shield: ", shield, "\n  armor: ", armor
 
+  echo ""
   echo ".----------."
   echo "| Querying |"
   echo "'----------'"
@@ -323,7 +360,6 @@ when isMainModule:
     echo "  ", character.name, "'s skills are:  ", skillset.skills
 
   echo ""
-
   echo ".--------------------."
   echo "| Removing an entity |"
   echo "'--------------------'"
@@ -342,7 +378,6 @@ when isMainModule:
     echo "  ", character.name, " ", health
 
   echo ""
-
   echo ".--------------------."
   echo "| Adding a component |"
   echo "'--------------------'"
@@ -351,9 +386,36 @@ when isMainModule:
   for (character, skillset) in world.query(characterSkillsQuery):
     echo "  ", character.name, "'s skills are: ", skillset.skills
 
-  world.addComponent(ids[0], Skillset(skills: @["Parry", "Bash", "Riposte"]))
-  echo "Marcus has learned a skillset!\n"
+  world.addComponent(marcus, Skillset(skills: @["Parry", "Bash", "Riposte"]))
+  echo "\n  Marcus has learned a skillset!\n"
 
-  echo "\n  Skilled characters:"
+  echo "  Skilled characters:"
   for (character, skillset) in world.query(characterSkillsQuery):
     echo "  ", character.name, "'s skills are: ", skillset.skills
+
+  echo ""
+  echo ".----------------------."
+  echo "| Removing a component |"
+  echo "'----------------------'"
+
+  echo "  Skilled characters:"
+  for (character, skillset) in world.query(characterSkillsQuery):
+    echo "  ", character.name, "'s skills are: ", skillset.skills
+
+  world.removeComponent(zara, Skillset)
+  echo "\n  Zara forgot her skills!\n"
+
+  echo "  Skilled characters:"
+  for (character, skillset) in world.query(characterSkillsQuery):
+    echo "  ", character.name, "'s skills are: ", skillset.skills
+
+  echo "entities:"
+  for index in 0..<world.entities.len:
+    echo "  ", world.entities[index]
+  echo ""
+
+  echo "archetypes:"
+  for (id, archetype) in world.archetypes.pairs:
+    echo id, ": "
+    for (compId, ecsSeqAny) in archetype.componentLists.pairs:
+      echo "  ", compId, ": ", world.showers[compId](ecsSeqAny)
