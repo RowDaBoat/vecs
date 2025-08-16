@@ -7,12 +7,14 @@ import component
 import ecsSeq
 import query
 
+export query.Query
+
 type Id* = object
   id: int
 
 type Not*[T] = distinct T
 
-type World = object
+type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
   archetypeIds: seq[ArchetypeId] = @[]
   archetypes: Table[ArchetypeId, Archetype]

@@ -74,7 +74,7 @@ for idComponent in world.component(entityId, Id):
 - [ ] Text serialization
 - [ ] Polish console output
 - [ ] Binary serialization
-- [ ] Zero-allocation?
+- [ ] Zero-allocation?
 - [ ] Spatial queries
 
 ## Notes on static/dynamic archetypes
