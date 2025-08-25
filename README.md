@@ -67,12 +67,13 @@ for idComponent in world.component(entityId, Id):
 - [x] Add component
 - [x] Remove component
 - [x] Special Id component
+- [ ] Restrict generic T on queries and components procs to be tuples
 - [ ] 'Not' Queries
+- [ ] Polish console output
 - [ ] Stable ids for components
 - [ ] Foreach or non-caching queries
 - [ ] Add and Remove multiple components
 - [ ] Text serialization
-- [ ] Polish console output
 - [ ] Binary serialization
 - [ ] Zero-allocation?
 - [ ] Spatial queries

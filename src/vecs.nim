@@ -10,7 +10,7 @@ import query
 export query.Query
 
 type Id* = object
-  id: int
+  id: int = -1
 
 type Not*[T] = distinct T
 
@@ -26,6 +26,8 @@ type World* = object
 proc hash*(id: ArchetypeId): Hash =
   for compId in id.items:
     result = result xor (compId.int mod 32)
+
+proc `==`*(a, b: ComponentId): bool {.borrow.}
 
 proc archetypeIdFrom*[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
@@ -354,7 +356,7 @@ when isMainModule:
   echo "| Querying |"
   echo "'----------'"
 
-  var characterSkillsQuery {.global.} = Query[(Character, Skillset)]()
+  var characterSkillsQuery = Query[(Character, Skillset)]()
  
   echo "  Skilled characters:"
   for (character, skillset) in world.query(characterSkillsQuery):
@@ -376,7 +378,7 @@ when isMainModule:
   echo "| Removing an entity |"
   echo "'--------------------'"
 
-  var charactersQuery {.global.} = Query[(Character, Health)]()
+  var charactersQuery = Query[(Character, Health)]()
 
   echo "  Characters:"
   for (character, health) in world.query(charactersQuery):
