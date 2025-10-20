@@ -1,5 +1,5 @@
-import archetype
+import ../archetype
 
-type Query*[T] = object
+type Query*[T: tuple] = object
   matchedArchetypes*: seq[ArchetypeId]
   lastArchetypeCount*: int

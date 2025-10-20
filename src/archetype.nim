@@ -9,13 +9,12 @@ proc archetypeIdFrom*(compIds: seq[ComponentId]): ArchetypeId =
   for compId in compIds:
     result.incl compId
 
-proc hash*(id: ComponentId): Hash {.borrow.}
-proc `==`*(a, b: ComponentId): bool {.borrow.}
+proc hash(id: ComponentId): Hash {.borrow.}
+proc `==`(a, b: ComponentId): bool {.borrow.}
 
 type Archetype* = ref object
   id*: ArchetypeId
   componentIds*: seq[ComponentId]
-  #entityCount*: int
   componentLists*: Table[ComponentId, EcsSeqAny]
   builders: seq[Builder]
   movers: seq[Mover]
@@ -86,6 +85,11 @@ iterator entities*(archetype: Archetype): int =
   for index in firstComponentList.ids:
     yield index
 
+iterator components*[T](archetype: Archetype, componentId: ComponentId): T =
+  let ecsSeq = archetype.componentLists[componentId]
+  for index in ecsSeq.ids:
+    yield cast[EcsSeq[T]](ecsSeq)[index]
+
 proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
   var index = 0
   T.fieldTypes:
@@ -99,19 +103,13 @@ proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
 
     inc index
 
-  #inc archetype.entityCount
-
 proc add*(archetype: var Archetype, adders: Table[ComponentId, Adder]): int =
   for compId, adder in adders.pairs:
     result = adder(archetype.componentLists[compId])
 
-  #inc archetype.entityCount
-
 proc remove*(archetype: var Archetype, archetypeEntityId: int) =
   for components in archetype.componentLists.values:
     components.del archetypeEntityId
-
-  #dec archetype.entityCount
 
 proc moveAdding*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArchetype: var Archetype, adders: Table[ComponentId, Adder]): int =
   for index in 0..<fromArchetype.componentIds.len:
@@ -123,9 +121,6 @@ proc moveAdding*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArc
 
   for compId, adder in adders.pairs:
     assert result == adder(toArchetype.componentLists[compId])
-
-  #dec fromArchetype.entityCount
-  #inc toArchetype.entityCount
 
 proc moveRemoving*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArchetype: var Archetype): int =
   for index in 0..<fromArchetype.componentIds.len:
@@ -139,25 +134,11 @@ proc moveRemoving*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toA
     else:
       fromEcsSeq.del fromArchetypeEntityId
 
-  #dec fromArchetype.entityCount
-  #inc toArchetype.entityCount
+proc contains*(archetype: Archetype, candidateId: ComponentId): bool =
+  candidateId in archetype.id
 
-proc matches*(archetype: Archetype, candidateId: ArchetypeId): bool =
+proc contains*(archetype: Archetype, candidateId: ArchetypeId): bool =
   candidateId <= archetype.id
 
-proc show*(archetype: Archetype, componentLists: Table[ComponentId, EcsSeqAny]): string =
-  result &= "@{\n"
-  var index = 0
-  for (compId, ecsSeqAny) in componentLists.pairs:
-    result &= "        " & $compId & ": components" & "\n"
-    inc index
-
-  result &= "      }"
-
-proc `$`*(archetype: Archetype): string =
-  "(\n" &
-  "      id: " & $archetype.id & "\n" &
-  "      componentIds: " & $archetype.componentIds & "\n" &
-  #"      entityCount: " & $archetype.entityCount & "\n" &
-  "      componentLists: " & archetype.show(archetype.componentLists) & "\n" &
-  "    )"
+proc disjointed*(archetype: Archetype, candidateId: ArchetypeId): bool =
+  archetype.id.disjoint candidateId

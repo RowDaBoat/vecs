@@ -33,7 +33,7 @@ for (character, health) in world.component(entityId, (Character, Health)):
 ```
 ```nim
 # Query for components
-var characterWithSwordsQuery {.global.} = Query[(Character, Sword)]()
+var characterWithSwordsQuery = Query[(Character, Sword)]()
 for (character, sword) in world.query(characterWithSwordsQuery):
   echo character.name, " has a sword, ", sword.name, "!"
 ```
@@ -58,6 +58,30 @@ for idComponent in world.component(entityId, Id):
   assert entityId == idComponent
 ```
 
+
+## Advanced querying
+```nim
+# Query components for writting
+var characterWithSwordsQuery = Query[(Character, Write[Health])]()
+for (character, health) in world.query(characterWithSwordsQuery):
+  health.health += 10
+```
+```nim
+# Query for optional components
+var characterWithSwordsQuery = Query[(Character, Opt[Weapon])]()
+for (character, weapon) in world.query(characterWithSwordsQuery):
+  weapon.isSmoething:
+    echo character.name, " has a weapon, ", weapon.name
+  weapon.isNothing:
+    echo character.name, " has no weapon"
+```
+```nim
+# Exclude components from a query
+var disarmedCharacters = Query[(Character, Not[Weapon])]()
+for (character,) in world.query(disarmedCharacters):
+  echo character.name, " has no weapon"
+```
+
 ## Roadmap
 - [x] Add entities
 - [x] Archetypes
@@ -67,16 +91,28 @@ for idComponent in world.component(entityId, Id):
 - [x] Add component
 - [x] Remove component
 - [x] Special Id component
-- [ ] Restrict generic T on queries and components procs to be tuples
-- [ ] 'Not' Queries
-- [ ] Polish console output
+- [x] Restrict generic T on queries and components procs to be tuples
+- [ ] Convenience
+  - [ ] Allow read access to components without an iterator
+  - [ ] `component` and `components` should accept a list of Ids (map?)
+  - [ ] `component` fails to compile silently when used with a Tuple
+  - [ ] `components` sys-fatals when searching for a non existing Id
+- [x] 'Not' Queries
+- [x] 'Opt' Queries
+- [x] 'Write' Queries
 - [ ] Stable ids for components
+- [x] Polish console output
 - [ ] Foreach or non-caching queries
 - [ ] Add and Remove multiple components
 - [ ] Text serialization
 - [ ] Binary serialization
+- [ ] Concurrency support
 - [ ] Zero-allocation?
 - [ ] Spatial queries
+
+- [ ] Integrate with inim?
+  - [ ] Pull req: show current code
+  - [ ] Pull req: use nim --eval
 
 ## Notes on static/dynamic archetypes
 Building the archetypes with macros that iterate on tuple fields limits what the system can do in runtime, for example, anything combining components on an archetype that's not existing in compile-time (ie: getting an unexpected combination from an edited save-file), will absolutely fail in runtime.

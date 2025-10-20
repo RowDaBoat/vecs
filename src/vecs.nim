@@ -5,14 +5,16 @@ import archetype
 import entity
 import component
 import ecsSeq
-import query
+import queries/query
+import queries/opNot
+import queries/opWrite
+import queries/opOpt
 
+export Not, Write, Opt
 export query.Query
 
 type Id* = object
   id: int = -1
-
-type Not*[T] = distinct T
 
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
@@ -28,32 +30,6 @@ proc hash*(id: ArchetypeId): Hash =
     result = result xor (compId.int mod 32)
 
 proc `==`*(a, b: ComponentId): bool {.borrow.}
-
-proc archetypeIdFrom*[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
-  for name, typ in fieldPairs default T:
-    let compId = world.componentIdFrom typeof typ
-    result.incl compId
-
-proc archetypeFrom*[T: tuple](world: var World, tupleDesc: typedesc[T]): var Archetype =
-  let archetypeId = world.archetypeIdFrom T
-
-  if not world.archetypes.hasKey(archetypeId):
-    var componentIds: seq[ComponentId] = @[]
-    var builders: seq[Builder] = @[]
-    var movers: seq[Mover] = @[]
-    var showers: seq[Shower] = @[]
-
-    for name, typ in fieldPairs default T:
-      let compId = world.componentIdFrom typeof typ
-      componentIds.add compId
-      builders.add world.builders[compId]
-      movers.add world.movers[compId]
-      showers.add world.showers[compId]
-
-    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers, showers)
-    world.archetypeIds.add archetypeId
-
-  world.archetypes[archetypeId]
 
 proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
   let previousArchetypeId = previousArchetype.id
@@ -81,7 +57,76 @@ proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, c
 
   world.archetypes[nextArchetypeId]
 
-macro varTuple*(t: typedesc): untyped =
+proc archetypeIdFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
+  for name, typ in fieldPairs default T:
+    let compId = world.componentIdFrom typeof typ
+    result.incl compId
+
+proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Archetype =
+  let archetypeId = world.archetypeIdFrom T
+
+  if not world.archetypes.hasKey(archetypeId):
+    var componentIds: seq[ComponentId] = @[]
+    var builders: seq[Builder] = @[]
+    var movers: seq[Mover] = @[]
+    var showers: seq[Shower] = @[]
+
+    for name, typ in fieldPairs default T:
+      let compId = world.componentIdFrom typeof typ
+      componentIds.add compId
+      builders.add world.builders[compId]
+      movers.add world.movers[compId]
+      showers.add world.showers[compId]
+
+    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers, showers)
+    world.archetypeIds.add archetypeId
+
+  world.archetypes[archetypeId]
+
+
+proc requireWrite[T](world: var World, write: Write[T]): ComponentId =
+  world.componentIdFrom typeof T
+
+proc excludeNot[T](world: var World, notOp: Not[T]): ComponentId =
+  world.componentIdFrom typeof T
+
+proc requiredArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
+  for name, typ in fieldPairs default T:
+    when typ is Not or typ is Opt:
+      discard
+    elif typ is Write:
+      let compId = requireWrite(world, typ)
+      result.incl compId
+    else:
+      let compId = world.componentIdFrom typeof typ
+      result.incl compId
+
+proc excludedArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
+  for name, typ in fieldPairs default T:
+    when typ is Not:
+      let compId = excludeNot(world, typ)
+      result.incl compId
+
+proc updateQuery[T: tuple](world: var World, query: var Query[T]) =
+  if world.archetypes.len == query.lastArchetypeCount:
+    return
+
+  let requiredArchetypeIds = world.requiredArchetypeIdsFrom T
+  let excludedArchetypeIds = world.excludedArchetypeIdsFrom T
+
+  for index in query.lastArchetypeCount ..< world.archetypeIds.len:
+    let archetypeId = world.archetypeIds[index]
+    let archetype = world.archetypes[archetypeId]
+
+    if archetype.contains(requiredArchetypeIds) and archetype.disjointed(excludedArchetypeIds):
+      query.matchedArchetypes.add archetypeId
+
+  query.lastArchetypeCount = world.archetypes.len
+
+proc isOp(typ: NimNode, name: string): bool =
+  typ.kind == nnkBracketExpr and $typ[0] == name
+
+macro accessTuple(t: typedesc): untyped =
   result = t.getTypeInst[^1].copyNimTree
 
   for i in countDown(result.len - 1, 0):
@@ -89,25 +134,51 @@ macro varTuple*(t: typedesc): untyped =
       result.del(i)
 
   for i, x in result:
-    if x.kind != nnkBracketExpr:
-      result[i] = nnkVarTy.newTree(x)
+    if x.kind == nnkBracketExpr and result[i][0] == bindSym"Write":
+      echo "write: ", repr x[1]
+      result[i] = nnkVarTy.newTree(x[1])
+      echo "res i: ", repr result[i]
   result = newCall("typeof", result)
 
-macro buildVarTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
+template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: int): T =
+  cast[EcsSeq[T]](
+    archetype.componentLists[world.componentIdFrom typeof T]
+  )[archetypeEntityId]
+
+macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
   var tupleExprs = nnkTupleConstr.newTree()
 
+  for i in countDown(tupleType.len - 1, 0):
+    if isOp(tupleType[i], "Not"):
+      tupleType.del(i)
+
   for i in 0..<tupleType.len:
     let fieldType = tupleType[i]
-
-    let fieldExpr = quote do:
-      cast[EcsSeq[`fieldType`]](
-        `archetype`.componentLists[world.componentIdFrom typeof `fieldType`]
-      )[`archetypeEntityId`]
+    let fieldExpr =
+      if isOp(fieldType, "Write"):
+        let componentType = fieldType[1]
+        quote do:
+          accessor[`componentType`](world, `archetype`, `archetypeEntityId`)
+      elif isOp(fieldType, "Opt"):
+        let componentType = fieldType[1]
+        quote do:
+          if `archetype`.contains(world.componentIdFrom typeof `componentType`):
+            some(accessor[`componentType`](world, `archetype`, `archetypeEntityId`))
+          else:
+            none[`componentType`]()
+      else:
+        let componentType = fieldType
+        quote do:
+          accessor[`componentType`](world, `archetype`, `archetypeEntityId`)
 
     tupleExprs.add(fieldExpr)
 
   result = tupleExprs
+
+iterator archetypes*(world: var World): Archetype =
+  for archetypeId in world.archetypeIds:
+    yield world.archetypes[archetypeId]
 
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   var id {.global.}: int
@@ -138,7 +209,7 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[T]): var T =
     type Retype = EcsSeq[T]
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
-iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.varTuple =
+iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.accessTuple =
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
@@ -150,7 +221,7 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
     found = found and archetype.componentLists.hasKey(compId)
 
   if found:
-    yield world.buildVarTuple(tup, archetype, archetypeEntityId)
+    yield world.buildAccessTuple(tup, archetype, archetypeEntityId)
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   var archetype = world.archetypeFrom T
@@ -203,246 +274,10 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
   entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
   world.entities[id.id] = entity
 
-iterator query*[T: tuple](world: var World, query: var Query[T]): T.varTuple =
-  if world.archetypes.len != query.lastArchetypeCount:
-    let queryArchetypeId = world.archetypeIdFrom T
-
-    for index in query.lastArchetypeCount..<world.archetypeIds.len:
-      let archetypeId = world.archetypeIds[index]
-
-      if world.archetypes[archetypeId].matches(queryArchetypeId):
-        query.matchedArchetypes.add archetypeId
-
-    query.lastArchetypeCount = world.archetypes.len
+iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
+  world.updateQuery(query)
 
   for archetypeId in query.matchedArchetypes:
     let archetype = world.archetypes[archetypeId]
     for archetypeEntityId in archetype.entities:
-      yield world.buildVarTuple(typeof T, archetype, archetypeEntityId)
-
-proc `$`*(entities: seq[Entity]): string =
-  result &= "@[\n"
-
-  for entity in entities:
-    result &= "    " & $entity & "\n"
-
-  result &= "  ]"
-
-proc `$`*(archetypes: Table[ArchetypeId, Archetype]): string =
-  result &= "@{\n"
-
-  for (id, archetype) in archetypes.pairs:
-    result &= "    " & $id & ": " & $archetype & "\n"
-
-  result &= "  }"
-
-proc `$`*(world: World): string =
-  "(\n" & 
-  "  entities: " & $world.entities & ",\n" &
-  "  archetypes: " & $world.archetypes & "\n" &
-  ")\n"
-
-when isMainModule:
-  type
-    Character = object
-      name: string
-      class: string
-
-    Health = object
-      health: int
-      maxHealth: int
-
-    Sword = object
-      name: string
-      attack: int
-
-    Staff = object
-      name: string
-      attack: int
-      magic: seq[string]
-
-    Shield = object
-      name: string
-      defense: int
-
-    Armor = object
-      name: string
-      defense: int
-      buffs: seq[string]
-
-    Spellbook = object
-      spells: seq[string]
-
-    Skillset = object
-      skills: seq[string]
-
-  echo "World"
-  var world = World()
-  let ids = @[
-    world.addEntity (
-      Character(name: "Marcus", class: "Warrior"),
-      Health(health: 120, maxHealth: 120),
-      Sword(name: "Iron Blade", attack: 25),
-      Shield(name: "Steel Shield", defense: 15),
-      Armor(name: "Chain Mail", defense: 20, buffs: @["Strength"])
-    ),
-    world.addEntity (
-      Character(name: "Elena", class: "Mage"),
-      Health(health: 80, maxHealth: 80),
-      Staff(name: "Arcane Staff", attack: 30, magic: @["Fireball", "Ice Storm", "Lightning"]),
-      Armor(name: "Robe of the Archmage", defense: 10, buffs: @["Intelligence"]),
-      Spellbook(spells: @["Fireball", "Ice Storm", "Lightning", "Teleport"])
-    ),
-    world.addEntity (
-      Character(name: "Grimm", class: "Paladin"),
-      Health(health: 15, maxHealth: 100),
-      Sword(name: "Holy Avenger (Damaged)", attack: 10),
-      Shield(name: "Divine Aegis", defense: 18),
-      Armor(name: "Plate Armor", defense: 25, buffs: @["Strength", "Faith"]),
-      Skillset(skills: @["Divine Smite", "Lay on Hands", "Aura of Protection"])
-    ),
-    world.addEntity (
-      Character(name: "Zara", class: "Rogue"),
-      Health(health: 90, maxHealth: 90),
-      Sword(name: "Shadow Dagger", attack: 22),
-      Armor(name: "Leather Armor", defense: 12, buffs: @["Agility", "Stealth"]),
-      Skillset(skills: @["Backstab", "Stealth", "Lockpicking", "Trap Disarm"])
-    ),
-    world.addEntity (
-      Character(name: "Brom", class: "Barbarian"),
-      Health(health: 140, maxHealth: 140),
-      Sword(name: "Battle Axe", attack: 32),
-      Armor(name: "Fur Armor", defense: 15, buffs: @["Strength", "Rage"]),
-      Skillset(skills: @["Rage", "Intimidate", "Berserker Rage"])
-    ),
-    world.addEntity (
-      Character(name: "Lyra", class: "Ranger"),
-      Health(health: 95, maxHealth: 95),
-      Sword(name: "Hunting Bow", attack: 26),
-      Armor(name: "Ranger's Cloak", defense: 8, buffs: @["Agility", "Survival"]),
-      Skillset(skills: @["Track", "Survival", "Animal Companion", "Precise Shot"])
-    )
-  ]
-
-  let marcus = ids[0]
-  let grimm = ids[2]
-  let zara = ids[3]
-
-  echo ""
-  echo ".-----------------------------."
-  echo "| Single component r/w access |"
-  echo "'-----------------------------'"
-
-  for health in world.component(grimm, Health):
-    echo "  Grimm's health: ", health
-    health.health += 75
-    echo "  Grimm was cured 75 hit points!"
-    echo "  Grimm's health: ", health
-
-  echo ""
-  echo ".--------------------------------."
-  echo "| Multiple components r/w access |"
-  echo "'--------------------------------'"
-
-  for (character, sword, shield, armor) in world.components(grimm, (Character, Sword, Shield, Armor)):
-    echo "  ", character.name, "'s items are:\n  sword: ", sword, "\n  shield: ", shield, "\n  armor: ", armor, "\n"
-    sword.attack = 28
-    sword.name = "Holy Avenger"
-    echo "  Grimm's sword was repaired!\n"
-    echo "  ", character.name, "'s items are:\n  sword: ", sword, "\n  shield: ", shield, "\n  armor: ", armor
-
-  echo ""
-  echo ".----------."
-  echo "| Querying |"
-  echo "'----------'"
-
-  var characterSkillsQuery = Query[(Character, Skillset)]()
- 
-  echo "  Skilled characters:"
-  for (character, skillset) in world.query(characterSkillsQuery):
-    echo "  ", character.name, "'s skills are: ", skillset.skills
-
-  echo ""
-
-  for (character, skillset) in world.query(characterSkillsQuery):
-    skillset.skills.add "Tracking"
-    echo "  ", character.name, " learned Tracking!"
-
-  echo ""
-
-  for (character, skillset) in world.query(characterSkillsQuery):
-    echo "  ", character.name, "'s skills are:  ", skillset.skills
-
-  echo ""
-  echo ".--------------------."
-  echo "| Removing an entity |"
-  echo "'--------------------'"
-
-  var charactersQuery = Query[(Character, Health)]()
-
-  echo "  Characters:"
-  for (character, health) in world.query(charactersQuery):
-    echo "  ", character.name, " ", health
-
-  world.removeEntity grimm
-  echo "\n  Grimm left the party.\n"
-
-  echo "  Characters:"
-  for (character, health) in world.query(charactersQuery):
-    echo "  ", character.name, " ", health
-
-  echo ""
-  echo ".--------------------."
-  echo "| Adding a component |"
-  echo "'--------------------'"
-
-  echo "  Skilled characters:"
-  for (character, skillset) in world.query(characterSkillsQuery):
-    echo "  ", character.name, "'s skills are: ", skillset.skills
-
-  world.addComponent(marcus, Skillset(skills: @["Parry", "Bash", "Riposte"]))
-  echo "\n  Marcus has learned a skillset!\n"
-
-  echo "  Skilled characters:"
-  for (character, skillset) in world.query(characterSkillsQuery):
-    echo "  ", character.name, "'s skills are: ", skillset.skills
-
-  echo ""
-  echo ".----------------------."
-  echo "| Removing a component |"
-  echo "'----------------------'"
-
-  echo "  Skilled characters:"
-  for (character, skillset) in world.query(characterSkillsQuery):
-    echo "  ", character.name, "'s skills are: ", skillset.skills
-
-  world.removeComponent(zara, Skillset)
-  echo "\n  Zara forgot her skills!\n"
-
-  echo "  Skilled characters:"
-  for (character, skillset) in world.query(characterSkillsQuery):
-    echo "  ", character.name, "'s skills are: ", skillset.skills
-
-  echo ""
-  echo ".-------------------------."
-  echo "| Using Id as a component |"
-  echo "'-------------------------'"
-
-  let id = world.addEntity (Id(), Character(name: "Leon", class: "Paladin"))
-
-  echo "  A character with Id: ", id
-
-  for (id, character) in world.components(id, (Id, Character)):
-    echo "  ", character.name, " has a component Id with character's id: ", id
-
-  echo ""
-  echo "entities:"
-  for index in 0..<world.entities.len:
-    echo "  ", world.entities[index]
-
-  echo ""
-  echo "archetypes:"
-  for (id, archetype) in world.archetypes.pairs:
-    echo id, ": "
-    for (compId, ecsSeqAny) in archetype.componentLists.pairs:
-      echo "  ", compId, ": ", world.showers[compId](ecsSeqAny)
+      yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
