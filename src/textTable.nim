@@ -52,12 +52,3 @@ proc textTable*(data: seq[seq[seq[string]]]): string =
       result &= separator("|", widths)
 
   result &= separator("'", widths)
-
-when isMainModule:
-  let data = @[
-    @[ @[ "Multiline", "Cell", "Blabla" ], @[ "Second", "Column", "Bli bli", "baba" ], @[ "Third", "Column", "Hee hee" ] ],
-    @[ @[ "lalala", "data data", "lolololo" ], @[ "oreo", "banada", "chocolate" ], @[ "banana", "manzana", "naranja" ] ],
-    @[ @[ "kiwi", "uva", "manzana","banana","ciruela","sandia"], @[ "pera", "naranja", "uva" ], @[ "sandia", "manzana", "uva" ] ]
-  ]
-
-  echo textTable(data)

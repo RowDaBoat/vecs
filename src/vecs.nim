@@ -1,3 +1,11 @@
+#
+#            vecs - ECS library
+#        (c) Copyright 2025 RowDaBoat
+#
+
+## vecs is a free open source ECS library for Nim.
+import examples
+
 import std/[packedsets, hashes, macros, intsets]
 import typetraits
 import tables
@@ -31,6 +39,7 @@ proc hash*(id: ArchetypeId): Hash =
 
 proc `==`*(a, b: ComponentId): bool {.borrow.}
 
+# Archetype creation and book-keeping
 proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
   let previousArchetypeId = previousArchetype.id
   var nextArchetypeId = previousArchetypeId
@@ -83,7 +92,7 @@ proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arch
 
   world.archetypes[archetypeId]
 
-
+# Query creation and book-keeping
 proc requireWrite[T](world: var World, write: Write[T]): ComponentId =
   world.componentIdFrom typeof T
 
@@ -135,9 +144,7 @@ macro accessTuple(t: typedesc): untyped =
 
   for i, x in result:
     if x.kind == nnkBracketExpr and result[i][0] == bindSym"Write":
-      echo "write: ", repr x[1]
       result[i] = nnkVarTy.newTree(x[1])
-      echo "res i: ", repr result[i]
   result = newCall("typeof", result)
 
 template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: int): T =
@@ -177,10 +184,16 @@ macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archet
   result = tupleExprs
 
 iterator archetypes*(world: var World): Archetype =
+  ## Iterate through all the world's archetypes.
+  ##
+  ## This is mostly useful just to implement custom queries.
+  ## To use Archetypes, the archetype module must be imported.
   for archetypeId in world.archetypeIds:
     yield world.archetypes[archetypeId]
 
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
+  ## Get the ComponentId for a given component type.
+  ## This is mostly useful to identify the components of an archetype.
   var id {.global.}: int
   once:
     id = world.nextComponentId
@@ -194,22 +207,104 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   id.ComponentId
 
 proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
+  ## Check if an entity has a given component.
+  #[
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"),)
+    assert world.hasComponent(marcus, Character) == true
+    assert world.hasComponent(marcus, Health) == false
+  ]#
+
   let entity = world.entities[id.id]
   let compId = world.componentIdFrom typeof compDesc
   compId in entity.archetypeId
 
-iterator component*[T](world: var World, id: Id, compDesc: typedesc[T]): var T =
+proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
+  ## Directly read a single component of an entity.
+  #[
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"),)
+    let character = world.readComponent(marcus, Character)
+    assert character.name == "Marcus"
+  ]#
+
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
   let compId = world.componentIdFrom typeof compDesc
+  let ecsSeqAny = archetype.componentLists[compId]
+
+  type Retype = EcsSeq[T]
+  cast[Retype](ecsSeqAny)[archetypeEntityId]
+
+iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): var T =
+  ## Write access to a single component of an entity.
+  ## An iterator is used to ensure fast and safe access to the component.
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"),)
+  #[
+
+    for character in world.component(marcus, Write[Character]):
+      character.name = "Mark"
+
+    assert world.readComponent(marcus, Character).name == "Mark"
+  ]#
+
+  let entity = world.entities[id.id]
+  let archetype = world.archetypes[entity.archetypeId]
+  let archetypeEntityId = entity.archetypeEntityId
+  let compId = world.componentIdFrom typeof T
 
   if archetype.componentLists.hasKey(compId):
     let ecsSeqAny = archetype.componentLists[compId]
     type Retype = EcsSeq[T]
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
+proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
+  ## Diret read access to multiple components of an entity.
+  ## The tuple `T` must contain no `Write`, `Opt`, or `Not` accessors.
+  raise newException(Exception, "readComponents is not implemented yet")
+
 iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.accessTuple =
+  ## Read, write, and optional access to components of an entity.
+  ## An iterator is used to ensure fast and safe access to the components.
+  ## **Accessors:**
+  ## - **Read access**: just use the component's type
+  ## - **Write access**: use `Write[Component]`
+  ## - **Optional access**: use `Opt[Component]`, availability can be checked with `isSomething` or `isNothing`
+  ## - **Not access**: use `Not[Component]`, to avoid access if the entity contains `Component`
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), )#Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
+    echo "?"
+  #[ TODO: for some reason, uncommenting addEntity segfaults but only later, not when called.
+
+    for (character, weapon, armor, spellbook) in world.components(marcus, (Character, Write[Weapon], Opt[Armor], Opt[Spellbook])):
+      echo character.name
+      weapon.attack = 10
+
+      armor.isSomething:
+        raiseAssert "Marcus should have no armor."
+      armor.isNothing:
+        echo "Marcus has no armor."
+
+      spellbook.isSomething:
+        echo "Marcus's spellbook contains: ", value.spells
+      armor.isNothing:
+        raiseAssert "Marcus should have a spellbook."
+  ]#
+
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
@@ -223,22 +318,19 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
   if found:
     yield world.buildAccessTuple(tup, archetype, archetypeEntityId)
 
-proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
-  var archetype = world.archetypeFrom T
-  let archetypeEntityId = archetype.add components
-  let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  result = Id(id: id)
-
-  for idComponent in world.component(result, Id):
-    idComponent.id = id
-
-proc removeEntity*(world: var World, id: Id) =
-  let entity = world.entities[id.id]
-  var archetype = world.archetypes[entity.archetypeId]
-  archetype.remove entity.archetypeEntityId
-  world.entities.del id.id
-
 proc addComponent*[T](world: var World, id: Id, component: T) =
+  ## Add a component to an entity
+  #[
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"),)
+    world.addComponent(marcus, Health(health: 100, maxHealth: 100))
+    #TODO: ASSERT FAILS
+    #assert world.hasComponent(marcus, Health) == true
+  ]#
+
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
 
@@ -261,6 +353,17 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
 
 proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
+  ## Remove a component from an entity
+  #[ TODO: SEGFAULTS!!!
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"))
+    world.removeComponent(marcus, Weapon)
+    assert world.hasComponent(marcus, Weapon) == false
+  ]#
+
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
 
@@ -274,6 +377,35 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
   entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
   world.entities[id.id] = entity
 
+proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
+  ## Add an entity with components, use the special `Id` component to allow getting the entity's id in queries.
+  ## `addEntity` also returns the entity's `Id`.
+  #[ TODO: SEGFAULTS!!!
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Id(), Character(name: "Marcus"))
+
+    assert world.readComponent(marcus, Id) == marcus
+    assert world.readComponent(marcus, Character).name == "Marcus"
+  ]#
+  var archetype = world.archetypeFrom T
+  let archetypeEntityId = archetype.add components
+  let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  result = Id(id: id)
+
+  for idComponent in world.component(result, Write[Id]):
+    idComponent.id = id
+
+proc removeEntity*(world: var World, id: Id) =
+  let entity = world.entities[id.id]
+  var archetype = world.archetypes[entity.archetypeId]
+  archetype.remove entity.archetypeEntityId
+  world.entities.del id.id
+
+########
+## Query
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
   world.updateQuery(query)
 
@@ -281,3 +413,16 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     let archetype = world.archetypes[archetypeId]
     for archetypeEntityId in archetype.entities:
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
+
+when isMainModule:
+  echo "1"
+  var world1 = World()
+  echo "2"
+  let marcus1 = world1.addEntity (Character(name: "Marcus"),)
+  echo "3"
+
+  var world2 = World()
+  echo "4"
+  #let marcus2 = world2.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), )#Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
+  let marcus2 = world2.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), )#Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
+  echo "5"
