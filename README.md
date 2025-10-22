@@ -8,7 +8,12 @@ The main design differences between `vecs` and `yeacs` are in the implementation
 - `vecs` avoids manually copying memory, erasure is implemented by using abstract types, then casting to concrete types when needed. This simplifies book-keeping a bit, and goes easier on references, not needing to track move semantics.
 - `vecs` approaches ECS with a collection for each component in the archetype, while `yeacs` instead uses a single collection of tuples of components for each archetype.
 
-## Usage
+
+## Documentation
+The API reference is available [here](https://rowdaboat.github.io/vecs/).
+
+
+### Basic Usage
 ```nim
 # Create a world
 var world = World()
@@ -59,7 +64,7 @@ for idComponent in world.component(entityId, Id):
 ```
 
 
-## Advanced querying
+### Advanced querying
 ```nim
 # Query components for writting
 var characterWithSwordsQuery = Query[(Character, Write[Health])]()
@@ -82,6 +87,7 @@ for (character,) in world.query(disarmedCharacters):
   echo character.name, " has no weapon"
 ```
 
+
 ## Roadmap
 - [x] Add entities
 - [x] Archetypes
@@ -92,36 +98,23 @@ for (character,) in world.query(disarmedCharacters):
 - [x] Remove component
 - [x] Special Id component
 - [x] Restrict generic T on queries and components procs to be tuples
-- [ ] Convenience
-  - [ ] Allow read access to components without an iterator
-  - [ ] `component` and `components` should accept a list of Ids (map?)
-  - [ ] `component` fails to compile silently when used with a Tuple
-  - [ ] `components` sys-fatals when searching for a non existing Id
 - [x] 'Not' Queries
 - [x] 'Opt' Queries
 - [x] 'Write' Queries
-- [ ] Stable ids for components
+- [x] Stable ids for components
 - [x] Polish console output
-- [ ] Foreach or non-caching queries
+- [ ] Convenience
+  - [x] Allow read access to components without an iterator
+  - [ ] `component` and `components` should accept a list of Ids (map?)
+  - [ ] `component` fails to compile silently when used with a Tuple
+  - [ ] `components` sys-fatals when searching for a non existing Id
 - [ ] Add and Remove multiple components
 - [ ] Text serialization
 - [ ] Binary serialization
 - [ ] Concurrency support
 - [ ] Zero-allocation?
-- [ ] Spatial queries
+- [ ] Spatial and custom queries
 
 - [ ] Integrate with inim?
   - [ ] Pull req: show current code
   - [ ] Pull req: use nim --eval
-
-## Notes on static/dynamic archetypes
-Building the archetypes with macros that iterate on tuple fields limits what the system can do in runtime, for example, anything combining components on an archetype that's not existing in compile-time (ie: getting an unexpected combination from an edited save-file), will absolutely fail in runtime.
-
-To remove the need for macros and make archetypes dynamic, the archertype constructor must:
-- Not use generic types.
-- Receive the `ArchetypeId` computed from the components.
-- Receive factory procs of type-erased collections for each component included in the archetype.
-
-With this approach, the system must know which components will be used beforehand, losing a bit of simplicity by forcing something like `var world = world(CompA, CompB, CompC, CompD)`.
-
-However, incidentally, declaring the component types beforehand, also allows stabilizing their ids easily.
