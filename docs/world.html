@@ -153,7 +153,9 @@
 
   </div>
   <div class="nine columns" id="content">
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L1" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L1" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
     <div id="tocRoot"></div>
     
     <p class="module-desc"><tt class="docutils literal"><span class="pre"><span class="Identifier">vecs</span></span></tt> is a free open source ECS library for Nim.</p>
@@ -171,7 +173,9 @@
   <dd>
     
     
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L19" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L19" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 <div id="World">
@@ -179,7 +183,9 @@
   <dd>
     
     
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L22" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L22" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -194,7 +200,9 @@
   <dd>
     
     
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L34" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L34" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -214,7 +222,9 @@
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L358" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L358" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -233,7 +243,9 @@
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Id</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">marcus</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L421" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L421" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -244,7 +256,9 @@
   <dd>
     
      Get the ComponentId for a given component type. This is mostly useful to identify the components of an archetype.
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L212" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L212" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -262,7 +276,9 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L224" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L224" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -273,7 +289,9 @@
   <dd>
     
     
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L30" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L30" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -291,7 +309,9 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L241" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L241" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -310,7 +330,9 @@
 <span class="Keyword">let</span> <span class="Punctuation">(</span><span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponents</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Weapon</span><span class="Punctuation">,</span> <span class="Identifier">Spellbook</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Sword&quot;</span>
 <span class="Identifier">assert</span> <span class="Identifier">spellbook</span><span class="Operator">.</span><span class="Identifier">spells</span> <span class="Operator">==</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="StringLit">&quot;Fireball&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Ice Storm&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Lightning&quot;</span><span class="Punctuation">]</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L290" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L290" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -328,7 +350,9 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">removeComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L395" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L395" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -350,7 +374,9 @@
 <span class="Keyword">var</span> <span class="Identifier">query</span><span class="Punctuation">:</span> <span class="Identifier">Query</span><span class="Punctuation">[</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">]</span>
 <span class="Keyword">for</span> <span class="Identifier">character</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">query</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
   <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;No character should exist.&quot;</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L441" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L441" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -370,7 +396,9 @@
     <p>Iterate through all the world's archetypes.</p>
 <p>This is mostly useful just to implement custom queries. To use Archetypes, the archetype module must be imported.</p>
 
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L204" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L204" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -391,7 +419,9 @@
   <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">=</span> <span class="StringLit">&quot;Mark&quot;</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Mark&quot;</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L263" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L263" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -426,7 +456,9 @@
     <span class="Identifier">echo</span> <span class="StringLit">&quot;Marcus's spellbook contains: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">spells</span>
   <span class="Identifier">armor</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
     <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;Marcus should have a spellbook.&quot;</span></pre>
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L314" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L314" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -437,7 +469,9 @@
   <dd>
     
     
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L462" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L462" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -454,7 +488,9 @@
   <dd>
     
     
-    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L36" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L36" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
   </dd>
 </div>
 
@@ -469,7 +505,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-22 03:38:43 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-22 04:06:41 UTC</small>
       </div>
     </div>
   </div>
