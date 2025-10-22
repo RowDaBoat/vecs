@@ -11,3 +11,6 @@ binDir        = "bin"
 skipFiles     = @[]
 
 requires "nim >= 2.0.0"
+
+task docs, "Generate documentation":
+  exec "nim doc --project --index:on --outdir:docs src/vecs.nim"
