@@ -1,0 +1,18 @@
+nimTitle	world	world.html	module src/world		0
+nim	Id	world.html#Id	object Id		19
+nim	World	world.html#World	object World		22
+nim	hash	world.html#hash,ArchetypeId	proc hash(id: ArchetypeId): Hash		30
+nim	`==`	world.html#==,ComponentId,ComponentId	proc `==`(a, b: ComponentId): bool		34
+nim	typeHash	world.html#typeHash.m,typedesc[T]	macro typeHash[T](typ: typedesc[T]): int		36
+nim	archetypes	world.html#archetypes.i,World	iterator archetypes(world: var World): Archetype		204
+nim	componentIdFrom	world.html#componentIdFrom,World,typedesc[T]	proc componentIdFrom[T](world: var World; desc: typedesc[T]): ComponentId		212
+nim	hasComponent	world.html#hasComponent,World,Id,typedesc[T]	proc hasComponent[T](world: var World; id: Id; compDesc: typedesc[T]): bool		224
+nim	readComponent	world.html#readComponent,World,Id,typedesc[T]	proc readComponent[T](world: var World; id: Id; compDesc: typedesc[T]): T		241
+nim	component	world.html#component.i,World,Id,typedesc[Write[T]]	iterator component[T](world: var World; id: Id; compDesc: typedesc[Write[T]]): var T		263
+nim	readComponents	world.html#readComponents,World,Id,typedesc[T]	proc readComponents[T: tuple](world: var World; id: Id; tup: typedesc[T]): T		290
+nim	components	world.html#components.i,World,Id,typedesc[T]	iterator components[T: tuple](world: var World; id: Id; tup: typedesc[T]): tup.accessTuple		314
+nim	addComponent	world.html#addComponent,World,Id,T	proc addComponent[T](world: var World; id: Id; component: T)		358
+nim	removeComponent	world.html#removeComponent,World,Id,typedesc[T]	proc removeComponent[T](world: var World; id: Id; compDesc: typedesc[T])		395
+nim	addEntity	world.html#addEntity,World,T	proc addEntity[T: tuple](world: var World; components: T): Id		421
+nim	removeEntity	world.html#removeEntity,World,Id	proc removeEntity(world: var World; id: Id)		441
+nim	query	world.html#query.i,World,Query[T: tuple]	iterator query[T: tuple](world: var World; query: var Query[T]): T.accessTuple		462

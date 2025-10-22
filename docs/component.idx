@@ -1,0 +1,3 @@
+nimTitle	component	component.html	module src/component		0
+nim	ComponentId	component.html#ComponentId	type ComponentId		7
+nim	`$`	component.html#$,ComponentId	proc `$`(id: ComponentId): string		9

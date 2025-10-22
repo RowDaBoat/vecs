@@ -1,0 +1,2 @@
+nimTitle	textTable	textTable.html	module src/textTable		0
+nim	textTable	textTable.html#textTable,seq[seq[seq[string]]]	proc textTable(data: seq[seq[seq[string]]]): string		47
