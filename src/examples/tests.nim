@@ -60,7 +60,7 @@ echo ".-----------------------------."
 echo "| Single component r/w access |"
 echo "'-----------------------------'"
 
-for health in world.component(grimm, Health):
+for health in world.component(grimm, Write[Health]):
   echo "  Grimm's health: ", health
   health.health += 75
   echo "  Grimm was cured 75 hit points!"

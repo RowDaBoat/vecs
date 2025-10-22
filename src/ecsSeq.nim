@@ -33,6 +33,9 @@ proc del*(self: EcsSeqAny, index: int) =
   self.deleted[index] = true
   self.free.add index
 
+proc has*(self: EcsSeqAny, index: int): bool =
+  not self.deleted[index]
+
 proc `[]`*[T](self: EcsSeq[T], index: int): var T =
   self.data[index]
 

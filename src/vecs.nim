@@ -3,7 +3,7 @@
 #        (c) Copyright 2025 RowDaBoat
 #
 
-## vecs is a free open source ECS library for Nim.
+## `vecs` is a free open source ECS library for Nim.
 import examples
 
 import std/[packedsets, hashes, macros, intsets]
@@ -31,13 +31,25 @@ type World* = object
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
   showers: Table[ComponentId, Shower]
-  nextComponentId: int
 
 proc hash*(id: ArchetypeId): Hash =
   for compId in id.items:
     result = result xor (compId.int mod 32)
 
 proc `==`*(a, b: ComponentId): bool {.borrow.}
+
+macro typeHash*[T](typ: typedesc[T]): int =
+  typ.getTypeInst.repr.hash.newIntLitNode
+
+# Errors
+proc entityDoesNotExist(id: Id): ref Exception =
+  newException(Exception, "Entity with id " & $id & " does not exist.")
+
+proc componentDoesNotExist[T](id: Id, comp: typedesc[T]): ref Exception =
+  newException(Exception, "Component " & $comp & " does not exist in the entity with id " & $id)
+
+proc componentsDoNotExist[T: tuple](id: Id, tup: typedesc[T]): ref Exception =
+  newException(Exception, "One or more components of " & $tup & " do not exist in the entity with id " & $id)
 
 # Archetype creation and book-keeping
 proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
@@ -152,6 +164,17 @@ template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: 
     archetype.componentLists[world.componentIdFrom typeof T]
   )[archetypeEntityId]
 
+macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
+  let tupleType = t.getTypeInst[^1]
+  var tupleExprs = nnkTupleConstr.newTree()
+
+  for i in 0..<tupleType.len:
+    let fieldType = tupleType[i]
+    let fieldExpr = quote do: accessor[`fieldType`](world, `archetype`, `archetypeEntityId`)
+    tupleExprs.add(fieldExpr)
+
+  result = tupleExprs
+
 macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
   var tupleExprs = nnkTupleConstr.newTree()
@@ -194,10 +217,7 @@ iterator archetypes*(world: var World): Archetype =
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   ## Get the ComponentId for a given component type.
   ## This is mostly useful to identify the components of an archetype.
-  var id {.global.}: int
-  once:
-    id = world.nextComponentId
-    inc world.nextComponentId
+  var id: int = typeHash(T)
 
   if not world.builders.hasKey(id.ComponentId):
     world.builders[id.ComponentId] = ecsSeqBuilder[T]()
@@ -208,7 +228,6 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
 
 proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
   ## Check if an entity has a given component.
-  #[
   runnableExamples:
     import examples
 
@@ -216,7 +235,9 @@ proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
     let marcus = world.addEntity (Character(name: "Marcus"),)
     assert world.hasComponent(marcus, Character) == true
     assert world.hasComponent(marcus, Health) == false
-  ]#
+
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
 
   let entity = world.entities[id.id]
   let compId = world.componentIdFrom typeof compDesc
@@ -224,7 +245,6 @@ proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
 
 proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
   ## Directly read a single component of an entity.
-  #[
   runnableExamples:
     import examples
 
@@ -232,7 +252,9 @@ proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
     let marcus = world.addEntity (Character(name: "Marcus"),)
     let character = world.readComponent(marcus, Character)
     assert character.name == "Marcus"
-  ]#
+
+  if not world.hasComponent(id, compDesc):
+    raise componentDoesNotExist(id, compDesc)
 
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
@@ -251,13 +273,14 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): 
 
     var world = World()
     let marcus = world.addEntity (Character(name: "Marcus"),)
-  #[
 
     for character in world.component(marcus, Write[Character]):
       character.name = "Mark"
 
     assert world.readComponent(marcus, Character).name == "Mark"
-  ]#
+
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
 
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
@@ -270,9 +293,28 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): 
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
 proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
-  ## Diret read access to multiple components of an entity.
-  ## The tuple `T` must contain no `Write`, `Opt`, or `Not` accessors.
-  raise newException(Exception, "readComponents is not implemented yet")
+  ## Direct read access to multiple components of an entity.
+  ## The `T` tuple must contain no `Write`, `Opt`, or `Not` accessors.
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
+    let (weapon, spellbook) = world.readComponents(marcus, (Weapon, Spellbook))
+    assert weapon.name == "Sword"
+    assert spellbook.spells == @["Fireball", "Ice Storm", "Lightning"]
+
+  let entity = world.entities[id.id]
+  let archetype = world.archetypes[entity.archetypeId]
+  let archetypeEntityId = entity.archetypeEntityId
+
+  var found = true
+
+  tup.fieldTypes:
+    if not world.hasComponent(id, typeof FieldType):
+      raise componentDoesNotExist(id, typeof FieldType)
+
+  world.buildReadTuple(tup, archetype, archetypeEntityId)
 
 iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.accessTuple =
   ## Read, write, and optional access to components of an entity.
@@ -286,9 +328,7 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
     import examples
 
     var world = World()
-    let marcus = world.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), )#Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
-    echo "?"
-  #[ TODO: for some reason, uncommenting addEntity segfaults but only later, not when called.
+    let marcus = world.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
 
     for (character, weapon, armor, spellbook) in world.components(marcus, (Character, Write[Weapon], Opt[Armor], Opt[Spellbook])):
       echo character.name
@@ -303,7 +343,9 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
         echo "Marcus's spellbook contains: ", value.spells
       armor.isNothing:
         raiseAssert "Marcus should have a spellbook."
-  ]#
+
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
 
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
@@ -320,16 +362,18 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
 
 proc addComponent*[T](world: var World, id: Id, component: T) =
   ## Add a component to an entity
-  #[
   runnableExamples:
     import examples
+    import show
 
     var world = World()
-    let marcus = world.addEntity (Character(name: "Marcus"),)
+    let marcus = world.addEntity (Id(), Character(name: "Marcus"),)
     world.addComponent(marcus, Health(health: 100, maxHealth: 100))
-    #TODO: ASSERT FAILS
-    #assert world.hasComponent(marcus, Health) == true
-  ]#
+
+    assert world.hasComponent(marcus, Health) == true
+
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
 
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
@@ -351,10 +395,10 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
+  world.entities[id.id] = entity
 
 proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
   ## Remove a component from an entity
-  #[ TODO: SEGFAULTS!!!
   runnableExamples:
     import examples
 
@@ -362,7 +406,9 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
     let marcus = world.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"))
     world.removeComponent(marcus, Weapon)
     assert world.hasComponent(marcus, Weapon) == false
-  ]#
+
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
 
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
@@ -380,7 +426,6 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   ## Add an entity with components, use the special `Id` component to allow getting the entity's id in queries.
   ## `addEntity` also returns the entity's `Id`.
-  #[ TODO: SEGFAULTS!!!
   runnableExamples:
     import examples
 
@@ -389,7 +434,7 @@ proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
 
     assert world.readComponent(marcus, Id) == marcus
     assert world.readComponent(marcus, Character).name == "Marcus"
-  ]#
+
   var archetype = world.archetypeFrom T
   let archetypeEntityId = archetype.add components
   let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
@@ -399,13 +444,26 @@ proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
     idComponent.id = id
 
 proc removeEntity*(world: var World, id: Id) =
+  ## Remove an entity.
+  runnableExamples:
+    import examples
+
+    var world = World()
+    let marcus = world.addEntity (Character(name: "Marcus"),)
+    world.removeEntity(marcus)
+
+    var query: Query[(Character,)]
+    for character in world.query(query):
+      raiseAssert "No character should exist."
+
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
+
   let entity = world.entities[id.id]
   var archetype = world.archetypes[entity.archetypeId]
   archetype.remove entity.archetypeEntityId
   world.entities.del id.id
 
-########
-## Query
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
   world.updateQuery(query)
 
@@ -413,16 +471,3 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     let archetype = world.archetypes[archetypeId]
     for archetypeEntityId in archetype.entities:
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
-
-when isMainModule:
-  echo "1"
-  var world1 = World()
-  echo "2"
-  let marcus1 = world1.addEntity (Character(name: "Marcus"),)
-  echo "3"
-
-  var world2 = World()
-  echo "4"
-  #let marcus2 = world2.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), )#Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
-  let marcus2 = world2.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), )#Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
-  echo "5"
