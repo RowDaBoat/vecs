@@ -40,6 +40,8 @@ proc del*(self: EcsSeqAny, index: int) =
   self.free.add index
 
 proc has*(self: EcsSeqAny, index: int): bool =
+  index >= 0 and
+  index < self.deleted.len and
   not self.deleted[index]
 
 proc `[]`*[T](self: EcsSeq[T], index: int): var T =

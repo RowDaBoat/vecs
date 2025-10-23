@@ -46,6 +46,15 @@ proc componentDoesNotExist[T](id: Id, comp: typedesc[T]): ref Exception =
 proc componentsDoNotExist[T: tuple](id: Id, tup: typedesc[T]): ref Exception =
   newException(Exception, "One or more components of " & $tup & " do not exist in the entity with id " & $id)
 
+# Checks
+template checkNotATuple[T](tup: typedesc[T]) =
+  when T is tuple:
+    {.error: "Component type expected, got a tuple: " & $T.}
+
+proc checkEntityExists(world: var World, id: Id) =
+  if not world.entities.has(id.id):
+    raise entityDoesNotExist(id)
+
 # Archetype creation and book-keeping
 proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
   let previousArchetypeId = previousArchetype.id
@@ -231,8 +240,8 @@ proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
     assert w.hasComponent(marcus, Character) == true
     assert w.hasComponent(marcus, Health) == false
 
-  if not world.entities.has(id.id):
-    raise entityDoesNotExist(id)
+  checkNotATuple(T)
+  world.checkEntityExists(id)
 
   let entity = world.entities[id.id]
   let compId = world.componentIdFrom typeof compDesc
@@ -247,6 +256,8 @@ proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
     let marcus = w.addEntity (Character(name: "Marcus"),)
     let character = w.readComponent(marcus, Character)
     assert character.name == "Marcus"
+
+  checkNotATuple(T)
 
   if not world.hasComponent(id, compDesc):
     raise componentDoesNotExist(id, compDesc)
@@ -274,8 +285,8 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): 
 
     assert w.readComponent(marcus, Character).name == "Mark"
 
-  if not world.entities.has(id.id):
-    raise entityDoesNotExist(id)
+  checkNotATuple(T)
+  world.checkEntityExists(id)
 
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
@@ -299,6 +310,8 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
     assert weapon.name == "Sword"
     assert spellbook.spells == @["Fireball", "Ice Storm", "Lightning"]
 
+  world.checkEntityExists(id)
+
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
@@ -307,7 +320,7 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
 
   tup.fieldTypes:
     if not world.hasComponent(id, typeof FieldType):
-      raise componentDoesNotExist(id, typeof FieldType)
+      raise componentsDoNotExist(id, typeof FieldType)
 
   world.buildReadTuple(tup, archetype, archetypeEntityId)
 
@@ -339,8 +352,7 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
       armor.isNothing:
         raiseAssert "Marcus should have a spellbook."
 
-  if not world.entities.has(id.id):
-    raise entityDoesNotExist(id)
+  world.checkEntityExists(id)
 
   let entity = world.entities[id.id]
   let archetype = world.archetypes[entity.archetypeId]
@@ -367,8 +379,8 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
 
     assert w.hasComponent(marcus, Health) == true
 
-  if not world.entities.has(id.id):
-    raise entityDoesNotExist(id)
+  checkNotATuple(T)
+  world.checkEntityExists(id)
 
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
@@ -402,8 +414,8 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
     w.removeComponent(marcus, Weapon)
     assert w.hasComponent(marcus, Weapon) == false
 
-  if not world.entities.has(id.id):
-    raise entityDoesNotExist(id)
+  checkNotATuple(T)
+  world.checkEntityExists(id)
 
   var entity = world.entities[id.id]
   let componentId = world.componentIdFrom typeof T
@@ -451,8 +463,7 @@ proc removeEntity*(world: var World, id: Id) =
     for character in w.query(query):
       raiseAssert "No character should exist."
 
-  if not world.entities.has(id.id):
-    raise entityDoesNotExist(id)
+  world.checkEntityExists(id)
 
   let entity = world.entities[id.id]
   var archetype = world.archetypes[entity.archetypeId]

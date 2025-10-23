@@ -103,14 +103,15 @@ for (character,) in world.query(disarmedCharacters):
 - [x] 'Write' Queries
 - [x] Stable ids for components
 - [x] Polish console output
-- [ ] Convenience
+- [x] Convenience procs and checks
   - [x] Allow read access to components without an iterator
-  - [ ] `component` and `components` should accept a list of Ids (map?)
-  - [ ] `component` fails to compile silently when used with a Tuple
-  - [ ] `components` sys-fatals when searching for a non existing Id
-- [ ] Add and Remove multiple components
+  - [x] `component` fails to compile silently when used with a Tuple
+  - [x] `components` sys-fatals when searching for a non existing Id
 - [ ] Text serialization
 - [ ] Binary serialization
+- [ ] Convenience procs
+  - [ ] `component` and `components` accept a list of entity ids
+  - [ ] Add and Remove multiple components
 - [ ] Concurrency support
 - [ ] Zero-allocation?
 - [ ] Spatial and custom queries
