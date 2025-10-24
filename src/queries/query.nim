@@ -9,3 +9,9 @@ import ../archetype
 type Query*[T: tuple] = object
   matchedArchetypes*: seq[ArchetypeId]
   lastArchetypeCount*: int
+  lastVersion*: int
+
+proc reset*[T: tuple](query: var Query[T], version: int) =
+  query.matchedArchetypes = @[]
+  query.lastArchetypeCount = 0
+  query.lastVersion = version

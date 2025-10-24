@@ -39,6 +39,9 @@ proc del*(self: EcsSeqAny, index: int) =
   self.deleted[index] = true
   self.free.add index
 
+proc len*(self: EcsSeqAny): int =
+  self.deleted.len - self.free.len
+
 proc has*(self: EcsSeqAny, index: int): bool =
   index >= 0 and
   index < self.deleted.len and
@@ -48,10 +51,17 @@ proc `[]`*[T](self: EcsSeq[T], index: int): var T =
   self.data[index]
 
 proc `[]=`*[T](self: var EcsSeq[T], index: int, value: T) =
-  self.data[index] = value
+  if index >= self.data.len:
+    let oldLen = self.data.len
+    self.data.setLen(index + 1)
+    self.deleted.setLen(index + 1)
 
-proc len*[T](self: EcsSeq[T]): int =
-  self.data.len - self.free.len
+    for i in oldLen ..< self.data.len - 1:
+      self.deleted[i] = true
+      self.free.add i
+
+  self.data[index] = value
+  self.deleted[index] = false
 
 proc `$`*[T](self: EcsSeq[T]): string =
   result &= "@["

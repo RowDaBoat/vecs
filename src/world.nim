@@ -17,7 +17,7 @@ import queries/opWrite
 import queries/opOpt
 
 type Id* = object
-  id: int = -1
+  id*: int = -1
 
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
@@ -26,6 +26,7 @@ type World* = object
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
   showers: Table[ComponentId, Shower]
+  version: int = 0
 
 proc hash*(id: ArchetypeId): Hash =
   for compId in id.items:
@@ -37,6 +38,9 @@ macro typeHash*[T](typ: typedesc[T]): int =
   typ.getTypeInst.repr.hash.newIntLitNode
 
 # Errors
+proc idIsInvalid(id: Id): ref Exception =
+  newException(Exception, "Id is invalid: " & $id)
+
 proc entityDoesNotExist(id: Id): ref Exception =
   newException(Exception, "Entity with id " & $id & " does not exist.")
 
@@ -46,7 +50,14 @@ proc componentDoesNotExist[T](id: Id, comp: typedesc[T]): ref Exception =
 proc componentsDoNotExist[T: tuple](id: Id, tup: typedesc[T]): ref Exception =
   newException(Exception, "One or more components of " & $tup & " do not exist in the entity with id " & $id)
 
+proc entityAlreadyExists(id: Id): ref Exception =
+  newException(Exception, "Entity with id " & $id & " already exists.")
+
 # Checks
+proc checkIdIsValid(id: Id) =
+  if id.id < 0:
+    raise idIsInvalid(id)
+
 template checkNotATuple[T](tup: typedesc[T]) =
   when T is tuple:
     {.error: "Component type expected, got a tuple: " & $T.}
@@ -54,6 +65,10 @@ template checkNotATuple[T](tup: typedesc[T]) =
 proc checkEntityExists(world: var World, id: Id) =
   if not world.entities.has(id.id):
     raise entityDoesNotExist(id)
+
+proc checkEntityDoesNotExist(world: var World, id: Id) =
+  if world.entities.has(id.id):
+    raise entityAlreadyExists(id)
 
 # Archetype creation and book-keeping
 proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
@@ -135,6 +150,9 @@ proc excludedArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): Ar
 proc updateQuery[T: tuple](world: var World, query: var Query[T]) =
   if world.archetypes.len == query.lastArchetypeCount:
     return
+
+  if world.version > query.lastVersion:
+    query.reset(world.version)
 
   let requiredArchetypeIds = world.requiredArchetypeIdsFrom T
   let excludedArchetypeIds = world.excludedArchetypeIdsFrom T
@@ -320,7 +338,7 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
 
   tup.fieldTypes:
     if not world.hasComponent(id, typeof FieldType):
-      raise componentsDoNotExist(id, typeof FieldType)
+      raise componentsDoNotExist(id, tup)
 
   world.buildReadTuple(tup, archetype, archetypeEntityId)
 
@@ -444,11 +462,30 @@ proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
 
   var archetype = world.archetypeFrom T
   let archetypeEntityId = archetype.add components
-  let id = world.entities.add Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  let id = world.entities.add entity
   result = Id(id: id)
 
   for idComponent in world.component(result, Write[Id]):
     idComponent.id = id
+
+proc addEntityWithSpecificId*(world: var World, id: Id) =
+  ## Add an entity with a given id. The entity will have a single Id component.
+  ## This is useful mostly for deserialization.
+  ## **Note:** Any id above 0 is valid, however a greater id will allocate more memory.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    w.addEntityWithSpecificId(Id(id: 10))
+
+  checkIdIsValid(id)
+  world.checkEntityDoesNotExist(id)
+
+  var archetype = world.archetypeFrom (Id,)
+  let archetypeEntityId = archetype.add (id,)
+  let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  world.entities[id.id] = entity
 
 proc removeEntity*(world: var World, id: Id) =
   ## Remove an entity.
@@ -471,9 +508,65 @@ proc removeEntity*(world: var World, id: Id) =
   world.entities.del id.id
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
+  ## Query entities by components. Components are matched based on the query's type parameter.
+  ## 
+  ## **Accessors:**
+  ## - **Read access**: match entities that have the component for read only access. Just use the component's type.
+  ## - **Write access**: match entities that have the comoponent for write access. Use `Write[Component]`.
+  ## - **Optional access**: match entities that may or may not have the component. Use `Opt[Component]`, availability can be checked with `isSomething` or `isNothing`.
+  ## - **Not access**: match entities that do not have the component. Use `Not[Component]`.
+  ##
+  ## The iterated tuple's type is the same as the query's type parameter, except for:
+  ## - the `Not` accessors are excluded.
+  ## - the `Write` accessors are replaced with the component's type.
+  ##
+  ## Queries build a cache that is updated each time the query is used.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    w.addEntity (Character(name: "Marcus"), Health(health: 100, maxHealth: 100), Weapon(name: "Sword"))
+    w.addEntity (Character(name: "Elena"), Health(health: 80, maxHealth: 80), Amulet(name: "Arcane Stone"))
+    w.addEntity (Character(name: "Brom"), Health(health: 140, maxHealth: 140), Armor(name: "Fur Armor"))
+
+    # Query for characters, health with write access, an optional weapon, and no armor.
+    var query: Query[(Character, Write[Health], Opt[Weapon], Not[Armor])]
+
+    for (character, health, weapon) in w.query(query):
+      health.health += 10
+      assert character.name != "Brom"
+
+      weapon.isSomething:
+        assert character.name == "Marcus"
+        echo character.name, " has a weapon: ", value.name
+
+      weapon.isNothing:
+        assert character.name == "Elena"
+        echo character.name, " has no weapon."
+
+
   world.updateQuery(query)
 
   for archetypeId in query.matchedArchetypes:
     let archetype = world.archetypes[archetypeId]
     for archetypeEntityId in archetype.entities:
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
+
+proc cleanupEmptyArchetypes*(world: var World) =
+  ## Cleans up empty archetypes.
+  ## This is useful mostly for deserialization routines.
+  ## Removing archetypes forces caches from queries to be rebuilt.
+  var upVersion = false
+  var newArchetypeIds: seq[ArchetypeId] = @[]
+
+  for archetypeId in world.archetypeIds:
+    let archetype = world.archetypes[archetypeId]
+    if archetype.isEmpty:
+      world.archetypes.del archetypeId
+      upVersion = true
+    else:
+      newArchetypeIds.add archetypeId
+  
+  if upVersion:
+    inc world.version
+    world.archetypeIds = newArchetypeIds

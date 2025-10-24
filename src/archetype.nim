@@ -148,3 +148,7 @@ proc contains*(archetype: Archetype, candidateId: ArchetypeId): bool =
 
 proc disjointed*(archetype: Archetype, candidateId: ArchetypeId): bool =
   archetype.id.disjoint candidateId
+
+proc isEmpty*(archetype: Archetype): bool =
+  for componentList in archetype.componentLists.values:
+    return componentList.len == 0
