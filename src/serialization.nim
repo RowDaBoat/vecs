@@ -56,9 +56,9 @@ proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
     import examples
 
     var w = World()
-    w.addEntity (Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
-    w.addEntity (Character(name: "Elena"), Health(health: 80, maxHealth: 80))
-    w.addEntity (Character(name: "Brom"), Health(health: 140, maxHealth: 140))
+    w.addEntity (Id(), Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
+    w.addEntity (Id(), Character(name: "Elena"), Health(health: 80, maxHealth: 80))
+    w.addEntity (Id(), Character(name: "Brom"), Health(health: 140, maxHealth: 140))
     echo w.serializeToText (Character, Health)
 
   let entities = createEntityTable(world, tup)
