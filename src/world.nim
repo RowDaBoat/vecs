@@ -25,7 +25,6 @@ type World* = object
   archetypes: Table[ArchetypeId, Archetype]
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
-  showers: Table[ComponentId, Shower]
   version: int = 0
 
 proc hash*(id: ArchetypeId): Hash =
@@ -79,9 +78,8 @@ proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, com
   if not world.archetypes.hasKey(nextArchetypeId):
     let builder = world.builders[componentIdToAdd]
     let mover = world.movers[componentIdToAdd]
-    let shower = world.showers[componentIdToAdd]
 
-    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(@[componentIdToAdd], @[builder], @[mover], @[shower])
+    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(@[componentIdToAdd], @[builder], @[mover])
     world.archetypeIds.add nextArchetypeId
 
   world.archetypes[nextArchetypeId]
@@ -109,16 +107,14 @@ proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arch
     var componentIds: seq[ComponentId] = @[]
     var builders: seq[Builder] = @[]
     var movers: seq[Mover] = @[]
-    var showers: seq[Shower] = @[]
 
     for name, typ in fieldPairs default T:
       let compId = world.componentIdFrom typeof typ
       componentIds.add compId
       builders.add world.builders[compId]
       movers.add world.movers[compId]
-      showers.add world.showers[compId]
 
-    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers, showers)
+    world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers)
     world.archetypeIds.add archetypeId
 
   world.archetypes[archetypeId]
@@ -244,7 +240,6 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   if not world.builders.hasKey(id.ComponentId):
     world.builders[id.ComponentId] = ecsSeqBuilder[T]()
     world.movers[id.ComponentId] = ecsSeqMover[T]()
-    world.showers[id.ComponentId] = ecsSeqShower[T]()
 
   id.ComponentId
 

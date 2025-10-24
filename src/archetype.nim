@@ -24,7 +24,6 @@ type Archetype* = ref object
   componentLists*: Table[ComponentId, EcsSeqAny]
   builders: seq[Builder]
   movers: seq[Mover]
-  showers: seq[Shower]
 
 macro fieldTypes*(tup: typed, body: untyped): untyped =
   result = newStmtList()
@@ -42,7 +41,7 @@ macro fieldTypes*(tup: typed, body: untyped): untyped =
     result.add nnkIfStmt.newTree(nnkElifBranch.newTree(newLit(true), body))
   result = nnkBlockStmt.newTree(newEmptyNode(), result)
 
-proc makeArchetype*(compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover], showers: seq[Shower]): Archetype =
+proc makeArchetype*(compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover]): Archetype =
   let archetypeId = archetypeIdFrom compIds
   var componentIds: seq[ComponentId] = @[]
   var componentLists = initTable[ComponentId, EcsSeqAny]()
@@ -57,22 +56,19 @@ proc makeArchetype*(compIds: seq[ComponentId], builders: seq[Builder], movers: s
     componentIds: componentIds,
     componentLists: componentLists,
     builders: builders,
-    movers: movers,
-    showers: showers
+    movers: movers
   )
 
-proc makeNextAdding*(archetype: Archetype, compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover], showers: seq[Shower]): Archetype =
+proc makeNextAdding*(archetype: Archetype, compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover]): Archetype =
   let newCompIds = archetype.componentIds & compIds
   let newBuilders = archetype.builders & builders
   let newMovers = archetype.movers & movers
-  let newShowers = archetype.showers & showers
-  makeArchetype(newCompIds, newBuilders, newMovers, newShowers)
+  makeArchetype(newCompIds, newBuilders, newMovers)
 
 proc makeNextRemoving*(archetype: Archetype, compIds: seq[ComponentId]): Archetype =
   var newCompIds: seq[ComponentId] = @[]
   var newBuilders: seq[Builder] = @[]
   var newMovers: seq[Mover] = @[]
-  var newShowers: seq[Shower] = @[]
   let toRemove = compIds.toHashSet
 
   for index in 0..<archetype.componentIds.len:
@@ -81,9 +77,8 @@ proc makeNextRemoving*(archetype: Archetype, compIds: seq[ComponentId]): Archety
       newCompIds.add compId
       newBuilders.add archetype.builders[index]
       newMovers.add archetype.movers[index]
-      newShowers.add archetype.showers[index]
 
-  makeArchetype(newCompIds, newBuilders, newMovers, newShowers)
+  makeArchetype(newCompIds, newBuilders, newMovers)
 
 iterator entities*(archetype: Archetype): int =
   let firstCompId = archetype.componentIds[0]

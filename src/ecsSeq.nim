@@ -17,8 +17,6 @@ type Adder* = proc(ecsSeq: var EcsSeqAny): int
 
 type Mover* = proc(fromEcsSeq: var EcsSeqAny, index: int, toEcsSeq: var EcsSeqAny): int
 
-type Shower* = proc(ecsSeq: EcsSeqAny): string
-
 iterator ids*(self: EcsSeqAny): int =
   for index in 0..<self.deleted.len:
     if not self.deleted[index]:
@@ -84,7 +82,3 @@ proc ecsSeqMover*[T](): Mover =
     let element = typedFromEcsSeq[index]
     fromEcsSeq.del index
     result = typedToEcsSeq.add element
-
-proc ecsSeqShower*[T](): Shower =
-  proc(ecsSeq: EcsSeqAny): string =
-     $cast[EcsSeq[T]](ecsSeq)
