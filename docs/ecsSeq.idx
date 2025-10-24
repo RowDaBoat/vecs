@@ -4,15 +4,13 @@ nim	EcsSeq	ecsSeq.html#EcsSeq	type EcsSeq		11
 nim	Builder	ecsSeq.html#Builder	type Builder		14
 nim	Adder	ecsSeq.html#Adder	type Adder		16
 nim	Mover	ecsSeq.html#Mover	type Mover		18
-nim	Shower	ecsSeq.html#Shower	type Shower		20
-nim	ids	ecsSeq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		22
-nim	add	ecsSeq.html#add,EcsSeq[T],T	proc add[T](self: EcsSeq[T]; item: T): int		27
-nim	del	ecsSeq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		38
-nim	has	ecsSeq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		42
-nim	`[]`	ecsSeq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		45
-nim	`[]=`	ecsSeq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		48
-nim	len	ecsSeq.html#len,EcsSeq[T]	proc len[T](self: EcsSeq[T]): int		51
-nim	`$`	ecsSeq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		54
-nim	ecsSeqBuilder	ecsSeq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): proc (): EcsSeqAny		65
-nim	ecsSeqMover	ecsSeq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		68
-nim	ecsSeqShower	ecsSeq.html#ecsSeqShower	proc ecsSeqShower[T](): Shower		76
+nim	ids	ecsSeq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		20
+nim	add	ecsSeq.html#add,EcsSeq[T],T	proc add[T](self: EcsSeq[T]; item: T): int		25
+nim	del	ecsSeq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		36
+nim	len	ecsSeq.html#len,EcsSeqAny	proc len(self: EcsSeqAny): int		40
+nim	has	ecsSeq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		43
+nim	`[]`	ecsSeq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		48
+nim	`[]=`	ecsSeq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		51
+nim	`$`	ecsSeq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		64
+nim	ecsSeqBuilder	ecsSeq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): proc (): EcsSeqAny		75
+nim	ecsSeqMover	ecsSeq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		78

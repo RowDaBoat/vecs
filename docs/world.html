@@ -58,7 +58,8 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#Id" title="Id = object">Id</a></li>
+      <li><a class="reference" href="#Id" title="Id = object
+  id*: int = -1">Id</a></li>
 <li><a class="reference" href="#World" title="World = object">World</a></li>
 
     </ul>
@@ -78,6 +79,14 @@
 </ul>
 <ul class="simple nested-toc-section">addEntity
   <li><a class="reference" href="#addEntity%2CWorld%2CT" title="addEntity[T: tuple](world: var World; components: T): Id">addEntity[T: tuple](world: var World; components: T): Id</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">addEntityWithSpecificId
+  <li><a class="reference" href="#addEntityWithSpecificId%2CWorld%2CId" title="addEntityWithSpecificId(world: var World; id: Id)">addEntityWithSpecificId(world: var World; id: Id)</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">cleanupEmptyArchetypes
+  <li><a class="reference" href="#cleanupEmptyArchetypes%2CWorld" title="cleanupEmptyArchetypes(world: var World)">cleanupEmptyArchetypes(world: var World)</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">componentIdFrom
@@ -169,7 +178,8 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="Id">
-  <dt><pre><a href="world.html#Id"><span class="Identifier">Id</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
+  <dt><pre><a href="world.html#Id"><span class="Identifier">Id</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">id</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">-1</span></pre></dt>
   <dd>
     
     
@@ -222,8 +232,8 @@
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L358" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L358" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L383" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L383" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -243,8 +253,41 @@
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Id</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">marcus</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L421" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L421" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L446" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L446" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="addEntityWithSpecificId-procs-all">
+  <div id="addEntityWithSpecificId,World,Id">
+  <dt><pre><span class="Keyword">proc</span> <a href="#addEntityWithSpecificId%2CWorld%2CId"><span class="Identifier">addEntityWithSpecificId</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="world.html#Id"><span class="Identifier">Id</span></a><span class="Other">)</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Add an entity with a given id. The entity will have a single Id component. This is useful mostly for deserialization. <strong>Note:</strong> Any id above 0 is valid, however a greater id will allocate more memory.
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+
+<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntityWithSpecificId</span><span class="Punctuation">(</span><span class="Identifier">Id</span><span class="Punctuation">(</span><span class="Identifier">id</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L467" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L467" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="cleanupEmptyArchetypes-procs-all">
+  <div id="cleanupEmptyArchetypes,World">
+  <dt><pre><span class="Keyword">proc</span> <a href="#cleanupEmptyArchetypes%2CWorld"><span class="Identifier">cleanupEmptyArchetypes</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Cleans up empty archetypes. This is useful mostly for deserialization routines. Removing archetypes forces caches from queries to be rebuilt.
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L550" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L550" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -256,8 +299,8 @@
   <dd>
     
      Get the ComponentId for a given component type. This is mostly useful to identify the components of an archetype.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L212" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L212" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L235" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L235" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -276,8 +319,8 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L224" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L224" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L246" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L246" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -309,8 +352,8 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L241" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L241" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L263" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L263" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -330,8 +373,8 @@
 <span class="Keyword">let</span> <span class="Punctuation">(</span><span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponents</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Weapon</span><span class="Punctuation">,</span> <span class="Identifier">Spellbook</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Sword&quot;</span>
 <span class="Identifier">assert</span> <span class="Identifier">spellbook</span><span class="Operator">.</span><span class="Identifier">spells</span> <span class="Operator">==</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="StringLit">&quot;Fireball&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Ice Storm&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Lightning&quot;</span><span class="Punctuation">]</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L290" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L290" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L314" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L314" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -350,8 +393,8 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">removeComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L395" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L395" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L420" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L420" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -374,8 +417,8 @@
 <span class="Keyword">var</span> <span class="Identifier">query</span><span class="Punctuation">:</span> <span class="Identifier">Query</span><span class="Punctuation">[</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">]</span>
 <span class="Keyword">for</span> <span class="Identifier">character</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">query</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
   <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;No character should exist.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L441" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L441" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L485" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L485" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -396,8 +439,8 @@
     <p>Iterate through all the world's archetypes.</p>
 <p>This is mostly useful just to implement custom queries. To use Archetypes, the archetype module must be imported.</p>
 
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L204" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L204" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L227" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L227" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -419,8 +462,8 @@
   <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">=</span> <span class="StringLit">&quot;Mark&quot;</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Mark&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L263" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L263" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L287" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L287" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -456,8 +499,8 @@
     <span class="Identifier">echo</span> <span class="StringLit">&quot;Marcus's spellbook contains: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">spells</span>
   <span class="Identifier">armor</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
     <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;Marcus should have a spellbook.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L314" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L314" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L340" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L340" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -468,9 +511,43 @@
   <dt><pre><span class="Keyword">iterator</span> <a href="#query.i%2CWorld%2CQuery%5BT%3A%20tuple%5D"><span class="Identifier">query</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">query</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="queries/query.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">.</span><span class="Identifier">accessTuple</span></pre></dt>
   <dd>
     
-    
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L462" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L462" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <p>Query entities by components. Components are matched based on the query's type parameter.</p>
+<p><strong>Accessors:</strong></p>
+<ul class="simple"><li><strong>Read access</strong>: match entities that have the component for read only access. Just use the component's type.</li>
+<li><strong>Write access</strong>: match entities that have the comoponent for write access. Use <tt class="docutils literal"><span class="pre"><span class="Identifier">Write</span><span class="Punctuation">[</span><span class="Identifier">Component</span><span class="Punctuation">]</span></span></tt>.</li>
+<li><strong>Optional access</strong>: match entities that may or may not have the component. Use <tt class="docutils literal"><span class="pre"><span class="Identifier">Opt</span><span class="Punctuation">[</span><span class="Identifier">Component</span><span class="Punctuation">]</span></span></tt>, availability can be checked with <tt class="docutils literal"><span class="pre"><span class="Identifier">isSomething</span></span></tt> or <tt class="docutils literal"><span class="pre"><span class="Identifier">isNothing</span></span></tt>.</li>
+<li><strong>Not access</strong>: match entities that do not have the component. Use <tt class="docutils literal"><span class="pre"><span class="Keyword">Not</span><span class="Punctuation">[</span><span class="Identifier">Component</span><span class="Punctuation">]</span></span></tt>.</li>
+</ul>
+<p>The iterated tuple's type is the same as the query's type parameter, except for:</p>
+<ul class="simple"><li>the <tt class="docutils literal"><span class="pre"><span class="Keyword">Not</span></span></tt> accessors are excluded.</li>
+<li>the <tt class="docutils literal"><span class="pre"><span class="Identifier">Write</span></span></tt> accessors are replaced with the component's type.</li>
+</ul>
+<p>Queries build a cache that is updated each time the query is used.</p>
+
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+
+<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Elena&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Amulet</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Arcane Stone&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Brom&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Armor</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Fur Armor&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+
+<span class="Comment"># Query for characters, health with write access, an optional weapon, and no armor.</span>
+<span class="Keyword">var</span> <span class="Identifier">query</span><span class="Punctuation">:</span> <span class="Identifier">Query</span><span class="Punctuation">[</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span> <span class="Identifier">Write</span><span class="Punctuation">[</span><span class="Identifier">Health</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Identifier">Opt</span><span class="Punctuation">[</span><span class="Identifier">Weapon</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Keyword">Not</span><span class="Punctuation">[</span><span class="Identifier">Armor</span><span class="Punctuation">]</span><span class="Punctuation">)</span><span class="Punctuation">]</span>
+
+<span class="Keyword">for</span> <span class="Punctuation">(</span><span class="Identifier">character</span><span class="Punctuation">,</span> <span class="Identifier">health</span><span class="Punctuation">,</span> <span class="Identifier">weapon</span><span class="Punctuation">)</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">query</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+  <span class="Identifier">health</span><span class="Operator">.</span><span class="Identifier">health</span> <span class="Operator">+=</span> <span class="DecNumber">10</span>
+  <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">!=</span> <span class="StringLit">&quot;Brom&quot;</span>
+
+  <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">isSomething</span><span class="Punctuation">:</span>
+    <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span>
+    <span class="Identifier">echo</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span><span class="Punctuation">,</span> <span class="StringLit">&quot; has a weapon: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">name</span>
+
+  <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
+    <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Elena&quot;</span>
+    <span class="Identifier">echo</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span><span class="Punctuation">,</span> <span class="StringLit">&quot; has no weapon.&quot;</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/world.nim#L505" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L505" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -505,7 +582,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-22 04:06:41 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-24 13:41:22 UTC</small>
       </div>
     </div>
   </div>

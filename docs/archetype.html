@@ -89,16 +89,20 @@
   <li><a class="reference" href="#disjointed%2CArchetype%2CArchetypeId" title="disjointed(archetype: Archetype; candidateId: ArchetypeId): bool">disjointed(archetype: Archetype; candidateId: ArchetypeId): bool</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">isEmpty
+  <li><a class="reference" href="#isEmpty%2CArchetype" title="isEmpty(archetype: Archetype): bool">isEmpty(archetype: Archetype): bool</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">makeArchetype
-  <li><a class="reference" href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D%2Cseq%5BShower%5D" title="makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
-              movers: seq[Mover]; showers: seq[Shower]): Archetype">makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
-              movers: seq[Mover]; showers: seq[Shower]): Archetype</a></li>
+  <li><a class="reference" href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D" title="makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
+              movers: seq[Mover]): Archetype">makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
+              movers: seq[Mover]): Archetype</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">makeNextAdding
-  <li><a class="reference" href="#makeNextAdding%2CArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D%2Cseq%5BShower%5D" title="makeNextAdding(archetype: Archetype; compIds: seq[ComponentId];
-               builders: seq[Builder]; movers: seq[Mover]; showers: seq[Shower]): Archetype">makeNextAdding(archetype: Archetype; compIds: seq[ComponentId];
-               builders: seq[Builder]; movers: seq[Mover]; showers: seq[Shower]): Archetype</a></li>
+  <li><a class="reference" href="#makeNextAdding%2CArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D" title="makeNextAdding(archetype: Archetype; compIds: seq[ComponentId];
+               builders: seq[Builder]; movers: seq[Mover]): Archetype">makeNextAdding(archetype: Archetype; compIds: seq[ComponentId];
+               builders: seq[Builder]; movers: seq[Mover]): Archetype</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">makeNextRemoving
@@ -209,8 +213,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L112" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L112" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L107" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L107" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -219,8 +223,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L99" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L99" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L94" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L94" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -247,8 +251,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L146" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L146" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L141" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L141" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -258,8 +262,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L143" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L143" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L138" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L138" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -272,39 +276,51 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L149" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L149" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L144" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L144" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="isEmpty-procs-all">
+  <div id="isEmpty,Archetype">
+  <dt><pre><span class="Keyword">proc</span> <a href="#isEmpty%2CArchetype"><span class="Identifier">isEmpty</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L147" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L147" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
 <div id="makeArchetype-procs-all">
-  <div id="makeArchetype,seq[ComponentId],seq[Builder],seq[Mover],seq[Shower]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D%2Cseq%5BShower%5D"><span class="Identifier">makeArchetype</span></a><span class="Other">(</span><span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="component.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span>
-                   <span class="Identifier">movers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Mover"><span class="Identifier">Mover</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">showers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Shower"><span class="Identifier">Shower</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <div id="makeArchetype,seq[ComponentId],seq[Builder],seq[Mover]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D"><span class="Identifier">makeArchetype</span></a><span class="Other">(</span><span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="component.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span>
+                   <span class="Identifier">movers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Mover"><span class="Identifier">Mover</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L45" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L45" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L44" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L44" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
 <div id="makeNextAdding-procs-all">
-  <div id="makeNextAdding,Archetype,seq[ComponentId],seq[Builder],seq[Mover],seq[Shower]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#makeNextAdding%2CArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D%2Cseq%5BShower%5D"><span class="Identifier">makeNextAdding</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="component.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span>
-                    <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">movers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Mover"><span class="Identifier">Mover</span></a><span class="Other">]</span><span class="Other">;</span>
-                    <span class="Identifier">showers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Shower"><span class="Identifier">Shower</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <div id="makeNextAdding,Archetype,seq[ComponentId],seq[Builder],seq[Mover]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#makeNextAdding%2CArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D"><span class="Identifier">makeNextAdding</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="component.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span>
+                    <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">movers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsSeq.html#Mover"><span class="Identifier">Mover</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L64" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L64" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L62" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L62" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -317,8 +333,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L71" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L71" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L68" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L68" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -332,8 +348,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L120" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L120" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L115" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L115" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -347,8 +363,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L131" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L131" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L126" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L126" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -361,8 +377,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L116" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L116" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L111" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L111" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -380,8 +396,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L94" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L94" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L89" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L89" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -394,8 +410,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L88" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L88" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L83" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L83" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -413,8 +429,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L29" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L29" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/archetype.nim#L28" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L28" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -430,7 +446,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-22 04:06:40 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-24 13:41:21 UTC</small>
       </div>
     </div>
   </div>
