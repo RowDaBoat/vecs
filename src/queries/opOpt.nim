@@ -4,7 +4,8 @@
 #
 
 ## `vecs` is a free open source ECS library for Nim.
-import std/options; export options
+import std/options
+export options
 
 type Opt*[T] = Option[T]
 

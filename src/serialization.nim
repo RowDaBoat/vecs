@@ -1,6 +1,4 @@
-import json
-import world
-import tables
+import json, world, tables, components
 import queries/query
 
 proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id, seq[JsonNode]] =
@@ -21,7 +19,7 @@ proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
 
   for (id, components) in entities.pairs:
     var entity = newJObject()
-    entity["id"] = newJInt(id.id)
+    entity["id"] = newJInt(id.value)
     entity["components"] = newJArray()
 
     for component in components:
@@ -32,7 +30,7 @@ proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
 iterator iteratetJsonComponents(json: JsonNode, world: var World): (Id, JsonNode, string) =
   for entity in json["entities"]:
     let intId = entity["id"].getInt
-    let id = Id(id: intId)
+    let id = Id(value: intId)
     let components = entity["components"]
     world.addEntityWithSpecificId id
 

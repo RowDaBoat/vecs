@@ -1,4 +1,4 @@
 nimTitle	serialization	serialization.html	module src/serialization		0
-nim	createEntityTable	serialization.html#createEntityTable,World,typedesc[T]	proc createEntityTable[T: tuple](world: var World; tup: typedesc[T]): Table[Id,\n    seq[JsonNode]]		6
-nim	serializeToText	serialization.html#serializeToText,World,typedesc[T]	proc serializeToText[T: tuple](world: var World; tup: typedesc[T]): string		51
-nim	deserializeFromText	serialization.html#deserializeFromText,string,typedesc[T]	proc deserializeFromText[T: tuple](text: string; tup: typedesc[T]): World		68
+nim	createEntityTable	serialization.html#createEntityTable,World,typedesc[T]	proc createEntityTable[T: tuple](world: var World; tup: typedesc[T]): Table[Id,\n    seq[JsonNode]]		4
+nim	serializeToText	serialization.html#serializeToText,World,typedesc[T]	proc serializeToText[T: tuple](world: var World; tup: typedesc[T]): string		49
+nim	deserializeFromText	serialization.html#deserializeFromText,string,typedesc[T]	proc deserializeFromText[T: tuple](text: string; tup: typedesc[T]): World		66

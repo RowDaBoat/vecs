@@ -5,9 +5,12 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import std/[macros, genasts, hashes, intsets, sets]
-import tables
-import ecsSeq
-import component
+import tables, ecsSeq
+
+type ComponentId* = distinct int
+
+proc `$`*(id: ComponentId): string =
+  $id.int
 
 type ArchetypeId* = PackedSet[ComponentId]
 

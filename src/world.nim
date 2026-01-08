@@ -5,19 +5,9 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets]
-import typetraits
-import tables
-import archetype
-import entity
-import component
-import ecsSeq
-import queries/query
-import queries/opNot
-import queries/opWrite
-import queries/opOpt
+import typetraits, tables, archetype, entity, components, ecsSeq
+import queries/[query, opNot, opWrite, opOpt]
 
-type Id* = object
-  id*: int = -1
 
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
@@ -25,11 +15,14 @@ type World* = object
   archetypes: Table[ArchetypeId, Archetype]
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
+  toRemove: seq[(Id, ComponentId)] = @[]
   version: int = 0
+
 
 proc hash*(id: ArchetypeId): Hash =
   for compId in id.items:
     result = result xor (compId.int mod 32)
+
 
 proc `==`*(a, b: ComponentId): bool {.borrow.}
 
@@ -40,34 +33,43 @@ macro typeHash*[T](typ: typedesc[T]): int =
 proc idIsInvalid(id: Id): ref Exception =
   newException(Exception, "Id is invalid: " & $id)
 
+
 proc entityDoesNotExist(id: Id): ref Exception =
   newException(Exception, "Entity with id " & $id & " does not exist.")
+
 
 proc componentDoesNotExist[T](id: Id, comp: typedesc[T]): ref Exception =
   newException(Exception, "Component " & $comp & " does not exist in the entity with id " & $id)
 
+
 proc componentsDoNotExist[T: tuple](id: Id, tup: typedesc[T]): ref Exception =
   newException(Exception, "One or more components of " & $tup & " do not exist in the entity with id " & $id)
+
 
 proc entityAlreadyExists(id: Id): ref Exception =
   newException(Exception, "Entity with id " & $id & " already exists.")
 
+
 # Checks
 proc checkIdIsValid(id: Id) =
-  if id.id < 0:
+  if id.value < 0:
     raise idIsInvalid(id)
+
 
 template checkNotATuple[T](tup: typedesc[T]) =
   when T is tuple:
     {.error: "Component type expected, got a tuple: " & $T.}
 
+
 proc checkEntityExists(world: var World, id: Id) =
-  if not world.entities.has(id.id):
+  if not world.entities.has(id.value):
     raise entityDoesNotExist(id)
 
+
 proc checkEntityDoesNotExist(world: var World, id: Id) =
-  if world.entities.has(id.id):
+  if world.entities.has(id.value):
     raise entityAlreadyExists(id)
+
 
 # Archetype creation and book-keeping
 proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
@@ -84,6 +86,7 @@ proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, com
 
   world.archetypes[nextArchetypeId]
 
+
 proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdToRemove: ComponentId): var Archetype =
   let previousArchetypeId = previousArchetype.id
   var nextArchetypeId = previousArchetypeId
@@ -95,10 +98,12 @@ proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, c
 
   world.archetypes[nextArchetypeId]
 
+
 proc archetypeIdFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
     let compId = world.componentIdFrom typeof typ
     result.incl compId
+
 
 proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Archetype =
   let archetypeId = world.archetypeIdFrom T
@@ -119,12 +124,15 @@ proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arch
 
   world.archetypes[archetypeId]
 
+
 # Query creation and book-keeping
 proc requireWrite[T](world: var World, write: Write[T]): ComponentId =
   world.componentIdFrom typeof T
 
+
 proc excludeNot[T](world: var World, notOp: Not[T]): ComponentId =
   world.componentIdFrom typeof T
+
 
 proc requiredArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
@@ -137,11 +145,13 @@ proc requiredArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): Ar
       let compId = world.componentIdFrom typeof typ
       result.incl compId
 
+
 proc excludedArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
     when typ is Not:
       let compId = excludeNot(world, typ)
       result.incl compId
+
 
 proc updateQuery[T: tuple](world: var World, query: var Query[T]) =
   if world.archetypes.len == query.lastArchetypeCount:
@@ -162,8 +172,10 @@ proc updateQuery[T: tuple](world: var World, query: var Query[T]) =
 
   query.lastArchetypeCount = world.archetypes.len
 
+
 proc isOp(typ: NimNode, name: string): bool =
   typ.kind == nnkBracketExpr and $typ[0] == name
+
 
 macro accessTuple(t: typedesc): untyped =
   result = t.getTypeInst[^1].copyNimTree
@@ -177,10 +189,12 @@ macro accessTuple(t: typedesc): untyped =
       result[i] = nnkVarTy.newTree(x[1])
   result = newCall("typeof", result)
 
+
 template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: int): T =
   cast[EcsSeq[T]](
     archetype.componentLists[world.componentIdFrom typeof T]
   )[archetypeEntityId]
+
 
 macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
@@ -192,6 +206,7 @@ macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetyp
     tupleExprs.add(fieldExpr)
 
   result = tupleExprs
+
 
 macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
@@ -224,6 +239,7 @@ macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archet
 
   result = tupleExprs
 
+
 iterator archetypes*(world: var World): Archetype =
   ## Iterate through all the world's archetypes.
   ##
@@ -231,6 +247,7 @@ iterator archetypes*(world: var World): Archetype =
   ## To use Archetypes, the archetype module must be imported.
   for archetypeId in world.archetypeIds:
     yield world.archetypes[archetypeId]
+
 
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   ## Get the ComponentId for a given component type.
@@ -242,6 +259,7 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
     world.movers[id.ComponentId] = ecsSeqMover[T]()
 
   id.ComponentId
+
 
 proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
   ## Check if an entity has a given component.
@@ -256,9 +274,10 @@ proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
   checkNotATuple(T)
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let compId = world.componentIdFrom typeof compDesc
   compId in entity.archetypeId
+
 
 proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
   ## Directly read a single component of an entity.
@@ -275,7 +294,7 @@ proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
   if not world.hasComponent(id, compDesc):
     raise componentDoesNotExist(id, compDesc)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
   let compId = world.componentIdFrom typeof compDesc
@@ -283,6 +302,7 @@ proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
 
   type Retype = EcsSeq[T]
   cast[Retype](ecsSeqAny)[archetypeEntityId]
+
 
 iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): var T =
   ## Write access to a single component of an entity.
@@ -301,7 +321,7 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): 
   checkNotATuple(T)
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
   let compId = world.componentIdFrom typeof T
@@ -310,6 +330,7 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): 
     let ecsSeqAny = archetype.componentLists[compId]
     type Retype = EcsSeq[T]
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
+
 
 proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
   ## Direct read access to multiple components of an entity.
@@ -325,7 +346,7 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
 
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
 
@@ -336,6 +357,7 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
       raise componentsDoNotExist(id, tup)
 
   world.buildReadTuple(tup, archetype, archetypeEntityId)
+
 
 iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.accessTuple =
   ## Read, write, and optional access to components of an entity.
@@ -367,7 +389,7 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
 
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
 
@@ -379,6 +401,7 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
 
   if found:
     yield world.buildAccessTuple(tup, archetype, archetypeEntityId)
+
 
 proc addComponent*[T](world: var World, id: Id, component: T) =
   ## Add a component to an entity
@@ -395,7 +418,7 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   checkNotATuple(T)
   world.checkEntityExists(id)
 
-  var entity = world.entities[id.id]
+  var entity = world.entities[id.value]
   let componentId = world.componentIdFrom typeof T
 
   if entity.archetypeId.contains(componentId):
@@ -415,33 +438,8 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
-  world.entities[id.id] = entity
+  world.entities[id.value] = entity
 
-proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
-  ## Remove a component from an entity
-  runnableExamples:
-    import examples
-
-    var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"))
-    w.removeComponent(marcus, Weapon)
-    assert w.hasComponent(marcus, Weapon) == false
-
-  checkNotATuple(T)
-  world.checkEntityExists(id)
-
-  var entity = world.entities[id.id]
-  let componentId = world.componentIdFrom typeof T
-
-  if not entity.archetypeId.contains(componentId):
-    raise newException(ValueError, "Component " & $T & " not found in Entity " & $id)
-
-  var previousArchetype = world.archetypes[entity.archetypeId]
-  var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentId)
-
-  entity.archetypeId = nextArchetype.id
-  entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
-  world.entities[id.id] = entity
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   ## Add an entity with components, use the special `Id` component to allow getting the entity's id in queries.
@@ -459,10 +457,11 @@ proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
   let archetypeEntityId = archetype.add components
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
   let id = world.entities.add entity
-  result = Id(id: id)
+  result = Id(value: id)
 
   for idComponent in world.component(result, Write[Id]):
-    idComponent.id = id
+    idComponent.value = id
+
 
 proc addEntityWithSpecificId*(world: var World, id: Id) =
   ## Add an entity with a given id. The entity will have a single Id component.
@@ -472,7 +471,7 @@ proc addEntityWithSpecificId*(world: var World, id: Id) =
     import examples
 
     var w = World()
-    w.addEntityWithSpecificId(Id(id: 10))
+    w.addEntityWithSpecificId(Id(value: 10))
 
   checkIdIsValid(id)
   world.checkEntityDoesNotExist(id)
@@ -480,27 +479,63 @@ proc addEntityWithSpecificId*(world: var World, id: Id) =
   var archetype = world.archetypeFrom (Id,)
   let archetypeEntityId = archetype.add (id,)
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  world.entities[id.id] = entity
+  world.entities[id.value] = entity
+
+
+proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
+  ## Prepare a component for removal.
+  ## A RemoveComponent component is added to the entity immediately, for it to be queried if necessary.
+  ## The component is effectively removed when `processComponentRemovals` is called.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    let marcus = w.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"))
+    w.removeComponent(marcus, Weapon)
+    w.processComponentRemovals()
+
+    assert w.hasComponent(marcus, Weapon) == false
+
+  checkNotATuple(T)
+  world.checkEntityExists(id)
+
+  let entity = world.entities[id.value]
+  let componentId = world.componentIdFrom typeof T
+
+  if not entity.archetypeId.contains(componentId):
+    raise newException(ValueError, "Component " & $T & " not found in Entity " & $id)
+
+  world.addComponent(id, RemoveComponent[T]())
+  let witnessId = world.componentIdFrom typeof RemoveComponent[T]
+
+  world.toRemove.add (id, componentId)
+  world.toRemove.add (id, witnessId)
+
 
 proc removeEntity*(world: var World, id: Id) =
-  ## Remove an entity.
+  ## Prepares an entity for removal.
+  ## A RemoveEntity component is added to the entity immediately, for it to be queried if necessary.
+  ## The entitiy is effectively removed when `processEntityRemovals` is called.
   runnableExamples:
     import examples
 
     var w = World()
     let marcus = w.addEntity (Character(name: "Marcus"),)
     w.removeEntity(marcus)
+    w.processEntityRemovals()
 
     var query: Query[(Character,)]
-    for character in w.query(query):
+    for (character,) in w.query(query):
+      echo "Character: ", character.name
       raiseAssert "No character should exist."
 
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
-  var archetype = world.archetypes[entity.archetypeId]
-  archetype.remove entity.archetypeEntityId
-  world.entities.del id.id
+  if world.hasComponent(id, RemoveEntity):
+    return
+
+  world.addComponent(id, RemoveEntity(id: id))
+
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
   ## Query entities by components. Components are matched based on the query's type parameter.
@@ -546,6 +581,33 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     let archetype = world.archetypes[archetypeId]
     for archetypeEntityId in archetype.entities:
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
+
+
+proc processEntityRemovals*(world: var World) =
+  ## Effectively removes entities that have been prepared for removal.
+  var query {.global.}: Query[(RemoveEntity,)]
+
+  for (remove,) in world.query(query):
+    let entity = world.entities[remove.id.value]
+    var archetype = world.archetypes[entity.archetypeId]
+
+    archetype.remove entity.archetypeEntityId
+    world.entities.del remove.id.value
+
+
+proc processComponentRemovals*(world: var World) =
+  ## Effectively removes components that have been prepared for removal.
+  for (id, componentId) in world.toRemove:
+    var entity = world.entities[id.value]
+    var previousArchetype = world.archetypes[entity.archetypeId]
+    var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentId)
+
+    entity.archetypeId = nextArchetype.id
+    entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
+    world.entities[id.value] = entity #TODO: is this really needed?
+
+  world.toRemove = @[]
+
 
 proc cleanupEmptyArchetypes*(world: var World) =
   ## Cleans up empty archetypes.

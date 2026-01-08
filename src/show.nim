@@ -4,12 +4,7 @@
 #
 
 ## `vecs` is a free open source ECS library for Nim.
-import tables
-import vecs
-import component
-import intsets
-import archetype
-import textTable
+import tables, intsets, archetype, textTable, components, world
 
 type Spec*[T: tuple] = object
   discard

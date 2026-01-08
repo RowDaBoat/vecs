@@ -4,7 +4,13 @@
 #
 
 ## `vecs` is a free open source ECS library for Nim.
-type ComponentId* = distinct int
+type Id* = object
+  value*: int = -1
 
-proc `$`*(id: ComponentId): string =
-  $id.int
+
+type RemoveEntity* = object
+  id*: Id
+
+
+type RemoveComponent*[T] = object
+  discard

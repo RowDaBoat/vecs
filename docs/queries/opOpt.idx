@@ -1,4 +1,4 @@
 nimTitle	opOpt	queries/opOpt.html	module src/queries/opOpt		0
-nim	Opt	queries/opOpt.html#Opt	type Opt		9
-nim	isSomething	queries/opOpt.html#isSomething.t,Opt[T],untyped	template isSomething[T](self: Opt[T]; body: untyped)		11
-nim	isNothing	queries/opOpt.html#isNothing.t,Opt[T],untyped	template isNothing[T](self: Opt[T]; body: untyped)		16
+nim	Opt	queries/opOpt.html#Opt	type Opt		10
+nim	isSomething	queries/opOpt.html#isSomething.t,Opt[T],untyped	template isSomething[T](self: Opt[T]; body: untyped)		12
+nim	isNothing	queries/opOpt.html#isNothing.t,Opt[T],untyped	template isNothing[T](self: Opt[T]; body: untyped)		17
