@@ -2,7 +2,6 @@ import json
 import world
 import tables
 import queries
-import components
 
 proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id, seq[JsonNode]] =
   for name, value in fieldPairs default T:

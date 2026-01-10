@@ -5,7 +5,6 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import tables
-import components
 import world
 import intsets
 import archetype
