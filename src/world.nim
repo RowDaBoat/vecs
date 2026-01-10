@@ -5,9 +5,8 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets]
-import typetraits, tables, archetype, entity, components, ecsSeq
-import queries/[query, opNot, opWrite, opOpt]
-
+import typetraits, tables
+import archetype, entity, components, ecsSeq, queries, operations
 
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()

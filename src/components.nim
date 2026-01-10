@@ -8,9 +8,9 @@ type Id* = object
   value*: int = -1
 
 
-type RemoveEntity* = object
+type ToRemoveEntity* = object
   id*: Id
 
 
-type RemoveComponent*[T] = object
+type ToRemove*[T] = object
   discard
