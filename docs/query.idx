@@ -1,0 +1,3 @@
+nimTitle	query	query.html	module queries/query		0
+nim	Query	query.html#Query	object Query		9
+nim	reset	query.html#reset,Query[T: tuple],int	proc reset[T: tuple](query: var Query[T]; version: int)		14

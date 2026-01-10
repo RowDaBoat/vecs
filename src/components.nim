@@ -4,5 +4,5 @@
 #
 
 ## `vecs` is a free open source ECS library for Nim.
-type Not*[T] = object
-  discard
+type Id* = object
+  id*: int = -1

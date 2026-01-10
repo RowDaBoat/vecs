@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.3.1">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.6">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.3.1"></script>
+<script type="text/javascript" src="dochack.js?v=2.2.6"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -81,7 +81,7 @@
 
   </div>
   <div class="nine columns" id="content">
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/serialization.nim#L1" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/serialization.nim#L1" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
 <a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L1" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
     <div id="tocRoot"></div>
@@ -90,7 +90,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="world.html">world</a>, <a class="reference external" href="queries/query.html">queries/query</a>
+    <a class="reference external" href="world.html">world</a>, <a class="reference external" href="queries.html">queries</a>, <a class="reference external" href="components.html">components</a>
   </dl>
 </div>
 <div class="section" id="12">
@@ -98,13 +98,13 @@
   <dl class="item">
     <div id="createEntityTable-procs-all">
   <div id="createEntityTable,World,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#createEntityTable%2CWorld%2Ctypedesc%5BT%5D"><span class="Identifier">createEntityTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="world.html#Id"><span class="Identifier">Id</span></a><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#createEntityTable%2CWorld%2Ctypedesc%5BT%5D"><span class="Identifier">createEntityTable</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">,</span>
     <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">JsonNode</span><span class="Other">]</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/serialization.nim#L6" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L6" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/serialization.nim#L7" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L7" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -165,8 +165,8 @@
 <span class="Identifier">assert</span> <span class="Identifier">weapons</span> <span class="Operator">==</span> <span class="DecNumber">2</span>
 <span class="Identifier">assert</span> <span class="Identifier">armors</span> <span class="Operator">==</span> <span class="DecNumber">1</span>
 <span class="Identifier">assert</span> <span class="Identifier">amulets</span> <span class="Operator">==</span> <span class="DecNumber">1</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/serialization.nim#L68" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L68" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/serialization.nim#L69" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L69" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -182,12 +182,12 @@
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Elena&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Brom&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Id</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Id</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Elena&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Id</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Brom&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">echo</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">serializeToText</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/devel/src/serialization.nim#L51" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L51" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/serialization.nim#L52" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/serialization.nim#L52" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -203,7 +203,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-10-24 13:41:24 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-10 14:39:44 UTC</small>
       </div>
     </div>
   </div>

@@ -5,11 +5,11 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import tables
-import vecs
-import component
+import components
+import world
 import intsets
 import archetype
-import textTable
+import texttable
 
 
 type Spec*[T: tuple] = object

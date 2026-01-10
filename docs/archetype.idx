@@ -1,21 +1,23 @@
 nimTitle	archetype	archetype.html	module src/archetype		0
-nim	ArchetypeId	archetype.html#ArchetypeId	type ArchetypeId		12
-nim	archetypeIdFrom	archetype.html#archetypeIdFrom,seq[ComponentId]	proc archetypeIdFrom(compIds: seq[ComponentId]): ArchetypeId		14
-nim	Archetype	archetype.html#Archetype	type Archetype		21
-nim	fieldTypes	archetype.html#fieldTypes.m,typed,untyped	macro fieldTypes(tup: typed; body: untyped): untyped		28
-nim	makeArchetype	archetype.html#makeArchetype,seq[ComponentId],seq[Builder],seq[Mover]	proc makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];\n              movers: seq[Mover]): Archetype		44
-nim	makeNextAdding	archetype.html#makeNextAdding,Archetype,seq[ComponentId],seq[Builder],seq[Mover]	proc makeNextAdding(archetype: Archetype; compIds: seq[ComponentId];\n               builders: seq[Builder]; movers: seq[Mover]): Archetype		62
-nim	makeNextRemoving	archetype.html#makeNextRemoving,Archetype,seq[ComponentId]	proc makeNextRemoving(archetype: Archetype; compIds: seq[ComponentId]): Archetype		68
-nim	entities	archetype.html#entities.i,Archetype	iterator entities(archetype: Archetype): int		83
-nim	components	archetype.html#components.i,Archetype,ComponentId	iterator components[T](archetype: Archetype; componentId: ComponentId): T		89
-nim	add	archetype.html#add,Archetype,sinkT	proc add[T: tuple](archetype: var Archetype; components: sink T): int		94
-nim	add	archetype.html#add,Archetype,Table[ComponentId,Adder]	proc add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int		107
-nim	remove	archetype.html#remove,Archetype,int	proc remove(archetype: var Archetype; archetypeEntityId: int)		111
-nim	moveAdding	archetype.html#moveAdding,Archetype,int,Archetype,Table[ComponentId,Adder]	proc moveAdding(fromArchetype: var Archetype; fromArchetypeEntityId: int;\n           toArchetype: var Archetype; adders: Table[ComponentId, Adder]): int		115
-nim	moveRemoving	archetype.html#moveRemoving,Archetype,int,Archetype	proc moveRemoving(fromArchetype: var Archetype; fromArchetypeEntityId: int;\n             toArchetype: var Archetype): int		126
-nim	contains	archetype.html#contains,Archetype,ComponentId	proc contains(archetype: Archetype; candidateId: ComponentId): bool		138
-nim	contains	archetype.html#contains,Archetype,ArchetypeId	proc contains(archetype: Archetype; candidateId: ArchetypeId): bool		141
-nim	disjointed	archetype.html#disjointed,Archetype,ArchetypeId	proc disjointed(archetype: Archetype; candidateId: ArchetypeId): bool		144
-nim	isEmpty	archetype.html#isEmpty,Archetype	proc isEmpty(archetype: Archetype): bool		147
-nimgrp	contains	archetype.html#contains-procs-all	proc		138
-nimgrp	add	archetype.html#add-procs-all	proc		94
+nim	ComponentId	archetype.html#ComponentId	type ComponentId		11
+nim	ArchetypeId	archetype.html#ArchetypeId	type ArchetypeId		13
+nim	archetypeIdFrom	archetype.html#archetypeIdFrom,seq[ComponentId]	proc archetypeIdFrom(compIds: seq[ComponentId]): ArchetypeId		15
+nim	`$`	archetype.html#$,ComponentId	proc `$`(id: ComponentId): string		21
+nim	Archetype	archetype.html#Archetype	type Archetype		23
+nim	fieldTypes	archetype.html#fieldTypes.m,typed,untyped	macro fieldTypes(tup: typed; body: untyped): untyped		30
+nim	makeArchetype	archetype.html#makeArchetype,seq[ComponentId],seq[Builder],seq[Mover]	proc makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];\n              movers: seq[Mover]): Archetype		46
+nim	makeNextAdding	archetype.html#makeNextAdding,Archetype,seq[ComponentId],seq[Builder],seq[Mover]	proc makeNextAdding(archetype: Archetype; compIds: seq[ComponentId];\n               builders: seq[Builder]; movers: seq[Mover]): Archetype		64
+nim	makeNextRemoving	archetype.html#makeNextRemoving,Archetype,seq[ComponentId]	proc makeNextRemoving(archetype: Archetype; compIds: seq[ComponentId]): Archetype		70
+nim	entities	archetype.html#entities.i,Archetype	iterator entities(archetype: Archetype): int		85
+nim	components	archetype.html#components.i,Archetype,ComponentId	iterator components[T](archetype: Archetype; componentId: ComponentId): T		91
+nim	add	archetype.html#add,Archetype,sinkT	proc add[T: tuple](archetype: var Archetype; components: sink T): int		96
+nim	add	archetype.html#add,Archetype,Table[ComponentId,Adder]	proc add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int		109
+nim	remove	archetype.html#remove,Archetype,int	proc remove(archetype: var Archetype; archetypeEntityId: int)		113
+nim	moveAdding	archetype.html#moveAdding,Archetype,int,Archetype,Table[ComponentId,Adder]	proc moveAdding(fromArchetype: var Archetype; fromArchetypeEntityId: int;\n           toArchetype: var Archetype; adders: Table[ComponentId, Adder]): int		117
+nim	moveRemoving	archetype.html#moveRemoving,Archetype,int,Archetype	proc moveRemoving(fromArchetype: var Archetype; fromArchetypeEntityId: int;\n             toArchetype: var Archetype): int		128
+nim	contains	archetype.html#contains,Archetype,ComponentId	proc contains(archetype: Archetype; candidateId: ComponentId): bool		140
+nim	contains	archetype.html#contains,Archetype,ArchetypeId	proc contains(archetype: Archetype; candidateId: ArchetypeId): bool		143
+nim	disjointed	archetype.html#disjointed,Archetype,ArchetypeId	proc disjointed(archetype: Archetype; candidateId: ArchetypeId): bool		146
+nim	isEmpty	archetype.html#isEmpty,Archetype	proc isEmpty(archetype: Archetype): bool		149
+nimgrp	contains	archetype.html#contains-procs-all	proc		140
+nimgrp	add	archetype.html#add-procs-all	proc		96

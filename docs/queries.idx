@@ -1,0 +1,8 @@
+nimTitle	queries	queries.html	module src/queries		0
+nim	Opt	queries.html#Opt	type Opt		10
+nim	Not	queries.html#Not	object Not		12
+nim	Write	queries.html#Write	object Write		15
+nim	Query	queries.html#Query	object Query		18
+nim	isSomething	queries.html#isSomething.t,Opt[T],untyped	template isSomething[T](self: Opt[T]; body: untyped)		23
+nim	isNothing	queries.html#isNothing.t,Opt[T],untyped	template isNothing[T](self: Opt[T]; body: untyped)		28
+nim	reset	queries.html#reset,Query[T: tuple],int	proc reset[T: tuple](query: var Query[T]; version: int)		32
