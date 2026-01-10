@@ -8,13 +8,14 @@ import std/[packedsets, hashes, macros, intsets]
 import typetraits, tables
 import archetype, entity, components, ecsSeq, queries, operations
 
+
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
   archetypeIds: seq[ArchetypeId] = @[]
   archetypes: Table[ArchetypeId, Archetype]
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
-  toRemove: seq[(Id, ComponentId)] = @[]
+  operations: seq[Operation] = @[]
   version: int = 0
 
 
@@ -237,6 +238,24 @@ macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archet
     tupleExprs.add(fieldExpr)
 
   result = tupleExprs
+
+
+proc consolidateRemoveEntity(world: var World, id: Id) =
+  let entity = world.entities[id.value]
+  var archetype = world.archetypes[entity.archetypeId]
+
+  archetype.remove entity.archetypeEntityId
+  world.entities.del id.value
+
+
+proc consolidateRemoveComponent(world: var World, id: Id, componentId: ComponentId) =
+  var entity = world.entities[id.value]
+  var previousArchetype = world.archetypes[entity.archetypeId]
+  var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentId)
+
+  entity.archetypeId = nextArchetype.id
+  entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
+  world.entities[id.value] = entity
 
 
 iterator archetypes*(world: var World): Archetype =
@@ -504,9 +523,11 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
   if not entity.archetypeId.contains(componentId):
     raise newException(ValueError, "Component " & $T & " not found in Entity " & $id)
 
-  world.addComponent(id, RemoveComponent[T]())
-  let witnessId = world.componentIdFrom typeof RemoveComponent[T]
+  world.addComponent(id, ToRemove[T]())
+  let witnessId = world.componentIdFrom typeof ToRemove[T]
 
+  #TODO: what do I do with this? adding won't be immediate, but also should not be immediate...
+  #TODO: different queues? EndOfFrame, AfterQuery, Immediate
   world.toRemove.add (id, componentId)
   world.toRemove.add (id, witnessId)
 
@@ -530,10 +551,10 @@ proc removeEntity*(world: var World, id: Id) =
 
   world.checkEntityExists(id)
 
-  if world.hasComponent(id, RemoveEntity):
+  if world.hasComponent(id, ToRemoveEntity):
     return
 
-  world.addComponent(id, RemoveEntity(id: id))
+  world.addComponent(id, ToRemoveEntity(id: id))
 
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
@@ -582,30 +603,20 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
 
 
-proc processEntityRemovals*(world: var World) =
-  ## Effectively removes entities that have been prepared for removal.
-  var query {.global.}: Query[(RemoveEntity,)]
+proc consolidate*(world: var World) =
+  ## Consolidates all additions and removals in the world.
+  for operation in world.operations:
+    case operation.kind:
+    of AddComponent:
+      world.processComponentAddition(operation.componentId)
+    of AddEntity:
+      world.processEntityAddition(operation.id)
+    of RemoveEntity:
+      world.consolidateRemoveEntity(operation.id)
+    of RemoveComponent:
+      world.consolidateRemoveComponent(operation.id, operation.componentId)
 
-  for (remove,) in world.query(query):
-    let entity = world.entities[remove.id.value]
-    var archetype = world.archetypes[entity.archetypeId]
-
-    archetype.remove entity.archetypeEntityId
-    world.entities.del remove.id.value
-
-
-proc processComponentRemovals*(world: var World) =
-  ## Effectively removes components that have been prepared for removal.
-  for (id, componentId) in world.toRemove:
-    var entity = world.entities[id.value]
-    var previousArchetype = world.archetypes[entity.archetypeId]
-    var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentId)
-
-    entity.archetypeId = nextArchetype.id
-    entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
-    world.entities[id.value] = entity #TODO: is this really needed?
-
-  world.toRemove = @[]
+  world.operations = @[]
 
 
 proc cleanupEmptyArchetypes*(world: var World) =
