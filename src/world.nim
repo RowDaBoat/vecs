@@ -6,10 +6,9 @@
 ## `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables
-import archetype, entity, ecsSeq, queries
-
-type Id* = object
-  id*: int = -1
+import archetype, entity, ecsSeq, queries, components
+export components.Id, components.Meta
+export components
 
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
@@ -379,7 +378,7 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
     import show
 
     var w = World()
-    let marcus = w.addEntity (Id(), Character(name: "Marcus"),)
+    let marcus = w.addEntity (Character(name: "Marcus"),)
     w.addComponent(marcus, Health(health: 100, maxHealth: 100))
 
     assert w.hasComponent(marcus, Health) == true
@@ -396,14 +395,11 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
   var previousArchetype = world.archetypes[entity.archetypeId]
   var nextArchetype = world.nextArchetypeAddingFrom(previousArchetype, componentId)
 
-  let idAdder = proc(ecsSeq: var EcsSeqAny): int =
-    cast[EcsSeq[Id]](ecsSeq).add id
-
   let adder = proc(ecsSeq: var EcsSeqAny): int =
     cast[EcsSeq[T]](ecsSeq).add component
 
   var adders = initTable[ComponentId, Adder]()
-  adders[componentId] = if T is Id: idAdder else: adder
+  adders[componentId] = adder
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
@@ -436,28 +432,29 @@ proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
   world.entities[id.id] = entity
 
 proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
-  ## Add an entity with components, use the special `Id` component to allow getting the entity's id in queries.
-  ## `addEntity` also returns the entity's `Id`.
+  ## Add an entity with components.
+  ## Automatically adds the special `Meta` component, so queries can access metadata like the entity's `Id`.
+  ## Returns the new entity's `Id`.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Id(), Character(name: "Marcus"))
+    let marcus = w.addEntity (Character(name: "Marcus"),)
 
-    assert w.readComponent(marcus, Id) == marcus
+    assert w.readComponent(marcus, Meta).id == marcus
     assert w.readComponent(marcus, Character).name == "Marcus"
 
-  var archetype = world.archetypeFrom T
-  let archetypeEntityId = archetype.add components
+  var archetype = world.archetypeFrom WithMeta(T)
+  let archetypeEntityId = archetype.add withMeta(components)
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
   let id = world.entities.add entity
   result = Id(id: id)
 
-  for idComponent in world.component(result, Write[Id]):
-    idComponent.id = id
+  for meta in world.component(result, Write[Meta]):
+    meta.id = result
 
 proc addEntityWithSpecificId*(world: var World, id: Id) =
-  ## Add an entity with a given id. The entity will have a single Id component.
+  ## Add an entity with a given id. The entity will have a single Meta component.
   ## This is useful mostly for deserialization.
   ## **Note:** Any id above 0 is valid, however a greater id will allocate more memory.
   runnableExamples:
@@ -469,8 +466,8 @@ proc addEntityWithSpecificId*(world: var World, id: Id) =
   checkIdIsValid(id)
   world.checkEntityDoesNotExist(id)
 
-  var archetype = world.archetypeFrom (Id,)
-  let archetypeEntityId = archetype.add (id,)
+  var archetype = world.archetypeFrom (Meta,)
+  let archetypeEntityId = archetype.add (Meta(id: id),)
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
   world.entities[id.id] = entity
 
@@ -530,7 +527,6 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
       weapon.isNothing:
         assert character.name == "Elena"
         echo character.name, " has no weapon."
-
 
   world.updateQuery(query)
 

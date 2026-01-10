@@ -1,2 +1,6 @@
 nimTitle	components	components.html	module src/components		0
-nim	Id	components.html#Id	object Id		7
+nim	Id	components.html#Id	object Id		10
+nim	Meta	components.html#Meta	object Meta		14
+nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		18
+nim	withMeta	components.html#withMeta,T	proc withMeta[T: tuple](t: T): WithMeta(T)		24
+nim	id	components.html#id,Meta	proc id(meta: Meta): Id		36

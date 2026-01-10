@@ -5,15 +5,15 @@ import queries
 
 proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id, seq[JsonNode]] =
   for name, value in fieldPairs default T:
-    var query: Query[(Id, typeof value)]
+    var query: Query[(Meta, typeof value)]
 
-    for (id, component) in world.query(query):
-      if not result.hasKey(id):
-        result[id] = @[]
+    for (meta, component) in world.query(query):
+      if not result.hasKey(meta.id):
+        result[meta.id] = @[]
 
       var jsonComponent = %*component
       jsonComponent["*component"] = newJString($typeof value)
-      result[id].add jsonComponent
+      result[meta.id].add jsonComponent
 
 proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
   result = newJObject()
@@ -50,15 +50,14 @@ proc addComponentFromJson[T: tuple](world: var World, id: Id, jsonComponent: Jso
 
 proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
   ## Serialize a world to a json string.
-  ## Use a tuple to specify the components to serialize, do not include the Id component.
-  ## Only entities with an Id component will be serialized.
+  ## Use a tuple to specify the components to serialize, do not include the Meta component.
   runnableExamples:
     import examples
 
     var w = World()
-    w.addEntity (Id(), Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
-    w.addEntity (Id(), Character(name: "Elena"), Health(health: 80, maxHealth: 80))
-    w.addEntity (Id(), Character(name: "Brom"), Health(health: 140, maxHealth: 140))
+    w.addEntity (Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
+    w.addEntity (Character(name: "Elena"), Health(health: 80, maxHealth: 80))
+    w.addEntity (Character(name: "Brom"), Health(health: 140, maxHealth: 140))
     echo w.serializeToText (Character, Health)
 
   let entities = createEntityTable(world, tup)
@@ -67,8 +66,8 @@ proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
 
 proc deserializeFromText*[T: tuple](text: string, tup: typedesc[T]): World =
   ## Deserialize a json string into a world.
-  ## Use a tuple to specify the components to deserialize, do not include the Id component.
-  ## All entities will be given an Id component.
+  ## Use a tuple to specify the components to deserialize, do not include the Meta component.
+  ## All entities will be given a proper Meta component.
   runnableExamples:
     import examples
 
@@ -95,7 +94,7 @@ proc deserializeFromText*[T: tuple](text: string, tup: typedesc[T]): World =
       ] }
       """
 
-    var w = deserializeFromText(text, (Id, Character, Health, Weapon, Amulet, Armor))
+    var w = deserializeFromText(text, (Character, Health, Weapon, Amulet, Armor))
     var characters = 0
     var weapons = 0
     var armors = 0

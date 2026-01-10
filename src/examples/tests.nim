@@ -155,16 +155,16 @@ for (character, skillset) in world.query(characterSkillsQuery):
   echo "  ", character.name, "'s skills are: ", skillset.skills
 
 echo ""
-echo ".-------------------------."
-echo "| Using Id as a component |"
-echo "'-------------------------'"
+echo ".--------------------------."
+echo "| Using the Meta component |"
+echo "'--------------------------'"
 
-let id = world.addEntity (Id(), Character(name: "Leon", class: "Paladin"))
+let id = world.addEntity (Character(name: "Leon", class: "Paladin"),)
 
 echo "  A character with Id: ", id
 
-for (id, character) in world.components(id, (Id, Character)):
-  echo "  ", character.name, " has a component Id with character's id: ", id
+for (meta, character) in world.components(id, (Meta, Character)):
+  echo "  ", character.name, " has a Meta component with the character's id: ", meta.id
 
 echo ""
 echo ".-----------------."
@@ -184,4 +184,4 @@ var healthQuery: Query[(Character, Health, Not[Spellbook])]
 for (character, health) in world.query(healthQuery):
   echo character.name, "'s health is now ", health.health, "/", health.maxHealth
 
-echo world.show (Id, Character, Health, Weapon, Amulet, Shield, Armor, Spellbook, Skillset)
+echo world.show (Meta, Character, Health, Weapon, Amulet, Shield, Armor, Spellbook, Skillset)
