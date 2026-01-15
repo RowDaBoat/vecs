@@ -12,5 +12,8 @@ skipFiles     = @[]
 
 requires "nim >= 2.0.0"
 
+task test, "Run the test suite":
+  exec "nim r test/world.nim"
+
 task docs, "Generate documentation":
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"

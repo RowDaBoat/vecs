@@ -3,6 +3,7 @@ import world
 import tables
 import queries
 
+
 proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id, seq[JsonNode]] =
   for name, value in fieldPairs default T:
     var query: Query[(Meta, typeof value)]
@@ -14,6 +15,7 @@ proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id,
       var jsonComponent = %*component
       jsonComponent["*component"] = newJString($typeof value)
       result[meta.id].add jsonComponent
+
 
 proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
   result = newJObject()
@@ -29,6 +31,7 @@ proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
 
     result["entities"].add entity
 
+
 iterator iteratetJsonComponents(json: JsonNode, world: var World): (Id, JsonNode, string) =
   for entity in json["entities"]:
     let intId = entity["id"].getInt
@@ -42,11 +45,13 @@ iterator iteratetJsonComponents(json: JsonNode, world: var World): (Id, JsonNode
 
       yield (id, jsonComponent, componentType)
 
+
 proc addComponentFromJson[T: tuple](world: var World, id: Id, jsonComponent: JsonNode, componentType: string, tup: typedesc[T]) =
   for name, value in fieldPairs default T:
     if $(typeof value) == componentType:
       let componentToAdd = jsonComponent.to(typeof value)
-      world.addComponent(id, componentToAdd)
+      world.addComponent(id, componentToAdd, Immediate)
+
 
 proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
   ## Serialize a world to a json string.
@@ -55,14 +60,15 @@ proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
     import examples
 
     var w = World()
-    w.addEntity (Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
-    w.addEntity (Character(name: "Elena"), Health(health: 80, maxHealth: 80))
-    w.addEntity (Character(name: "Brom"), Health(health: 140, maxHealth: 140))
+    w.addEntity((Character(name: "Marcus"), Health(health: 100, maxHealth: 100)), Immediate)
+    w.addEntity((Character(name: "Elena"), Health(health: 80, maxHealth: 80)), Immediate)
+    w.addEntity((Character(name: "Brom"), Health(health: 140, maxHealth: 140)), Immediate)
     echo w.serializeToText (Character, Health)
 
   let entities = createEntityTable(world, tup)
   let json = createJsonObject(entities)
   return json.pretty(2)
+
 
 proc deserializeFromText*[T: tuple](text: string, tup: typedesc[T]): World =
   ## Deserialize a json string into a world.

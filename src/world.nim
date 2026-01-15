@@ -5,10 +5,11 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
-import typetraits, tables
+import typetraits, tables, sets
 import archetype, entity, ecsSeq, queries, components
-export components.Id, components.Meta
+export components.Id, components.Meta, components.OperationMode
 export components
+
 
 type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
@@ -16,80 +17,105 @@ type World* = object
   archetypes: Table[ArchetypeId, Archetype]
   builders: Table[ComponentId, Builder]
   movers: Table[ComponentId, Mover]
+  toConsolidate: HashSet[Id]
   version: int = 0
+
 
 proc hash*(id: ArchetypeId): Hash =
   for compId in id.items:
     result = result xor (compId.int mod 32)
 
+
 proc `==`*(a, b: ComponentId): bool {.borrow.}
+
 
 macro typeHash*[T](typ: typedesc[T]): int =
   typ.getTypeInst.repr.hash.newIntLitNode
+
 
 # Errors
 proc idIsInvalid(id: Id): ref Exception =
   newException(Exception, "Id is invalid: " & $id)
 
+
 proc entityDoesNotExist(id: Id): ref Exception =
   newException(Exception, "Entity with id " & $id & " does not exist.")
+
 
 proc componentDoesNotExist[T](id: Id, comp: typedesc[T]): ref Exception =
   newException(Exception, "Component " & $comp & " does not exist in the entity with id " & $id)
 
+
 proc componentsDoNotExist[T: tuple](id: Id, tup: typedesc[T]): ref Exception =
   newException(Exception, "One or more components of " & $tup & " do not exist in the entity with id " & $id)
 
+
 proc entityAlreadyExists(id: Id): ref Exception =
   newException(Exception, "Entity with id " & $id & " already exists.")
+
 
 # Checks
 proc checkIdIsValid(id: Id) =
   if id.id < 0:
     raise idIsInvalid(id)
 
+
 template checkNotATuple[T](tup: typedesc[T]) =
   when T is tuple:
     {.error: "Component type expected, got a tuple: " & $T.}
+
 
 proc checkEntityExists(world: var World, id: Id) =
   if not world.entities.has(id.id):
     raise entityDoesNotExist(id)
 
+
 proc checkEntityDoesNotExist(world: var World, id: Id) =
   if world.entities.has(id.id):
     raise entityAlreadyExists(id)
 
+
 # Archetype creation and book-keeping
-proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdToAdd: ComponentId): var Archetype =
+proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, componentIdsToAdd: seq[ComponentId]): var Archetype =
   let previousArchetypeId = previousArchetype.id
   var nextArchetypeId = previousArchetypeId
-  nextArchetypeId.incl componentIdToAdd
+
+  for componentId in componentIdsToAdd:
+    nextArchetypeId.incl componentId
 
   if not world.archetypes.hasKey(nextArchetypeId):
-    let builder = world.builders[componentIdToAdd]
-    let mover = world.movers[componentIdToAdd]
+    var builders: seq[Builder] = @[]
+    var movers: seq[Mover] = @[]
 
-    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(@[componentIdToAdd], @[builder], @[mover])
+    for componentId in componentIdsToAdd:
+      builders.add world.builders[componentId]
+      movers.add world.movers[componentId]
+
+    world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(componentIdsToAdd, builders, movers)
     world.archetypeIds.add nextArchetypeId
 
   world.archetypes[nextArchetypeId]
 
-proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdToRemove: ComponentId): var Archetype =
+
+proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdsToRemove: seq[ComponentId]): var Archetype =
   let previousArchetypeId = previousArchetype.id
   var nextArchetypeId = previousArchetypeId
-  nextArchetypeId.excl componentIdToRemove
+
+  for componentId in componentIdsToRemove:
+    nextArchetypeId.excl componentId
 
   if not world.archetypes.hasKey(nextArchetypeId):
-    world.archetypes[nextArchetypeId] = previousArchetype.makeNextRemoving(@[componentIdToRemove])
+    world.archetypes[nextArchetypeId] = previousArchetype.makeNextRemoving(componentIdsToRemove)
     world.archetypeIds.add nextArchetypeId
 
   world.archetypes[nextArchetypeId]
+
 
 proc archetypeIdFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
     let compId = world.componentIdFrom typeof typ
     result.incl compId
+
 
 proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Archetype =
   let archetypeId = world.archetypeIdFrom T
@@ -110,12 +136,15 @@ proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arch
 
   world.archetypes[archetypeId]
 
+
 # Query creation and book-keeping
 proc requireWrite[T](world: var World, write: Write[T]): ComponentId =
   world.componentIdFrom typeof T
 
+
 proc excludeNot[T](world: var World, notOp: Not[T]): ComponentId =
   world.componentIdFrom typeof T
+
 
 proc requiredArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
@@ -128,11 +157,13 @@ proc requiredArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): Ar
       let compId = world.componentIdFrom typeof typ
       result.incl compId
 
+
 proc excludedArchetypeIdsFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
     when typ is Not:
       let compId = excludeNot(world, typ)
       result.incl compId
+
 
 proc updateQuery[T: tuple](world: var World, query: var Query[T]) =
   if world.archetypes.len == query.lastArchetypeCount:
@@ -153,8 +184,10 @@ proc updateQuery[T: tuple](world: var World, query: var Query[T]) =
 
   query.lastArchetypeCount = world.archetypes.len
 
+
 proc isOp(typ: NimNode, name: string): bool =
   typ.kind == nnkBracketExpr and $typ[0] == name
+
 
 macro accessTuple(t: typedesc): untyped =
   result = t.getTypeInst[^1].copyNimTree
@@ -168,10 +201,12 @@ macro accessTuple(t: typedesc): untyped =
       result[i] = nnkVarTy.newTree(x[1])
   result = newCall("typeof", result)
 
+
 template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: int): T =
   cast[EcsSeq[T]](
     archetype.componentLists[world.componentIdFrom typeof T]
   )[archetypeEntityId]
+
 
 macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
@@ -183,6 +218,7 @@ macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetyp
     tupleExprs.add(fieldExpr)
 
   result = tupleExprs
+
 
 macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
   let tupleType = t.getTypeInst[^1]
@@ -215,6 +251,41 @@ macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archet
 
   result = tupleExprs
 
+
+proc consolidateRemoveEntity(world: var World, id: Id) =
+  let entity = world.entities[id.id]
+  var archetype = world.archetypes[entity.archetypeId]
+
+  archetype.remove entity.archetypeEntityId
+  world.entities.del id.id
+
+
+proc consolidateAddComponents(world: var World, id: Id, componentAddersById: Table[ComponentId, Adder]) =
+  var entity = world.entities[id.id]
+  var previousArchetype = world.archetypes[entity.archetypeId]
+
+  var componentIds: seq[ComponentId] = @[]
+
+  for componentId in componentAddersById.keys:
+    componentIds.add componentId
+
+  var nextArchetype = world.nextArchetypeAddingFrom(previousArchetype, componentIds)
+
+  entity.archetypeId = nextArchetype.id
+  entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, componentAddersById)
+  world.entities[id.id] = entity
+
+
+proc consolidateRemoveComponents(world: var World, id: Id, componentIds: seq[ComponentId]) =
+  var entity = world.entities[id.id]
+  var previousArchetype = world.archetypes[entity.archetypeId]
+  var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
+
+  entity.archetypeId = nextArchetype.id
+  entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
+  world.entities[id.id] = entity
+
+
 iterator archetypes*(world: var World): Archetype =
   ## Iterate through all the world's archetypes.
   ##
@@ -222,6 +293,7 @@ iterator archetypes*(world: var World): Archetype =
   ## To use Archetypes, the archetype module must be imported.
   for archetypeId in world.archetypeIds:
     yield world.archetypes[archetypeId]
+
 
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   ## Get the ComponentId for a given component type.
@@ -234,15 +306,16 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
 
   id.ComponentId
 
+
 proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
   ## Check if an entity has a given component.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
-    assert w.hasComponent(marcus, Character) == true
-    assert w.hasComponent(marcus, Health) == false
+    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
+    assert w.hasComponent(marcus, Character)
+    assert not w.hasComponent(marcus, Health)
 
   checkNotATuple(T)
   world.checkEntityExists(id)
@@ -251,13 +324,14 @@ proc hasComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): bool =
   let compId = world.componentIdFrom typeof compDesc
   compId in entity.archetypeId
 
+
 proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
   ## Directly read a single component of an entity.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
+    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
     let character = w.readComponent(marcus, Character)
     assert character.name == "Marcus"
 
@@ -275,16 +349,17 @@ proc readComponent*[T](world: var World, id: Id, compDesc: typedesc[T]): T =
   type Retype = EcsSeq[T]
   cast[Retype](ecsSeqAny)[archetypeEntityId]
 
-iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): var T =
+
+iterator component*[T](world: var World, id: Id, compDesc: typedesc[T]): var T =
   ## Write access to a single component of an entity.
   ## An iterator is used to ensure fast and safe access to the component.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
+    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
 
-    for character in w.component(marcus, Write[Character]):
+    for character in w.component(marcus, Character):
       character.name = "Mark"
 
     assert w.readComponent(marcus, Character).name == "Mark"
@@ -302,6 +377,7 @@ iterator component*[T](world: var World, id: Id, compDesc: typedesc[Write[T]]): 
     type Retype = EcsSeq[T]
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
+
 proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
   ## Direct read access to multiple components of an entity.
   ## The `T` tuple must contain no `Write`, `Opt`, or `Not` accessors.
@@ -309,8 +385,13 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
+    let character = Character(name: "Marcus")
+    let sword = Weapon(name: "Sword")
+    let elements = Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"])
+    let marcus = w.addEntity((character, sword, elements), Immediate)
+
     let (weapon, spellbook) = w.readComponents(marcus, (Weapon, Spellbook))
+
     assert weapon.name == "Sword"
     assert spellbook.spells == @["Fireball", "Ice Storm", "Lightning"]
 
@@ -328,6 +409,7 @@ proc readComponents*[T: tuple](world: var World, id: Id, tup: typedesc[T]): T =
 
   world.buildReadTuple(tup, archetype, archetypeEntityId)
 
+
 iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.accessTuple =
   ## Read, write, and optional access to components of an entity.
   ## An iterator is used to ensure fast and safe access to the components.
@@ -340,7 +422,10 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"), Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"]))
+    let character = Character(name: "Marcus")
+    let weapon = Weapon(name: "Sword")
+    let spellbook = Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"])
+    let marcus = w.addEntity((character, weapon, spellbook), Immediate)
 
     for (character, weapon, armor, spellbook) in w.components(marcus, (Character, Write[Weapon], Opt[Armor], Opt[Spellbook])):
       echo character.name
@@ -371,8 +456,54 @@ iterator components*[T: tuple](world: var World, id: Id, tup: typedesc[T]): tup.
   if found:
     yield world.buildAccessTuple(tup, archetype, archetypeEntityId)
 
-proc addComponent*[T](world: var World, id: Id, component: T) =
-  ## Add a component to an entity
+
+proc addComponents*[T: tuple](world: var World, id: Id, components: T, mode: OperationMode = Deferred) =
+  ## Add components to an entity.
+  ## If the `mode` is `Deferred`, the components will be added when `consolidate()` is called, `Deferred` is the default mode.
+  ## If the `mode` is `Immediate`, the components will be added immediately.
+  ## **Note:** Adding components immediately during query iteration leads to undefined behaviour.
+  runnableExamples:
+    import examples
+    import show
+
+    var w = World()
+    let marcus = w.addEntity (Character(name: "Marcus"),)
+    w.addComponents(marcus, (Health(health: 100, maxHealth: 100), Weapon(name: "Sword", attack: 10)))
+    w.consolidate()
+
+    assert w.hasComponent(marcus, Health)
+    assert w.hasComponent(marcus, Weapon)
+
+  world.checkEntityExists(id)
+
+  var entity = world.entities[id.id]
+  var addersById = initTable[ComponentId, Adder]()
+
+  for name, value in fieldPairs default T:
+    let componentId = world.componentIdFrom typeof value
+
+    if entity.archetypeId.contains(componentId):
+      raise newException(ValueError, "Component " & $(typeof value) & " already exists in Entity " & $id)
+
+    let adder = proc(ecsSeq: var EcsSeqAny): int =
+      cast[EcsSeq[typeof value]](ecsSeq).add value
+
+    addersById[componentId] = adder
+
+  if mode == Immediate:
+    world.consolidateAddComponents(id, addersById)
+  else:
+    for meta in world.component(id, Meta):
+      meta.enqueueOperation(Operation(kind: AddComponents, id: id, componentAddersById: addersById))
+
+    world.toConsolidate.incl id
+
+
+proc addComponent*[T](world: var World, id: Id, component: T, mode: OperationMode = Deferred) =
+  ## Add a component to an entity.
+  ## If the `mode` is `Deferred`, the component will be added when `consolidate()` is called, `Deferred` is the default mode.
+  ## If the `mode` is `Immediate`, the component will be added immediately.
+  ## **Note:** Adding components immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
     import show
@@ -380,81 +511,108 @@ proc addComponent*[T](world: var World, id: Id, component: T) =
     var w = World()
     let marcus = w.addEntity (Character(name: "Marcus"),)
     w.addComponent(marcus, Health(health: 100, maxHealth: 100))
+    w.consolidate()
 
-    assert w.hasComponent(marcus, Health) == true
+    assert w.hasComponent(marcus, Health)
 
   checkNotATuple(T)
-  world.checkEntityExists(id)
+  world.addComponents(id, (component,), mode)
 
-  var entity = world.entities[id.id]
-  let componentId = world.componentIdFrom typeof T
 
-  if entity.archetypeId.contains(componentId):
-    raise newException(ValueError, "Component " & $T & " already exists in Entity " & $id)
-
-  var previousArchetype = world.archetypes[entity.archetypeId]
-  var nextArchetype = world.nextArchetypeAddingFrom(previousArchetype, componentId)
-
-  let adder = proc(ecsSeq: var EcsSeqAny): int =
-    cast[EcsSeq[T]](ecsSeq).add component
-
-  var adders = initTable[ComponentId, Adder]()
-  adders[componentId] = adder
-
-  entity.archetypeId = nextArchetype.id
-  entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, adders)
-  world.entities[id.id] = entity
-
-proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T]) =
-  ## Remove a component from an entity
+proc removeComponents*[T: tuple](world: var World, id: Id, descriptions: typedesc[T], mode: OperationMode = Deferred) =
+  ## Remove multiple components from an entity.
+  ## If the `mode` is `Deferred`, the components will be removed when `consolidate()` is called, `Deferred` is the default mode.
+  ## If the `mode` is `Immediate`, the components will be removed immediately.
+  ## **Note:** Removing components immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"), Weapon(name: "Sword"))
-    w.removeComponent(marcus, Weapon)
-    assert w.hasComponent(marcus, Weapon) == false
+    let marcus = w.addEntity((Character(name: "Marcus"), Weapon(name: "Sword")), Immediate)
+    w.removeComponents(marcus, (Weapon, Character))
+    w.consolidate()
 
-  checkNotATuple(T)
+    assert not w.hasComponent(marcus, Character)
+    assert not w.hasComponent(marcus, Weapon)
+
   world.checkEntityExists(id)
 
   var entity = world.entities[id.id]
-  let componentId = world.componentIdFrom typeof T
+  var componentIdsToRemove: seq[ComponentId] = @[]
 
-  if not entity.archetypeId.contains(componentId):
-    raise newException(ValueError, "Component " & $T & " not found in Entity " & $id)
+  for name, typ in fieldPairs default T:
+    let componentId = world.componentIdFrom typeof typ
 
-  var previousArchetype = world.archetypes[entity.archetypeId]
-  var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentId)
+    if not entity.archetypeId.contains(componentId):
+      raise newException(ValueError, "Component " & $typ & " not found in Entity " & $id)
 
-  entity.archetypeId = nextArchetype.id
-  entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
-  world.entities[id.id] = entity
+    componentIdsToRemove.add componentId
 
-proc addEntity*[T: tuple](world: var World, components: T): Id {.discardable.} =
-  ## Add an entity with components.
-  ## Automatically adds the special `Meta` component, so queries can access metadata like the entity's `Id`.
+  if mode == Immediate:
+    world.consolidateRemoveComponents(id, componentIdsToRemove)
+  else:
+    for meta in world.component(id, Meta):
+      meta.enqueueOperation(Operation(kind: RemoveComponents, id: id, componentIdsToRemove: componentIdsToRemove))
+
+  world.toConsolidate.incl id
+
+
+proc removeComponent*[T](world: var World, id: Id, compDesc: typedesc[T], mode: OperationMode = Deferred) =
+  ## Remove a component from an entity.
+  ## If the `mode` is `Deferred`, the component will be removed when `consolidate()` is called, `Deferred` is the default mode.
+  ## If the `mode` is `Immediate`, the component will be removed immediately.
+  ## **Note:** Removing a component immediately during query iteration leads to undefined behaviour.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    let marcus = w.addEntity((Character(name: "Marcus"), Weapon(name: "Sword")), Immediate)
+    w.removeComponent(marcus, Weapon)
+    w.consolidate()
+
+    assert w.hasComponent(marcus, Weapon) == false
+
+  checkNotATuple(T)
+  removeComponents(world, id, (T,), mode)
+
+
+proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode = Deferred): Id {.discardable.} =
+  ## Add an entity with components. Automatically adds the special `Meta` component, so queries can access metadata like the entity's `Id`.
+  ## If the `mode` is `Deferred`, the entity with the `Meta` component is created immediately, but the components will be added when `consolidate()` is called, `Deferred` is the default mode.
+  ## If the `mode` is `Immediate`, the components will be added immediately.
+  ## **Note:** Adding entities immediately during query iteration leads to undefined behaviour.
   ## Returns the new entity's `Id`.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
+    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
 
     assert w.readComponent(marcus, Meta).id == marcus
     assert w.readComponent(marcus, Character).name == "Marcus"
 
-  var archetype = world.archetypeFrom WithMeta(T)
-  let archetypeEntityId = archetype.add withMeta(components)
-  let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  let id = world.entities.add entity
-  result = Id(id: id)
+  if mode == Immediate:
+    var archetype = world.archetypeFrom WithMeta(T)
+    let archetypeEntityId = archetype.add withMeta(components)
+    let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+    let id = world.entities.add entity
+    result = Id(id: id)
 
-  for meta in world.component(result, Write[Meta]):
-    meta.id = result
+    for meta in world.component(result, Meta):
+      meta.id = result
+  else:
+    var archetype = world.archetypeFrom (Meta,)
+    var archetypeEntityId = archetype.add (Meta(),)
+    let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+    let id = world.entities.add entity
+    result = Id(id: id)
+
+    world.addComponents(result, components)
+
 
 proc addEntityWithSpecificId*(world: var World, id: Id) =
-  ## Add an entity with a given id. The entity will have a single Meta component.
+  ## Add an entity with a given id immediately.
+  ## The entity will have a single Meta component.
   ## This is useful mostly for deserialization.
   ## **Note:** Any id above 0 is valid, however a greater id will allocate more memory.
   runnableExamples:
@@ -471,14 +629,18 @@ proc addEntityWithSpecificId*(world: var World, id: Id) =
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
   world.entities[id.id] = entity
 
-proc removeEntity*(world: var World, id: Id) =
-  ## Remove an entity.
+proc removeEntity*(world: var World, id: Id, mode: OperationMode = Deferred) =
+  ## Remove an entity from the world.
+  ## If the `mode` is `Deferred`, the entity will be removed when `consolidate()` is called, `Deferred` is the default mode.
+  ## If the `mode` is `Immediate`, the entity will be removed immediately.
+  ## **Note:** Removing entities immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
 
     var w = World()
     let marcus = w.addEntity (Character(name: "Marcus"),)
     w.removeEntity(marcus)
+    w.consolidate()
 
     var query: Query[(Character,)]
     for character in w.query(query):
@@ -486,10 +648,27 @@ proc removeEntity*(world: var World, id: Id) =
 
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
-  var archetype = world.archetypes[entity.archetypeId]
-  archetype.remove entity.archetypeEntityId
-  world.entities.del id.id
+  if mode == Immediate:
+    world.consolidateRemoveEntity(id)
+  else:
+    for meta in world.component(id, Meta):
+      meta.enqueueOperation(Operation(kind: RemoveEntity, id: id))
+
+    world.toConsolidate.incl id
+    
+
+proc hasEntity*(world: var World, id: Id): bool =
+  ## Check if an entity exists.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    let marcus = w.addEntity (Character(name: "Marcus"),)
+    assert w.hasEntity(marcus) == true
+    assert w.hasEntity(Id(id: 10)) == false
+
+  world.entities.has(id.id)
+
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
   ## Query entities by components. Components are matched based on the query's type parameter.
@@ -509,9 +688,9 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     import examples
 
     var w = World()
-    w.addEntity (Character(name: "Marcus"), Health(health: 100, maxHealth: 100), Weapon(name: "Sword"))
-    w.addEntity (Character(name: "Elena"), Health(health: 80, maxHealth: 80), Amulet(name: "Arcane Stone"))
-    w.addEntity (Character(name: "Brom"), Health(health: 140, maxHealth: 140), Armor(name: "Fur Armor"))
+    w.addEntity((Character(name: "Marcus"), Health(health: 100, maxHealth: 100), Weapon(name: "Sword")), Immediate)
+    w.addEntity((Character(name: "Elena"), Health(health: 80, maxHealth: 80), Amulet(name: "Arcane Stone")), Immediate)
+    w.addEntity((Character(name: "Brom"), Health(health: 140, maxHealth: 140), Armor(name: "Fur Armor")), Immediate)
 
     # Query for characters, health with write access, an optional weapon, and no armor.
     var query: Query[(Character, Write[Health], Opt[Weapon], Not[Armor])]
@@ -535,6 +714,7 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     for archetypeEntityId in archetype.entities:
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
 
+
 proc cleanupEmptyArchetypes*(world: var World) =
   ## Cleans up empty archetypes.
   ## This is useful mostly for deserialization routines.
@@ -553,3 +733,21 @@ proc cleanupEmptyArchetypes*(world: var World) =
   if upVersion:
     inc world.version
     world.archetypeIds = newArchetypeIds
+
+
+proc consolidate*(world: var World) =
+  ## Consolidates all additions and removals in the world.
+  for id in world.toConsolidate:
+    for meta in world.component(id, Meta):
+      for operation in meta.operations:
+        case operation.kind:
+        of RemoveEntity:
+          world.consolidateRemoveEntity(operation.id)
+        of AddComponents:
+          world.consolidateAddComponents(operation.id, operation.componentAddersById)
+        of RemoveComponents:
+          world.consolidateRemoveComponents(operation.id, operation.componentIdsToRemove)
+
+      meta.clearOperations()
+  
+  world.toConsolidate.clear()

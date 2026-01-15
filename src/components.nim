@@ -5,14 +5,44 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import std/macros
+import archetype
+import ecsSeq
+import tables
 
 
 type Id* = object
   id*: int = -1
 
 
+type OperationKind* = enum
+  RemoveEntity
+  AddComponents
+  RemoveComponents
+
+
+type Operation* = object
+  id*: Id
+  case kind*: OperationKind:
+  of RemoveEntity:
+    discard
+  of AddComponents:
+    componentAddersById*: Table[ComponentId, Adder]
+  of RemoveComponents:
+    componentIdsToRemove*: seq[ComponentId]
+
+
+type OperationMode* = enum
+  Immediate
+  Deferred
+
+
 type Meta* = object
   id*: Id
+  operations: seq[Operation]
+
+
+proc id*(meta: Meta): Id =
+  meta.id
 
 
 macro WithMeta*[T: tuple](t: typedesc[T]): typedesc =
@@ -32,6 +62,13 @@ proc withMeta*[T: tuple](t: T): WithMeta(T) =
 
   result = prependMeta()
 
+proc enqueueOperation*(self: var Meta, operation: Operation) =
+  self.operations.add operation
 
-proc id*(meta: Meta): Id =
-  meta.id
+
+proc operations*(self: Meta): seq[Operation] =
+  self.operations
+
+
+proc clearOperations*(self: var Meta) =
+  self.operations.setLen(0)

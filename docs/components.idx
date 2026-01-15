@@ -1,6 +1,17 @@
 nimTitle	components	components.html	module src/components		0
-nim	Id	components.html#Id	object Id		10
-nim	Meta	components.html#Meta	object Meta		14
-nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		18
-nim	withMeta	components.html#withMeta,T	proc withMeta[T: tuple](t: T): WithMeta(T)		24
-nim	id	components.html#id,Meta	proc id(meta: Meta): Id		36
+nim	Id	components.html#Id	object Id		13
+nim	RemoveEntity	components.html#RemoveEntity	OperationKind.RemoveEntity		17
+nim	AddComponents	components.html#AddComponents	OperationKind.AddComponents		17
+nim	RemoveComponents	components.html#RemoveComponents	OperationKind.RemoveComponents		17
+nim	OperationKind	components.html#OperationKind	enum OperationKind		17
+nim	Operation	components.html#Operation	object Operation		23
+nim	Immediate	components.html#Immediate	OperationMode.Immediate		34
+nim	Deferred	components.html#Deferred	OperationMode.Deferred		34
+nim	OperationMode	components.html#OperationMode	enum OperationMode		34
+nim	Meta	components.html#Meta	object Meta		39
+nim	id	components.html#id,Meta	proc id(meta: Meta): Id		44
+nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		48
+nim	withMeta	components.html#withMeta,T	proc withMeta[T: tuple](t: T): WithMeta(T)		54
+nim	enqueueOperation	components.html#enqueueOperation,Meta,Operation	proc enqueueOperation(self: var Meta; operation: Operation)		65
+nim	operations	components.html#operations,Meta	proc operations(self: Meta): seq[Operation]		69
+nim	clearOperations	components.html#clearOperations,Meta	proc clearOperations(self: var Meta)		73
