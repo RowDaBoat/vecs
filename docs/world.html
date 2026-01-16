@@ -165,6 +165,10 @@
   <li><a class="reference" href="#query.i%2CWorld%2CQuery%5BT%3A%20tuple%5D" title="query[T: tuple](world: var World; query: var Query[T]): T.accessTuple">query[T: tuple](world: var World; query: var Query[T]): T.accessTuple</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">queryForRemoval
+  <li><a class="reference" href="#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D" title="queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T">queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -330,8 +334,8 @@
   <dd>
     
     Cleans up empty archetypes. This is useful mostly for deserialization routines. Removing archetypes forces caches from queries to be rebuilt.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L718" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L718" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L736" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L736" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -357,8 +361,8 @@
   <dd>
     
     Consolidates all additions and removals in the world.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L738" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L738" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L756" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L756" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -669,6 +673,21 @@
 </div>
 
 </div>
+<div id="queryForRemoval-iterators-all">
+  <div id="queryForRemoval.i,World,typedesc[T]">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D"><span class="Identifier">queryForRemoval</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    -
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">discard</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L718" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L718" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
 
   </dl>
 </div>
@@ -704,7 +723,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-15 22:55:24 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-16 01:15:50 UTC</small>
       </div>
     </div>
   </div>

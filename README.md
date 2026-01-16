@@ -104,18 +104,14 @@ for (character,) in world.query(disarmedCharacters):
 - [x] Stable ids for components
 - [x] Polish console output
 - [x] Convenience procs and checks
-  - [x] Allow read access to components without an iterator
-  - [x] `component` fails to compile silently when used with a Tuple
-  - [x] `components` sys-fatals when searching for a non existing Id
-- [ ] Text serialization
+- [x] Refactor `Id` component to a `Metadata` component with id, removal, and addition info
+- [x] Additions and removals should be enqueued and consolidated in order later
+- [x] Text serialization
 - [ ] Binary serialization
+- [ ] Integrate with [reploid](http://github.com/RowDaBoat/reploid)
 - [ ] Convenience procs
   - [ ] `component` and `components` accept a list of entity ids
   - [ ] Add and Remove multiple components
 - [ ] Concurrency support
 - [ ] Zero-allocation?
 - [ ] Spatial and custom queries
-
-- [ ] Integrate with inim?
-  - [ ] Pull req: show current code
-  - [ ] Pull req: use nim --eval

@@ -276,9 +276,14 @@ proc consolidateAddComponents(world: var World, id: Id, componentAddersById: Tab
   world.entities[id.id] = entity
 
 
-proc consolidateRemoveComponents(world: var World, id: Id, componentIds: seq[ComponentId]) =
+proc consolidateRemoveComponents(world: var World, id: Id, compIdsToRemove: PackedSet[ComponentId]) =
   var entity = world.entities[id.id]
   var previousArchetype = world.archetypes[entity.archetypeId]
+  var componentIds: seq[ComponentId]
+
+  for compId in compIdsToRemove.items:
+    componentIds.add compId
+  
   var nextArchetype = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
 
   entity.archetypeId = nextArchetype.id
@@ -494,7 +499,7 @@ proc addComponents*[T: tuple](world: var World, id: Id, components: T, mode: Ope
     world.consolidateAddComponents(id, addersById)
   else:
     for meta in world.component(id, Meta):
-      meta.enqueueOperation(Operation(kind: AddComponents, id: id, componentAddersById: addersById))
+      meta.enqueueOperation(Operation(kind: AddComponents, addersById: addersById))
 
     world.toConsolidate.incl id
 
@@ -538,7 +543,7 @@ proc removeComponents*[T: tuple](world: var World, id: Id, descriptions: typedes
   world.checkEntityExists(id)
 
   var entity = world.entities[id.id]
-  var componentIdsToRemove: seq[ComponentId] = @[]
+  var compIdsToRemove: PackedSet[ComponentId]
 
   for name, typ in fieldPairs default T:
     let componentId = world.componentIdFrom typeof typ
@@ -546,13 +551,13 @@ proc removeComponents*[T: tuple](world: var World, id: Id, descriptions: typedes
     if not entity.archetypeId.contains(componentId):
       raise newException(ValueError, "Component " & $typ & " not found in Entity " & $id)
 
-    componentIdsToRemove.add componentId
+    compIdsToRemove.incl componentId
 
   if mode == Immediate:
-    world.consolidateRemoveComponents(id, componentIdsToRemove)
+    world.consolidateRemoveComponents(id, compIdsToRemove)
   else:
     for meta in world.component(id, Meta):
-      meta.enqueueOperation(Operation(kind: RemoveComponents, id: id, componentIdsToRemove: componentIdsToRemove))
+      meta.enqueueOperation(Operation(kind: RemoveComponents, compIdsToRemove: compIdsToRemove))
 
   world.toConsolidate.incl id
 
@@ -607,6 +612,9 @@ proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode =
     let id = world.entities.add entity
     result = Id(id: id)
 
+    for meta in world.component(result, Meta):
+      meta.id = result
+
     world.addComponents(result, components)
 
 
@@ -652,10 +660,10 @@ proc removeEntity*(world: var World, id: Id, mode: OperationMode = Deferred) =
     world.consolidateRemoveEntity(id)
   else:
     for meta in world.component(id, Meta):
-      meta.enqueueOperation(Operation(kind: RemoveEntity, id: id))
+      meta.enqueueOperation(Operation(kind: RemoveEntity))
 
     world.toConsolidate.incl id
-    
+
 
 proc hasEntity*(world: var World, id: Id): bool =
   ## Check if an entity exists.
@@ -671,7 +679,7 @@ proc hasEntity*(world: var World, id: Id): bool =
 
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
-  ## Query entities by components. Components are matched based on the query's type parameter.
+  ## Query for components on entities. Components are matched based on the query's type parameter.
   ## 
   ## **Accessors:**
   ## - **Read access**: match entities that have the component for read only access. Just use the component's type.
@@ -715,6 +723,24 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
 
 
+iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T) =
+  ## Query for components to be removed from entities and components on entities to be removed.
+  runnableExamples:
+    discard
+
+  checkNotATuple(T)
+  var ofType {.global.}: Query[(Meta, T)]
+
+  for (meta, component) in world.query(ofType):
+    for operation in meta.operations:
+      if operation.kind == RemoveEntity:
+        yield (meta, component)
+        break
+      elif operation.kind == RemoveComponents and world.componentIdFrom(T) in operation.compIdsToRemove:
+        yield (meta, component)
+        break
+
+
 proc cleanupEmptyArchetypes*(world: var World) =
   ## Cleans up empty archetypes.
   ## This is useful mostly for deserialization routines.
@@ -742,11 +768,11 @@ proc consolidate*(world: var World) =
       for operation in meta.operations:
         case operation.kind:
         of RemoveEntity:
-          world.consolidateRemoveEntity(operation.id)
+          world.consolidateRemoveEntity(meta.id)
         of AddComponents:
-          world.consolidateAddComponents(operation.id, operation.componentAddersById)
+          world.consolidateAddComponents(meta.id, operation.addersById)
         of RemoveComponents:
-          world.consolidateRemoveComponents(operation.id, operation.componentIdsToRemove)
+          world.consolidateRemoveComponents(meta.id, operation.compIdsToRemove)
 
       meta.clearOperations()
   

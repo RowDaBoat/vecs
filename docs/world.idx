@@ -19,5 +19,6 @@ nim	addEntityWithSpecificId	world.html#addEntityWithSpecificId,World,Id	proc add
 nim	removeEntity	world.html#removeEntity,World,Id,OperationMode	proc removeEntity(world: var World; id: Id; mode: OperationMode = Deferred)		632
 nim	hasEntity	world.html#hasEntity,World,Id	proc hasEntity(world: var World; id: Id): bool		660
 nim	query	world.html#query.i,World,Query[T: tuple]	iterator query[T: tuple](world: var World; query: var Query[T]): T.accessTuple		673
-nim	cleanupEmptyArchetypes	world.html#cleanupEmptyArchetypes,World	proc cleanupEmptyArchetypes(world: var World)		718
-nim	consolidate	world.html#consolidate,World	proc consolidate(world: var World)		738
+nim	queryForRemoval	world.html#queryForRemoval.i,World,typedesc[T]	iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T		718
+nim	cleanupEmptyArchetypes	world.html#cleanupEmptyArchetypes,World	proc cleanupEmptyArchetypes(world: var World)		736
+nim	consolidate	world.html#consolidate,World	proc consolidate(world: var World)		756
