@@ -27,20 +27,31 @@ let entityId = world.addEntity (
 ```
 ```nim
 # Get a component from an entity
+let health = world.readComponent(entityId, Health):
+echo health.health
+```
+```nim
+# Get a component from an entity with write access
 for health in world.component(entityId, Health):
   health.health += 75
 ```
 ```nim
 # Get multiple components from an entity
-for (character, health) in world.component(entityId, (Character, Health)):
+for (character, health) in world.readComponents(entityId, (Character, Health)):
+  echo character.name & "'s health is: " & health.health
+```
+```nim
+# Get multiple components from an entity with write access
+for (character, health) in world.components(entityId, (Write[Character], Write[Health])):
   character.name = "Happy " & character.name
   health.health += 75
 ```
 ```nim
 # Query for components
-var characterWithSwordsQuery = Query[(Character, Sword)]()
+var characterWithSwordsQuery = Query[(Character, Write[Sword])]()
 for (character, sword) in world.query(characterWithSwordsQuery):
-  echo character.name, " has a sword, ", sword.name, "!"
+  sword.attack += 10
+  echo character.name, "'s weapon ", sword.name, " reforged!"
 ```
 ```nim
 # Removing an entity
@@ -55,12 +66,12 @@ world.addComponent(entityId, Shield(name: "Steel Shield", defense: 15))
 world.removeComponent(entityId, Shield)
 ```
 ```nim
-# Using an Id component fills it with the Id of the entity
-# This is useful for embedding references to other entities into components
-let entityId = world.addEntity (Id(), Character(name: "Leon", class: "Paladin"))
+# The `Meta` component is automatically added, and holds the `Id` of the entity.
+# This is useful for embedding references to other entities into components.
+let entityId = world.addEntity((Character(name: "Leon", class: "Paladin"),), Immediate)
 
-for idComponent in world.component(entityId, Id):
-  assert entityId == idComponent
+for meta in world.component(entityId, Meta):
+  assert entityId == meta.id
 ```
 
 
@@ -115,3 +126,4 @@ for (character,) in world.query(disarmedCharacters):
 - [ ] Concurrency support
 - [ ] Zero-allocation?
 - [ ] Spatial and custom queries
+ 

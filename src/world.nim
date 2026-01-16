@@ -725,6 +725,7 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
 
 iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T) =
   ## Query for components to be removed from entities and components on entities to be removed.
+  ## Only read access is allowed.
   runnableExamples:
     discard
 
