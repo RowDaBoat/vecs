@@ -48,16 +48,15 @@ macro WithMeta*[T: tuple](t: typedesc[T]): typedesc =
   result.insert(0, ident"Meta")
 
 
-proc withMeta*[T: tuple](t: T): WithMeta(T) =
-  macro prependMeta(): untyped =
-    var arg = bindSym("t")
-    result = newNimNode(nnkTupleConstr)
-    result.add newCall(ident"Meta")
+macro withMeta*[T: tuple](t: T): untyped =
+  result = newNimNode(nnkTupleConstr)
+  result.add newCall(ident"Meta")
 
-    for i, d in pairs(arg.getTypeImpl):
-      result.add newTree(nnkBracketExpr, arg, newLit(i))
+  let typ = t.getTypeInst()
 
-  result = prependMeta()
+  for i in 0..<typ.len:
+    result.add newTree(nnkBracketExpr, t, newLit(i))
+
 
 proc enqueueOperation*(self: var Meta, operation: Operation) =
   self.operations.add operation
