@@ -143,3 +143,27 @@ suite "World should":
     checkpoint("Marcus should not have a health nor a character component anymore.")
     check not world.hasComponent(marcusId, Health)
     check not world.hasComponent(marcusId, Character)
+
+
+  test "query for deferred component addition":
+    var sword = Weapon(name: "Excalibur", attack: 25)
+    world.addEntity((sword,))
+
+    checkpoint("Query should return nothing before consolidation.")
+    var query: Query[(Meta, Weapon)]
+    var foundCount = 0
+    for (meta, weapon) in world.query(query):
+      inc foundCount
+    check foundCount == 0
+
+    world.consolidate()
+
+    checkpoint("Query should return the component with correct properties after consolidation.")
+    foundCount = 0
+
+    for (meta, weapon) in world.query(query):
+      inc foundCount
+      check weapon.name == "Excalibur"
+      check weapon.attack == 25
+
+    check foundCount == 1

@@ -484,14 +484,15 @@ proc addComponents*[T: tuple](world: var World, id: Id, components: T, mode: Ope
   var entity = world.entities[id.id]
   var addersById = initTable[ComponentId, Adder]()
 
-  for name, value in fieldPairs default T:
+  for name, value in fieldPairs components:
     let componentId = world.componentIdFrom typeof value
 
     if entity.archetypeId.contains(componentId):
       raise newException(ValueError, "Component " & $(typeof value) & " already exists in Entity " & $id)
 
+    let component = value
     let adder = proc(ecsSeq: var EcsSeqAny): int =
-      cast[EcsSeq[typeof value]](ecsSeq).add value
+      cast[EcsSeq[typeof value]](ecsSeq).add component
 
     addersById[componentId] = adder
 
