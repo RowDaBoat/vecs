@@ -85,6 +85,7 @@ suite "World should":
 
     checkpoint("Marcus should have a weapon and a shield.")
     check world.hasComponent(marcusId, Weapon)
+    check world.hasComponent(marcusId, Shield)
 
 
   test "deferr addition of multiple components until consolidation":

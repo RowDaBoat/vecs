@@ -731,15 +731,21 @@ iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T)
 
   checkNotATuple(T)
   var ofType {.global.}: Query[(Meta, T)]
+  var tuples : seq[(Meta, T)] = @[]
 
   for (meta, component) in world.query(ofType):
     for operation in meta.operations:
       if operation.kind == RemoveEntity:
-        yield (meta, component)
+        tuples.add (meta, component)
         break
       elif operation.kind == RemoveComponents and world.componentIdFrom(T) in operation.compIdsToRemove:
-        yield (meta, component)
+        tuples.add (meta, component)
         break
+
+      tuples.add (meta, component)
+
+  for tup in tuples:
+    yield tup
 
 
 proc cleanupEmptyArchetypes*(world: var World) =
