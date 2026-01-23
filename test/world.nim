@@ -143,3 +143,36 @@ suite "World should":
     checkpoint("Marcus should not have a health nor a character component anymore.")
     check not world.hasComponent(marcusId, Health)
     check not world.hasComponent(marcusId, Character)
+
+  test "add a component after a consolidated addition of an entity":
+    var w = World()
+    w.addEntity (Character(name: "Marcus"),)
+    w.consolidate()
+
+    var disarmed {.global.}: Query[(Meta, Character, Not[Weapon])]
+    for (meta, character) in w.query(disarmed):
+      w.addComponent(meta.id, Weapon(name: "Sword", attack: 10))
+
+    w.consolidate()
+
+
+  test "add an entity in immediate mode, and then add component on a query":
+    var w = World()
+    let id = w.addEntity (Character(name: "Marcus"), Immediate)
+
+    var weaponAdded = false
+    var disarmed {.global.}: Query[(Meta, Not[Weapon])]
+    for (meta,) in w.query(disarmed):
+      weaponAdded = true
+      w.addComponent(meta.id, Weapon(name: "Sword", attack: 10))
+
+    checkpoint("Weapon should have been added in the query.")
+    check weaponAdded
+
+    checkpoint("Marcus should not have a weapon yet.")
+    check not w.hasComponent(id, Weapon)
+
+    w.consolidate()
+
+    checkpoint("Marcus should have a weapon.")
+    check w.hasComponent(id, Weapon)

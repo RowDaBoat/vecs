@@ -771,7 +771,10 @@ proc consolidate*(world: var World) =
   ## Consolidates all additions and removals in the world.
   for id in world.toConsolidate:
     for meta in world.component(id, Meta):
-      for operation in meta.operations:
+      let operations = meta.operations
+      meta.clearOperations()
+
+      for operation in operations:
         case operation.kind:
         of RemoveEntity:
           world.consolidateRemoveEntity(meta.id)
@@ -780,6 +783,4 @@ proc consolidate*(world: var World) =
         of RemoveComponents:
           world.consolidateRemoveComponents(meta.id, operation.compIdsToRemove)
 
-      meta.clearOperations()
-  
   world.toConsolidate.clear()
