@@ -743,8 +743,6 @@ iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T)
         tuples.add (meta, component)
         break
 
-      tuples.add (meta, component)
-
   for tup in tuples:
     yield tup
 
