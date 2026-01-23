@@ -4,7 +4,7 @@ import tables
 import queries
 
 
-proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id, seq[JsonNode]] =
+proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[EntityId, seq[JsonNode]] =
   for name, value in fieldPairs default T:
     var query: Query[(Meta, typeof value)]
 
@@ -17,7 +17,7 @@ proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Id,
       result[meta.id].add jsonComponent
 
 
-proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
+proc createJsonObject(entities: Table[EntityId, seq[JsonNode]]): JsonNode =
   result = newJObject()
   result["entities"] = newJArray()
 
@@ -32,10 +32,10 @@ proc createJsonObject(entities: Table[Id, seq[JsonNode]]): JsonNode =
     result["entities"].add entity
 
 
-iterator iteratetJsonComponents(json: JsonNode, world: var World): (Id, JsonNode, string) =
+iterator iteratetJsonComponents(json: JsonNode, world: var World): (EntityId, JsonNode, string) =
   for entity in json["entities"]:
     let intId = entity["id"].getInt
-    let id = Id(id: intId)
+    let id = EntityId(id: intId)
     let components = entity["components"]
     world.addEntityWithSpecificId id
 
@@ -46,7 +46,7 @@ iterator iteratetJsonComponents(json: JsonNode, world: var World): (Id, JsonNode
       yield (id, jsonComponent, componentType)
 
 
-proc addComponentFromJson[T: tuple](world: var World, id: Id, jsonComponent: JsonNode, componentType: string, tup: typedesc[T]) =
+proc addComponentFromJson[T: tuple](world: var World, id: EntityId, jsonComponent: JsonNode, componentType: string, tup: typedesc[T]) =
   for name, value in fieldPairs default T:
     if $(typeof value) == componentType:
       let componentToAdd = jsonComponent.to(typeof value)

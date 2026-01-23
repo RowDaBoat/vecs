@@ -8,7 +8,7 @@ import macros, tables, intsets
 import archetype, ecsSeq
 
 
-type Id* = object
+type EntityId* = object
   id*: int = -1
 
 
@@ -34,11 +34,11 @@ type OperationMode* = enum
 
 
 type Meta* = object
-  id*: Id
+  id*: EntityId
   operations: seq[Operation]
 
 
-proc id*(meta: Meta): Id =
+proc id*(meta: Meta): EntityId =
   meta.id
 
 
