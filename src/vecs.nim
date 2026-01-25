@@ -4,5 +4,5 @@
 #
 
 ## `vecs` is a free open source ECS library for Nim.
-import world, show, serialization, queries
-export world, show, serialization, queries
+import world, show, serialization, queries, id
+export world, show, serialization, queries, id

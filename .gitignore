@@ -3,3 +3,7 @@ bin
 *.local.*
 *.local
 
+test/id
+test/queries
+test/world
+

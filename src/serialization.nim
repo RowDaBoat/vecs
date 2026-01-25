@@ -23,7 +23,7 @@ proc createJsonObject(entities: Table[EntityId, seq[JsonNode]]): JsonNode =
 
   for (id, components) in entities.pairs:
     var entity = newJObject()
-    entity["id"] = newJInt(id.id)
+    entity["id"] = newJInt(id.value)
     entity["components"] = newJArray()
 
     for component in components:
@@ -35,7 +35,7 @@ proc createJsonObject(entities: Table[EntityId, seq[JsonNode]]): JsonNode =
 iterator iteratetJsonComponents(json: JsonNode, world: var World): (EntityId, JsonNode, string) =
   for entity in json["entities"]:
     let intId = entity["id"].getInt
-    let id = EntityId(id: intId)
+    let id = EntityId(value: intId)
     let components = entity["components"]
     world.addEntityWithSpecificId id
 

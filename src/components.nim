@@ -9,7 +9,7 @@ import archetype, ecsSeq
 
 
 type EntityId* = object
-  id*: int = -1
+  value*: int = -1
 
 
 type OperationKind* = enum

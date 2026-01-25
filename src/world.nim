@@ -56,7 +56,7 @@ proc entityAlreadyExists(id: EntityId): ref Exception =
 
 # Checks
 proc checkIdIsValid(id: EntityId) =
-  if id.id < 0:
+  if id.value < 0:
     raise idIsInvalid(id)
 
 
@@ -66,12 +66,12 @@ template checkNotATuple[T](tup: typedesc[T]) =
 
 
 proc checkEntityExists(world: var World, id: EntityId) =
-  if not world.entities.has(id.id):
+  if not world.entities.has(id.value):
     raise entityDoesNotExist(id)
 
 
 proc checkEntityDoesNotExist(world: var World, id: EntityId) =
-  if world.entities.has(id.id):
+  if world.entities.has(id.value):
     raise entityAlreadyExists(id)
 
 
@@ -253,15 +253,15 @@ macro buildAccessTuple(world: var World, t: typedesc, archetype: untyped, archet
 
 
 proc consolidateRemoveEntity(world: var World, id: EntityId) =
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   var archetype = world.archetypes[entity.archetypeId]
 
   archetype.remove entity.archetypeEntityId
-  world.entities.del id.id
+  world.entities.del id.value
 
 
 proc consolidateAddComponents(world: var World, id: EntityId, componentAddersById: Table[ComponentId, Adder]) =
-  var entity = world.entities[id.id]
+  var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeId]
 
   var componentIds: seq[ComponentId] = @[]
@@ -273,11 +273,11 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentAddersByI
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.moveAdding(entity.archetypeEntityId, nextArchetype, componentAddersById)
-  world.entities[id.id] = entity
+  world.entities[id.value] = entity
 
 
 proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove: PackedSet[ComponentId]) =
-  var entity = world.entities[id.id]
+  var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeId]
   var componentIds: seq[ComponentId]
 
@@ -288,7 +288,7 @@ proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove
 
   entity.archetypeId = nextArchetype.id
   entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
-  world.entities[id.id] = entity
+  world.entities[id.value] = entity
 
 
 iterator archetypes*(world: var World): Archetype =
@@ -325,7 +325,7 @@ proc hasComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bo
   checkNotATuple(T)
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let compId = world.componentIdFrom typeof compDesc
   compId in entity.archetypeId
 
@@ -345,7 +345,7 @@ proc readComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T
   if not world.hasComponent(id, compDesc):
     raise componentDoesNotExist(id, compDesc)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
   let compId = world.componentIdFrom typeof compDesc
@@ -372,7 +372,7 @@ iterator component*[T](world: var World, id: EntityId, compDesc: typedesc[T]): v
   checkNotATuple(T)
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
   let compId = world.componentIdFrom typeof T
@@ -402,7 +402,7 @@ proc readComponents*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
 
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
 
@@ -448,7 +448,7 @@ iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
 
   world.checkEntityExists(id)
 
-  let entity = world.entities[id.id]
+  let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
 
@@ -481,7 +481,7 @@ proc addComponents*[T: tuple](world: var World, id: EntityId, components: T, mod
 
   world.checkEntityExists(id)
 
-  var entity = world.entities[id.id]
+  var entity = world.entities[id.value]
   var addersById = initTable[ComponentId, Adder]()
 
   for name, value in fieldPairs components:
@@ -543,7 +543,7 @@ proc removeComponents*[T: tuple](world: var World, id: EntityId, descriptions: t
 
   world.checkEntityExists(id)
 
-  var entity = world.entities[id.id]
+  var entity = world.entities[id.value]
   var compIdsToRemove: PackedSet[ComponentId]
 
   for name, typ in fieldPairs default T:
@@ -602,7 +602,7 @@ proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode =
     let archetypeEntityId = archetype.add withMeta(components)
     let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
     let id = world.entities.add entity
-    result = EntityId(id: id)
+    result = EntityId(value: id)
 
     for meta in world.component(result, Meta):
       meta.id = result
@@ -611,7 +611,7 @@ proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode =
     var archetypeEntityId = archetype.add (Meta(),)
     let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
     let id = world.entities.add entity
-    result = EntityId(id: id)
+    result = EntityId(value: id)
 
     for meta in world.component(result, Meta):
       meta.id = result
@@ -636,7 +636,7 @@ proc addEntityWithSpecificId*(world: var World, id: EntityId) =
   var archetype = world.archetypeFrom (Meta,)
   let archetypeEntityId = archetype.add (Meta(id: id),)
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  world.entities[id.id] = entity
+  world.entities[id.value] = entity
 
 proc removeEntity*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
   ## Remove an entity from the world.
@@ -676,7 +676,7 @@ proc hasEntity*(world: var World, id: EntityId): bool =
     assert w.hasEntity(marcus) == true
     assert w.hasEntity(Id(id: 10)) == false
 
-  world.entities.has(id.id)
+  world.entities.has(id.value)
 
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
