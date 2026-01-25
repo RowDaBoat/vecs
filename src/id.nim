@@ -1,5 +1,6 @@
 import world
 
+
 type Id*[T] = object
   value: int = -1
 
@@ -34,3 +35,11 @@ template readComponents*[T: tuple](world: var World, id: Id[T]): T =
 
 template components*[T: tuple](world: var World, id: Id[T]): auto =
   world.components(id.entityId, T)
+
+
+template removeComponents*[T: tuple](world: var World, id: Id[T], mode: OperationMode = Deferred) =
+  world.removeComponents(id.entityId, T, mode)
+
+
+template removeComponent*[T](world: var World, id: Id[T], mode: OperationMode = Deferred) =
+  world.removeComponent(id.entityId, T, mode)
