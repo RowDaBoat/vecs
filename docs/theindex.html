@@ -25,7 +25,7 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="archetype.html">archetype</a>, <a href="component.html">component</a>, <a href="components.html">components</a>, <a href="ecsSeq.html">ecsSeq</a>, <a href="entity.html">entity</a>, <a href="queries.html">queries</a>, <a href="queries/opNot.html">queries/opNot</a>, <a href="queries/opOpt.html">queries/opOpt</a>, <a href="queries/opWrite.html">queries/opWrite</a>, <a href="queries/query.html">queries/query</a>, <a href="query.html">query</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="texttable.html">texttable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="archetype.html">archetype</a>, <a href="component.html">component</a>, <a href="components.html">components</a>, <a href="ecsSeq.html">ecsSeq</a>, <a href="entity.html">entity</a>, <a href="id.html">id</a>, <a href="queries.html">queries</a>, <a href="queries/opNot.html">queries/opNot</a>, <a href="queries/opOpt.html">queries/opOpt</a>, <a href="queries/opWrite.html">queries/opWrite</a>, <a href="queries/query.html">queries/query</a>, <a href="query.html">query</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="textTable.html">textTable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc `$`(id: ComponentId): string" href="archetype.html#%24%2CComponentId">archetype: proc `$`(id: ComponentId): string</a></li>
@@ -46,6 +46,12 @@
 <li><a class="reference external"
           data-doc-search-tag="ecsSeq: proc `[]`[T](self: EcsSeq[T]; index: int): var T" href="ecsSeq.html#%5B%5D%2CEcsSeq%5BT%5D%2Cint">ecsSeq: proc `[]`[T](self: EcsSeq[T]; index: int): var T</a></li>
           </ul></dd>
+<dt><a name="%60of%60" href="#%60of%60"><span>`of`:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="id: proc `of`[T](id: EntityId; desc: typedesc[T]): Id[T]" href="id.html#of%2CEntityId%2Ctypedesc%5BT%5D">id: proc `of`[T](id: EntityId; desc: typedesc[T]): Id[T]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="id: proc `of`[T](id: Id[auto]; desc: typedesc[T]): Id[T]" href="id.html#of%2CId%5Bauto%5D%2Ctypedesc%5BT%5D">id: proc `of`[T](id: Id[auto]; desc: typedesc[T]): Id[T]</a></li>
+          </ul></dd>
 <dt><a name="add" href="#add"><span>add:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc add[T: tuple](archetype: var Archetype; components: sink T): int" href="archetype.html#add%2CArchetype%2CsinkT">archetype: proc add[T: tuple](archetype: var Archetype; components: sink T): int</a></li>
@@ -53,36 +59,28 @@
           data-doc-search-tag="archetype: proc add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int" href="archetype.html#add%2CArchetype%2CTable%5BComponentId%2CAdder%5D">archetype: proc add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int</a></li>
           <li><a class="reference external"
           data-doc-search-tag="ecsSeq: proc add[T](self: EcsSeq[T]; item: T): int" href="ecsSeq.html#add%2CEcsSeq%5BT%5D%2CT">ecsSeq: proc add[T](self: EcsSeq[T]; item: T): int</a></li>
-          </ul></dd>
-<dt><a name="addComponent" href="#addComponent"><span>addComponent:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc addComponent[T](world: var World; id: Id; component: T;
-                mode: OperationMode = Deferred)" href="world.html#addComponent%2CWorld%2CId%2CT%2COperationMode">world: proc addComponent[T](world: var World; id: Id; component: T;
-                mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc add[T: tuple](world: var World; id: EntityId; components: T;
+              mode: OperationMode = Deferred)" href="world.html#add%2CWorld%2CEntityId%2CT%2COperationMode">world: proc add[T: tuple](world: var World; id: EntityId; components: T;
+              mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc add[T](world: var World; id: EntityId; component: T;
+       mode: OperationMode = Deferred)" href="world.html#add%2CWorld%2CEntityId%2CT%2COperationMode_2">world: proc add[T](world: var World; id: EntityId; component: T;
+       mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc add[T: tuple](world: var World; components: T; mode: OperationMode = Deferred): EntityId" href="world.html#add%2CWorld%2CT%2COperationMode">world: proc add[T: tuple](world: var World; components: T; mode: OperationMode = Deferred): EntityId</a></li>
           </ul></dd>
 <dt><a name="AddComponents" href="#AddComponents"><span>AddComponents:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="components: OperationKind.AddComponents" href="components.html#AddComponents">components: OperationKind.AddComponents</a></li>
           </ul></dd>
-<dt><a name="addComponents" href="#addComponents"><span>addComponents:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc addComponents[T: tuple](world: var World; id: Id; components: T;
-                        mode: OperationMode = Deferred)" href="world.html#addComponents%2CWorld%2CId%2CT%2COperationMode">world: proc addComponents[T: tuple](world: var World; id: Id; components: T;
-                        mode: OperationMode = Deferred)</a></li>
-          </ul></dd>
-<dt><a name="addEntity" href="#addEntity"><span>addEntity:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc addEntity[T: tuple](world: var World; components: T;
-                    mode: OperationMode = Deferred): Id" href="world.html#addEntity%2CWorld%2CT%2COperationMode">world: proc addEntity[T: tuple](world: var World; components: T;
-                    mode: OperationMode = Deferred): Id</a></li>
-          </ul></dd>
-<dt><a name="addEntityWithSpecificId" href="#addEntityWithSpecificId"><span>addEntityWithSpecificId:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc addEntityWithSpecificId(world: var World; id: Id)" href="world.html#addEntityWithSpecificId%2CWorld%2CId">world: proc addEntityWithSpecificId(world: var World; id: Id)</a></li>
-          </ul></dd>
 <dt><a name="Adder" href="#Adder"><span>Adder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ecsSeq: type Adder" href="ecsSeq.html#Adder">ecsSeq: type Adder</a></li>
+          </ul></dd>
+<dt><a name="addWithSpecificId" href="#addWithSpecificId"><span>addWithSpecificId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="world: proc addWithSpecificId(world: var World; id: EntityId)" href="world.html#addWithSpecificId%2CWorld%2CEntityId">world: proc addWithSpecificId(world: var World; id: EntityId)</a></li>
           </ul></dd>
 <dt><a name="Archetype" href="#Archetype"><span>Archetype:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -112,10 +110,6 @@
 <li><a class="reference external"
           data-doc-search-tag="components: proc clearOperations(self: var Meta)" href="components.html#clearOperations%2CMeta">components: proc clearOperations(self: var Meta)</a></li>
           </ul></dd>
-<dt><a name="component" href="#component"><span>component:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: iterator component[T](world: var World; id: Id; compDesc: typedesc[T]): var T" href="world.html#component.i%2CWorld%2CId%2Ctypedesc%5BT%5D">world: iterator component[T](world: var World; id: Id; compDesc: typedesc[T]): var T</a></li>
-          </ul></dd>
 <dt><a name="ComponentId" href="#ComponentId"><span>ComponentId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: type ComponentId" href="archetype.html#ComponentId">archetype: type ComponentId</a></li>
@@ -130,7 +124,9 @@
 <li><a class="reference external"
           data-doc-search-tag="archetype: iterator components[T](archetype: Archetype; componentId: ComponentId): T" href="archetype.html#components.i%2CArchetype%2CComponentId">archetype: iterator components[T](archetype: Archetype; componentId: ComponentId): T</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="world: iterator components[T: tuple](world: var World; id: Id; tup: typedesc[T]): tup.accessTuple" href="world.html#components.i%2CWorld%2CId%2Ctypedesc%5BT%5D">world: iterator components[T: tuple](world: var World; id: Id; tup: typedesc[T]): tup.accessTuple</a></li>
+          data-doc-search-tag="id: template components[T: tuple](world: var World; id: Id[T]): auto" href="id.html#components.t%2CWorld%2CId%5BT%3A%20tuple%5D">id: template components[T: tuple](world: var World; id: Id[T]): auto</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: iterator components[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): tup.accessTuple" href="world.html#components.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D">world: iterator components[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): tup.accessTuple</a></li>
           </ul></dd>
 <dt><a name="consolidate" href="#consolidate"><span>consolidate:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -144,8 +140,8 @@
           </ul></dd>
 <dt><a name="createEntityTable" href="#createEntityTable"><span>createEntityTable:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="serialization: proc createEntityTable[T: tuple](world: var World; tup: typedesc[T]): Table[Id,
-    seq[JsonNode]]" href="serialization.html#createEntityTable%2CWorld%2Ctypedesc%5BT%5D">serialization: proc createEntityTable[T: tuple](world: var World; tup: typedesc[T]): Table[Id,
+          data-doc-search-tag="serialization: proc createEntityTable[T: tuple](world: var World; tup: typedesc[T]): Table[EntityId,
+    seq[JsonNode]]" href="serialization.html#createEntityTable%2CWorld%2Ctypedesc%5BT%5D">serialization: proc createEntityTable[T: tuple](world: var World; tup: typedesc[T]): Table[EntityId,
     seq[JsonNode]]</a></li>
           </ul></dd>
 <dt><a name="Deferred" href="#Deferred"><span>Deferred:</span></a></dt><dd><ul class="simple">
@@ -192,6 +188,14 @@
 <li><a class="reference external"
           data-doc-search-tag="entity: object Entity" href="entity.html#Entity">entity: object Entity</a></li>
           </ul></dd>
+<dt><a name="EntityId" href="#EntityId"><span>EntityId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="components: object EntityId" href="components.html#EntityId">components: object EntityId</a></li>
+          </ul></dd>
+<dt><a name="entityId" href="#entityId"><span>entityId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="id: proc entityId[T](id: Id[T]): EntityId" href="id.html#entityId%2CId%5BT%5D">id: proc entityId[T](id: Id[T]): EntityId</a></li>
+          </ul></dd>
 <dt><a name="fieldTypes" href="#fieldTypes"><span>fieldTypes:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: macro fieldTypes(tup: typed; body: untyped): untyped" href="archetype.html#fieldTypes.m%2Ctyped%2Cuntyped">archetype: macro fieldTypes(tup: typed; body: untyped): untyped</a></li>
@@ -199,26 +203,24 @@
 <dt><a name="has" href="#has"><span>has:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ecsSeq: proc has(self: EcsSeqAny; index: int): bool" href="ecsSeq.html#has%2CEcsSeqAny%2Cint">ecsSeq: proc has(self: EcsSeqAny; index: int): bool</a></li>
-          </ul></dd>
-<dt><a name="hasComponent" href="#hasComponent"><span>hasComponent:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc hasComponent[T](world: var World; id: Id; compDesc: typedesc[T]): bool" href="world.html#hasComponent%2CWorld%2CId%2Ctypedesc%5BT%5D">world: proc hasComponent[T](world: var World; id: Id; compDesc: typedesc[T]): bool</a></li>
-          </ul></dd>
-<dt><a name="hasEntity" href="#hasEntity"><span>hasEntity:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc hasEntity(world: var World; id: Id): bool" href="world.html#hasEntity%2CWorld%2CId">world: proc hasEntity(world: var World; id: Id): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="id: template has[T](world: var World; id: Id[T]): bool" href="id.html#has.t%2CWorld%2CId%5BT%5D">id: template has[T](world: var World; id: Id[T]): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc has(world: var World; id: EntityId): bool" href="world.html#has%2CWorld%2CEntityId">world: proc has(world: var World; id: EntityId): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc has[T](world: var World; id: EntityId; compDesc: typedesc[T]): bool" href="world.html#has%2CWorld%2CEntityId%2Ctypedesc%5BT%5D">world: proc has[T](world: var World; id: EntityId; compDesc: typedesc[T]): bool</a></li>
           </ul></dd>
 <dt><a name="hash" href="#hash"><span>hash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="world: proc hash(id: ArchetypeId): Hash" href="world.html#hash%2CArchetypeId">world: proc hash(id: ArchetypeId): Hash</a></li>
           </ul></dd>
-<dt><a name="Id" href="#Id"><span>Id:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="components: object Id" href="components.html#Id">components: object Id</a></li>
-          </ul></dd>
 <dt><a name="id" href="#id"><span>id:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: proc id(meta: Meta): Id" href="components.html#id%2CMeta">components: proc id(meta: Meta): Id</a></li>
+          data-doc-search-tag="components: proc id(meta: Meta): EntityId" href="components.html#id%2CMeta">components: proc id(meta: Meta): EntityId</a></li>
+          </ul></dd>
+<dt><a name="Id" href="#Id"><span>Id:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="id: object Id" href="id.html#Id">id: object Id</a></li>
           </ul></dd>
 <dt><a name="ids" href="#ids"><span>ids:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -326,43 +328,43 @@
           </ul></dd>
 <dt><a name="queryForRemoval" href="#queryForRemoval"><span>queryForRemoval:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T" href="world.html#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D">world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T</a></li>
+          data-doc-search-tag="world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)" href="world.html#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D">world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)</a></li>
           </ul></dd>
-<dt><a name="readComponent" href="#readComponent"><span>readComponent:</span></a></dt><dd><ul class="simple">
+<dt><a name="read" href="#read"><span>read:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="world: proc readComponent[T](world: var World; id: Id; compDesc: typedesc[T]): T" href="world.html#readComponent%2CWorld%2CId%2Ctypedesc%5BT%5D">world: proc readComponent[T](world: var World; id: Id; compDesc: typedesc[T]): T</a></li>
-          </ul></dd>
-<dt><a name="readComponents" href="#readComponents"><span>readComponents:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc readComponents[T: tuple](world: var World; id: Id; tup: typedesc[T]): T" href="world.html#readComponents%2CWorld%2CId%2Ctypedesc%5BT%5D">world: proc readComponents[T: tuple](world: var World; id: Id; tup: typedesc[T]): T</a></li>
+          data-doc-search-tag="id: template read[T: tuple](world: var World; id: Id[T]): T" href="id.html#read.t%2CWorld%2CId%5BT%3A%20tuple%5D">id: template read[T: tuple](world: var World; id: Id[T]): T</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="id: template read[T](world: var World; id: Id[T]): T" href="id.html#read.t%2CWorld%2CId%5BT%5D">id: template read[T](world: var World; id: Id[T]): T</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc read[T](world: var World; id: EntityId; compDesc: typedesc[T]): T" href="world.html#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D">world: proc read[T](world: var World; id: EntityId; compDesc: typedesc[T]): T</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc read[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): T" href="world.html#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D_2">world: proc read[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): T</a></li>
           </ul></dd>
 <dt><a name="remove" href="#remove"><span>remove:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc remove(archetype: var Archetype; archetypeEntityId: int)" href="archetype.html#remove%2CArchetype%2Cint">archetype: proc remove(archetype: var Archetype; archetypeEntityId: int)</a></li>
-          </ul></dd>
-<dt><a name="removeComponent" href="#removeComponent"><span>removeComponent:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc removeComponent[T](world: var World; id: Id; compDesc: typedesc[T];
-                   mode: OperationMode = Deferred)" href="world.html#removeComponent%2CWorld%2CId%2Ctypedesc%5BT%5D%2COperationMode">world: proc removeComponent[T](world: var World; id: Id; compDesc: typedesc[T];
-                   mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="id: template remove[T: tuple](world: var World; id: Id[T]; mode: OperationMode = Deferred)" href="id.html#remove.t%2CWorld%2CId%5BT%3A%20tuple%5D%2COperationMode">id: template remove[T: tuple](world: var World; id: Id[T]; mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="id: template remove[T](world: var World; id: Id[T]; mode: OperationMode = Deferred)" href="id.html#remove.t%2CWorld%2CId%5BT%5D%2COperationMode">id: template remove[T](world: var World; id: Id[T]; mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc remove(world: var World; id: EntityId; mode: OperationMode = Deferred)" href="world.html#remove%2CWorld%2CEntityId%2COperationMode">world: proc remove(world: var World; id: EntityId; mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc remove[T: tuple](world: var World; id: EntityId; descriptions: typedesc[T];
+                 mode: OperationMode = Deferred)" href="world.html#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode">world: proc remove[T: tuple](world: var World; id: EntityId; descriptions: typedesc[T];
+                 mode: OperationMode = Deferred)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="world: proc remove[T](world: var World; id: EntityId; compDesc: typedesc[T];
+          mode: OperationMode = Deferred)" href="world.html#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode_2">world: proc remove[T](world: var World; id: EntityId; compDesc: typedesc[T];
+          mode: OperationMode = Deferred)</a></li>
           </ul></dd>
 <dt><a name="RemoveComponents" href="#RemoveComponents"><span>RemoveComponents:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="components: OperationKind.RemoveComponents" href="components.html#RemoveComponents">components: OperationKind.RemoveComponents</a></li>
           </ul></dd>
-<dt><a name="removeComponents" href="#removeComponents"><span>removeComponents:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc removeComponents[T: tuple](world: var World; id: Id; descriptions: typedesc[T];
-                           mode: OperationMode = Deferred)" href="world.html#removeComponents%2CWorld%2CId%2Ctypedesc%5BT%5D%2COperationMode">world: proc removeComponents[T: tuple](world: var World; id: Id; descriptions: typedesc[T];
-                           mode: OperationMode = Deferred)</a></li>
-          </ul></dd>
 <dt><a name="RemoveEntity" href="#RemoveEntity"><span>RemoveEntity:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="components: OperationKind.RemoveEntity" href="components.html#RemoveEntity">components: OperationKind.RemoveEntity</a></li>
-          </ul></dd>
-<dt><a name="removeEntity" href="#removeEntity"><span>removeEntity:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="world: proc removeEntity(world: var World; id: Id; mode: OperationMode = Deferred)" href="world.html#removeEntity%2CWorld%2CId%2COperationMode">world: proc removeEntity(world: var World; id: Id; mode: OperationMode = Deferred)</a></li>
           </ul></dd>
 <dt><a name="reset" href="#reset"><span>reset:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -386,7 +388,7 @@
           </ul></dd>
 <dt><a name="textTable" href="#textTable"><span>textTable:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="texttable: proc textTable(data: seq[seq[seq[string]]]): string" href="texttable.html#textTable%2Cseq%5Bseq%5Bseq%5Bstring%5D%5D%5D">texttable: proc textTable(data: seq[seq[seq[string]]]): string</a></li>
+          data-doc-search-tag="textTable: proc textTable(data: seq[seq[seq[string]]]): string" href="textTable.html#textTable%2Cseq%5Bseq%5Bseq%5Bstring%5D%5D%5D">textTable: proc textTable(data: seq[seq[seq[string]]]): string</a></li>
           </ul></dd>
 <dt><a name="typeHash" href="#typeHash"><span>typeHash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -394,7 +396,7 @@
           </ul></dd>
 <dt><a name="withMeta" href="#withMeta"><span>withMeta:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: proc withMeta[T: tuple](t: T): WithMeta(T)" href="components.html#withMeta%2CT">components: proc withMeta[T: tuple](t: T): WithMeta(T)</a></li>
+          data-doc-search-tag="components: macro withMeta[T: tuple](t: T): untyped" href="components.html#withMeta.m%2CT">components: macro withMeta[T: tuple](t: T): untyped</a></li>
           </ul></dd>
 <dt><a name="WithMeta" href="#WithMeta"><span>WithMeta:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -404,17 +406,25 @@
 <li><a class="reference external"
           data-doc-search-tag="world: object World" href="world.html#World">world: object World</a></li>
           </ul></dd>
+<dt><a name="write" href="#write"><span>write:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="id: template write[T](world: var World; id: Id[T]): var T" href="id.html#write.t%2CWorld%2CId%5BT%5D">id: template write[T](world: var World; id: Id[T]): var T</a></li>
+          </ul></dd>
 <dt><a name="Write" href="#Write"><span>Write:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: object Write" href="queries.html#Write">queries: object Write</a></li>
           <li><a class="reference external"
           data-doc-search-tag="opWrite: object Write" href="queries/opWrite.html#Write">opWrite: object Write</a></li>
           </ul></dd>
+<dt><a name="write" href="#write"><span>write:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="world: iterator write[T](world: var World; id: EntityId; compDesc: typedesc[T]): var T" href="world.html#write.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D">world: iterator write[T](world: var World; id: EntityId; compDesc: typedesc[T]): var T</a></li>
+          </ul></dd>
 </dl>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-16 01:16:04 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-26 23:15:19 UTC</small>
       </div>
     </div>
   </div>

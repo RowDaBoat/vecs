@@ -364,7 +364,7 @@ iterator write*[T](world: var World, id: EntityId, compDesc: typedesc[T]): var T
     var w = World()
     let marcus = w.add((Character(name: "Marcus"),), Immediate)
 
-    for character in w.component(marcus, Character):
+    for character in w.write(marcus, Character):
       character.name = "Mark"
 
     assert w.read(marcus, Character).name == "Mark"
@@ -626,7 +626,7 @@ proc addWithSpecificId*(world: var World, id: EntityId) =
     import examples
 
     var w = World()
-    w.addWithSpecificId(Id(id: 10))
+    w.addWithSpecificId(EntityId(value: 10))
 
   checkIdIsValid(id)
   world.checkEntityDoesNotExist(id)
@@ -672,7 +672,7 @@ proc has*(world: var World, id: EntityId): bool =
     var w = World()
     let marcus = w.add (Character(name: "Marcus"),)
     assert w.has(marcus) == true
-    assert w.has(Id(id: 10)) == false
+    assert w.has(EntityId(value: 10)) == false
 
   world.entities.has(id.value)
 

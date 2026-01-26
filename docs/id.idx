@@ -1,0 +1,15 @@
+nimTitle	id	id.html	module src/id		0
+nim	Id	id.html#Id	object Id		4
+nim	`of`	id.html#of,EntityId,typedesc[T]	proc `of`[T](id: EntityId; desc: typedesc[T]): Id[T]		8
+nim	`of`	id.html#of,Id[auto],typedesc[T]	proc `of`[T](id: Id[auto]; desc: typedesc[T]): Id[T]		12
+nim	entityId	id.html#entityId,Id[T]	proc entityId[T](id: Id[T]): EntityId		16
+nim	has	id.html#has.t,World,Id[T]	template has[T](world: var World; id: Id[T]): bool		20
+nim	read	id.html#read.t,World,Id[T]	template read[T](world: var World; id: Id[T]): T		24
+nim	write	id.html#write.t,World,Id[T]	template write[T](world: var World; id: Id[T]): var T		28
+nim	read	id.html#read.t,World,Id[T: tuple]	template read[T: tuple](world: var World; id: Id[T]): T		32
+nim	components	id.html#components.t,World,Id[T: tuple]	template components[T: tuple](world: var World; id: Id[T]): auto		36
+nim	remove	id.html#remove.t,World,Id[T: tuple],OperationMode	template remove[T: tuple](world: var World; id: Id[T]; mode: OperationMode = Deferred)		40
+nim	remove	id.html#remove.t,World,Id[T],OperationMode	template remove[T](world: var World; id: Id[T]; mode: OperationMode = Deferred)		44
+nimgrp	of	id.html#of-procs-all	proc		8
+nimgrp	remove	id.html#remove-templates-all	template		40
+nimgrp	read	id.html#read-templates-all	template		24

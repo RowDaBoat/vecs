@@ -71,26 +71,18 @@
   <li><a class="reference" href="#%3D%3D%2CComponentId%2CComponentId" title="`==`(a, b: ComponentId): bool">`==`(a, b: ComponentId): bool</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">addComponent
-  <li><a class="reference" href="#addComponent%2CWorld%2CId%2CT%2COperationMode" title="addComponent[T](world: var World; id: Id; component: T;
-                mode: OperationMode = Deferred)">addComponent[T](world: var World; id: Id; component: T;
-                mode: OperationMode = Deferred)</a></li>
+<ul class="simple nested-toc-section">add
+  <li><a class="reference" href="#add%2CWorld%2CT%2COperationMode" title="add[T: tuple](world: var World; components: T; mode: OperationMode = Deferred): EntityId">add[T: tuple](world: var World; components: T; mode: OperationMode = Deferred): EntityId</a></li>
+<li><a class="reference" href="#add%2CWorld%2CEntityId%2CT%2COperationMode" title="add[T: tuple](world: var World; id: EntityId; components: T;
+              mode: OperationMode = Deferred)">add[T: tuple](world: var World; id: EntityId; components: T;
+              mode: OperationMode = Deferred)</a></li>
+<li><a class="reference" href="#add%2CWorld%2CEntityId%2CT%2COperationMode_2" title="add[T](world: var World; id: EntityId; component: T;
+       mode: OperationMode = Deferred)">add[T](world: var World; id: EntityId; component: T;
+       mode: OperationMode = Deferred)</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">addComponents
-  <li><a class="reference" href="#addComponents%2CWorld%2CId%2CT%2COperationMode" title="addComponents[T: tuple](world: var World; id: Id; components: T;
-                        mode: OperationMode = Deferred)">addComponents[T: tuple](world: var World; id: Id; components: T;
-                        mode: OperationMode = Deferred)</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">addEntity
-  <li><a class="reference" href="#addEntity%2CWorld%2CT%2COperationMode" title="addEntity[T: tuple](world: var World; components: T;
-                    mode: OperationMode = Deferred): Id">addEntity[T: tuple](world: var World; components: T;
-                    mode: OperationMode = Deferred): Id</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">addEntityWithSpecificId
-  <li><a class="reference" href="#addEntityWithSpecificId%2CWorld%2CId" title="addEntityWithSpecificId(world: var World; id: Id)">addEntityWithSpecificId(world: var World; id: Id)</a></li>
+<ul class="simple nested-toc-section">addWithSpecificId
+  <li><a class="reference" href="#addWithSpecificId%2CWorld%2CEntityId" title="addWithSpecificId(world: var World; id: EntityId)">addWithSpecificId(world: var World; id: EntityId)</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">cleanupEmptyArchetypes
@@ -105,40 +97,28 @@
   <li><a class="reference" href="#consolidate%2CWorld" title="consolidate(world: var World)">consolidate(world: var World)</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">hasComponent
-  <li><a class="reference" href="#hasComponent%2CWorld%2CId%2Ctypedesc%5BT%5D" title="hasComponent[T](world: var World; id: Id; compDesc: typedesc[T]): bool">hasComponent[T](world: var World; id: Id; compDesc: typedesc[T]): bool</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">hasEntity
-  <li><a class="reference" href="#hasEntity%2CWorld%2CId" title="hasEntity(world: var World; id: Id): bool">hasEntity(world: var World; id: Id): bool</a></li>
+<ul class="simple nested-toc-section">has
+  <li><a class="reference" href="#has%2CWorld%2CEntityId" title="has(world: var World; id: EntityId): bool">has(world: var World; id: EntityId): bool</a></li>
+<li><a class="reference" href="#has%2CWorld%2CEntityId%2Ctypedesc%5BT%5D" title="has[T](world: var World; id: EntityId; compDesc: typedesc[T]): bool">has[T](world: var World; id: EntityId; compDesc: typedesc[T]): bool</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">hash
   <li><a class="reference" href="#hash%2CArchetypeId" title="hash(id: ArchetypeId): Hash">hash(id: ArchetypeId): Hash</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">readComponent
-  <li><a class="reference" href="#readComponent%2CWorld%2CId%2Ctypedesc%5BT%5D" title="readComponent[T](world: var World; id: Id; compDesc: typedesc[T]): T">readComponent[T](world: var World; id: Id; compDesc: typedesc[T]): T</a></li>
+<ul class="simple nested-toc-section">read
+  <li><a class="reference" href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D_2" title="read[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): T">read[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): T</a></li>
+<li><a class="reference" href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D" title="read[T](world: var World; id: EntityId; compDesc: typedesc[T]): T">read[T](world: var World; id: EntityId; compDesc: typedesc[T]): T</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">readComponents
-  <li><a class="reference" href="#readComponents%2CWorld%2CId%2Ctypedesc%5BT%5D" title="readComponents[T: tuple](world: var World; id: Id; tup: typedesc[T]): T">readComponents[T: tuple](world: var World; id: Id; tup: typedesc[T]): T</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">removeComponent
-  <li><a class="reference" href="#removeComponent%2CWorld%2CId%2Ctypedesc%5BT%5D%2COperationMode" title="removeComponent[T](world: var World; id: Id; compDesc: typedesc[T];
-                   mode: OperationMode = Deferred)">removeComponent[T](world: var World; id: Id; compDesc: typedesc[T];
-                   mode: OperationMode = Deferred)</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">removeComponents
-  <li><a class="reference" href="#removeComponents%2CWorld%2CId%2Ctypedesc%5BT%5D%2COperationMode" title="removeComponents[T: tuple](world: var World; id: Id; descriptions: typedesc[T];
-                           mode: OperationMode = Deferred)">removeComponents[T: tuple](world: var World; id: Id; descriptions: typedesc[T];
-                           mode: OperationMode = Deferred)</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">removeEntity
-  <li><a class="reference" href="#removeEntity%2CWorld%2CId%2COperationMode" title="removeEntity(world: var World; id: Id; mode: OperationMode = Deferred)">removeEntity(world: var World; id: Id; mode: OperationMode = Deferred)</a></li>
+<ul class="simple nested-toc-section">remove
+  <li><a class="reference" href="#remove%2CWorld%2CEntityId%2COperationMode" title="remove(world: var World; id: EntityId; mode: OperationMode = Deferred)">remove(world: var World; id: EntityId; mode: OperationMode = Deferred)</a></li>
+<li><a class="reference" href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode" title="remove[T: tuple](world: var World; id: EntityId; descriptions: typedesc[T];
+                 mode: OperationMode = Deferred)">remove[T: tuple](world: var World; id: EntityId; descriptions: typedesc[T];
+                 mode: OperationMode = Deferred)</a></li>
+<li><a class="reference" href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode_2" title="remove[T](world: var World; id: EntityId; compDesc: typedesc[T];
+          mode: OperationMode = Deferred)">remove[T](world: var World; id: EntityId; compDesc: typedesc[T];
+          mode: OperationMode = Deferred)</a></li>
 
 </ul>
 
@@ -153,12 +133,8 @@
   <li><a class="reference" href="#archetypes.i%2CWorld" title="archetypes(world: var World): Archetype">archetypes(world: var World): Archetype</a></li>
 
 </ul>
-<ul class="simple nested-toc-section">component
-  <li><a class="reference" href="#component.i%2CWorld%2CId%2Ctypedesc%5BT%5D" title="component[T](world: var World; id: Id; compDesc: typedesc[T]): var T">component[T](world: var World; id: Id; compDesc: typedesc[T]): var T</a></li>
-
-</ul>
 <ul class="simple nested-toc-section">components
-  <li><a class="reference" href="#components.i%2CWorld%2CId%2Ctypedesc%5BT%5D" title="components[T: tuple](world: var World; id: Id; tup: typedesc[T]): tup.accessTuple">components[T: tuple](world: var World; id: Id; tup: typedesc[T]): tup.accessTuple</a></li>
+  <li><a class="reference" href="#components.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D" title="components[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): tup.accessTuple">components[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): tup.accessTuple</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">query
@@ -166,7 +142,11 @@
 
 </ul>
 <ul class="simple nested-toc-section">queryForRemoval
-  <li><a class="reference" href="#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D" title="queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T">queryForRemoval[T](world: var World; compDesc: typedesc[T]): var T</a></li>
+  <li><a class="reference" href="#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D" title="queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)">queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">write
+  <li><a class="reference" href="#write.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D" title="write[T](world: var World; id: EntityId; compDesc: typedesc[T]): var T">write[T](world: var World; id: EntityId; compDesc: typedesc[T]): var T</a></li>
 
 </ul>
 
@@ -237,34 +217,29 @@
 </div>
 
 </div>
-<div id="addComponent-procs-all">
-  <div id="addComponent,World,Id,T,OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addComponent%2CWorld%2CId%2CT%2COperationMode"><span class="Identifier">addComponent</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
-                     <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+<div id="add-procs-all">
+  <div id="add,World,T,OperationMode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CT%2COperationMode"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
+                   <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">discardable</span>.}</pre></dt>
   <dd>
     
-    Add a component to an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
+    Add an entity with components. Automatically adds the special <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component, so queries can access metadata like the entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the entity with the <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component is created immediately, but the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be added immediately. <strong>Note:</strong> Adding entities immediately during query iteration leads to undefined behaviour. Returns the new entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
-<span class="Keyword">import</span> <span class="Identifier">show</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
 
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L502" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L502" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Meta</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">id</span> <span class="Operator">==</span> <span class="Identifier">marcus</span>
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L583" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L583" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
-
-</div>
-<div id="addComponents-procs-all">
-  <div id="addComponents,World,Id,T,OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addComponents%2CWorld%2CId%2CT%2COperationMode"><span class="Identifier">addComponents</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
-                             <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+<div id="add,World,EntityId,T,OperationMode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CEntityId%2CT%2COperationMode"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
+                   <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
     Add components to an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
@@ -273,44 +248,43 @@
 <span class="Keyword">import</span> <span class="Identifier">show</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addComponents</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">,</span> <span class="Identifier">attack</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">,</span> <span class="Identifier">attack</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span>
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L460" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L460" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L463" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L463" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
-
-</div>
-<div id="addEntity-procs-all">
-  <div id="addEntity,World,T,OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addEntity%2CWorld%2CT%2COperationMode"><span class="Identifier">addEntity</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
-                         <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a> {.<span class="Identifier">discardable</span>.}</pre></dt>
+<div id="add,World,EntityId,T,OperationMode_2">
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CEntityId%2CT%2COperationMode_2"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
+            <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    Add an entity with components. Automatically adds the special <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component, so queries can access metadata like the entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the entity with the <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component is created immediately, but the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be added immediately. <strong>Note:</strong> Adding entities immediately during query iteration leads to undefined behaviour. Returns the new entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>.
+    Add a component to an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+<span class="Keyword">import</span> <span class="Identifier">show</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Meta</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">id</span> <span class="Operator">==</span> <span class="Identifier">marcus</span>
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L579" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L579" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L506" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L506" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
-<div id="addEntityWithSpecificId-procs-all">
-  <div id="addEntityWithSpecificId,World,Id">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addEntityWithSpecificId%2CWorld%2CId"><span class="Identifier">addEntityWithSpecificId</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">)</span> {.
+<div id="addWithSpecificId-procs-all">
+  <div id="addWithSpecificId,World,EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#addWithSpecificId%2CWorld%2CEntityId"><span class="Identifier">addWithSpecificId</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -319,9 +293,9 @@
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntityWithSpecificId</span><span class="Punctuation">(</span><span class="Identifier">Id</span><span class="Punctuation">(</span><span class="Identifier">id</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L613" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L613" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addWithSpecificId</span><span class="Punctuation">(</span><span class="Identifier">EntityId</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L620" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L620" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -334,8 +308,8 @@
   <dd>
     
     Cleans up empty archetypes. This is useful mostly for deserialization routines. Removing archetypes forces caches from queries to be rebuilt.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L736" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L736" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L748" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L748" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -347,8 +321,8 @@
   <dd>
     
      Get the ComponentId for a given component type. This is mostly useful to identify the components of an archetype.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L298" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L298" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L303" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L303" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -361,36 +335,16 @@
   <dd>
     
     Consolidates all additions and removals in the world.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L756" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L756" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L768" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L768" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
-<div id="hasComponent-procs-all">
-  <div id="hasComponent,World,Id,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#hasComponent%2CWorld%2CId%2Ctypedesc%5BT%5D"><span class="Identifier">hasComponent</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
-  <dd>
-    
-    Check if an entity has a given component.
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
-
-<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
-<span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L310" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L310" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-
-</div>
-<div id="hasEntity-procs-all">
-  <div id="hasEntity,World,Id">
-  <dt><pre><span class="Keyword">proc</span> <a href="#hasEntity%2CWorld%2CId"><span class="Identifier">hasEntity</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<div id="has-procs-all">
+  <div id="has,World,EntityId">
+  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CWorld%2CEntityId"><span class="Identifier">has</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -399,11 +353,28 @@
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasEntity</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span>
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasEntity</span><span class="Punctuation">(</span><span class="Identifier">Id</span><span class="Punctuation">(</span><span class="Identifier">id</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L660" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L660" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span>
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">EntityId</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L667" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L667" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="has,World,EntityId,typedesc[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">has</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dd>
+    
+    Check if an entity has a given component.
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+
+<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L315" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L315" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -422,29 +393,9 @@
 </div>
 
 </div>
-<div id="readComponent-procs-all">
-  <div id="readComponent,World,Id,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#readComponent%2CWorld%2CId%2Ctypedesc%5BT%5D"><span class="Identifier">readComponent</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
-  <dd>
-    
-    Directly read a single component of an entity.
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
-
-<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
-<span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L328" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L328" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-
-</div>
-<div id="readComponents-procs-all">
-  <div id="readComponents,World,Id,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#readComponents%2CWorld%2CId%2Ctypedesc%5BT%5D"><span class="Identifier">readComponents</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+<div id="read-procs-all">
+  <div id="read,World,EntityId,typedesc[T]_2">
+  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D_2"><span class="Identifier">read</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
     Direct read access to multiple components of an entity. The <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> tuple must contain no <tt class="docutils literal"><span class="pre"><span class="Identifier">Write</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Identifier">Opt</span></span></tt>, or <tt class="docutils literal"><span class="pre"><span class="Keyword">Not</span></span></tt> accessors.
@@ -455,70 +406,39 @@
 <span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">sword</span> <span class="Operator">=</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">elements</span> <span class="Operator">=</span> <span class="Identifier">Spellbook</span><span class="Punctuation">(</span><span class="Identifier">spells</span><span class="Punctuation">:</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="StringLit">&quot;Fireball&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Ice Storm&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Lightning&quot;</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">character</span><span class="Punctuation">,</span> <span class="Identifier">sword</span><span class="Punctuation">,</span> <span class="Identifier">elements</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">character</span><span class="Punctuation">,</span> <span class="Identifier">sword</span><span class="Punctuation">,</span> <span class="Identifier">elements</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
 
-<span class="Keyword">let</span> <span class="Punctuation">(</span><span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponents</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Weapon</span><span class="Punctuation">,</span> <span class="Identifier">Spellbook</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Punctuation">(</span><span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Weapon</span><span class="Punctuation">,</span> <span class="Identifier">Spellbook</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Sword&quot;</span>
 <span class="Identifier">assert</span> <span class="Identifier">spellbook</span><span class="Operator">.</span><span class="Identifier">spells</span> <span class="Operator">==</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="StringLit">&quot;Fireball&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Ice Storm&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Lightning&quot;</span><span class="Punctuation">]</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L381" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L381" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L386" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L386" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
-
-</div>
-<div id="removeComponent-procs-all">
-  <div id="removeComponent,World,Id,typedesc[T],OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#removeComponent%2CWorld%2CId%2Ctypedesc%5BT%5D%2COperationMode"><span class="Identifier">removeComponent</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
-                        <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+<div id="read,World,EntityId,typedesc[T]">
+  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">read</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
-    Remove a component from an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be removed immediately. <strong>Note:</strong> Removing a component immediately during query iteration leads to undefined behaviour.
+    Directly read a single component of an entity.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">removeComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L560" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L560" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L333" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L333" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
-<div id="removeComponents-procs-all">
-  <div id="removeComponents,World,Id,typedesc[T],OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#removeComponents%2CWorld%2CId%2Ctypedesc%5BT%5D%2COperationMode"><span class="Identifier">removeComponents</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span>
-                                <span class="Identifier">descriptions</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
-                                <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
-  <dd>
-    
-    Remove multiple components from an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be removed immediately. <strong>Note:</strong> Removing components immediately during query iteration leads to undefined behaviour.
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
-
-<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">removeComponents</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Weapon</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-
-<span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
-<span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">hasComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L522" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L522" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-
-</div>
-<div id="removeEntity-procs-all">
-  <div id="removeEntity,World,Id,OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#removeEntity%2CWorld%2CId%2COperationMode"><span class="Identifier">removeEntity</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span> {.
+<div id="remove-procs-all">
+  <div id="remove,World,EntityId,OperationMode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2COperationMode"><span class="Identifier">remove</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -527,15 +447,56 @@
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">removeEntity</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">remove</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">)</span>
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Keyword">var</span> <span class="Identifier">query</span><span class="Punctuation">:</span> <span class="Identifier">Query</span><span class="Punctuation">[</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">]</span>
 <span class="Keyword">for</span> <span class="Identifier">character</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">query</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
   <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;No character should exist.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L632" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L632" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L639" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L639" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="remove,World,EntityId,typedesc[T],OperationMode">
+  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode"><span class="Identifier">remove</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">descriptions</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
+                      <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Remove multiple components from an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be removed immediately. <strong>Note:</strong> Removing components immediately during query iteration leads to undefined behaviour.
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+
+<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">remove</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Weapon</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+
+<span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L526" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L526" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="remove,World,EntityId,typedesc[T],OperationMode_2">
+  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode_2"><span class="Identifier">remove</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
+               <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    Remove a component from an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be removed immediately. <strong>Note:</strong> Removing a component immediately during query iteration leads to undefined behaviour.
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+
+<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">remove</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L564" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L564" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -556,39 +517,16 @@
     <p>Iterate through all the world's archetypes.</p>
 <p>This is mostly useful just to implement custom queries. To use Archetypes, the archetype module must be imported.</p>
 
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L289" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L289" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-
-</div>
-<div id="component-iterators-all">
-  <div id="component.i,World,Id,typedesc[T]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#component.i%2CWorld%2CId%2Ctypedesc%5BT%5D"><span class="Identifier">component</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
-  <dd>
-    
-    Write access to a single component of an entity. An iterator is used to ensure fast and safe access to the component.
-<p><strong class="examples_text">Example:</strong></p>
-<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
-
-<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-
-<span class="Keyword">for</span> <span class="Identifier">character</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">component</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
-  <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">=</span> <span class="StringLit">&quot;Mark&quot;</span>
-
-<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">readComponent</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Mark&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L353" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L353" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L294" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L294" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
 <div id="components-iterators-all">
-  <div id="components.i,World,Id,typedesc[T]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#components.i%2CWorld%2CId%2Ctypedesc%5BT%5D"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#Id"><span class="Identifier">Id</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">tup</span><span class="Other">.</span><span class="Identifier">accessTuple</span></pre></dt>
+  <div id="components.i,World,EntityId,typedesc[T]">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#components.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">tup</span><span class="Other">.</span><span class="Identifier">accessTuple</span></pre></dt>
   <dd>
     
     Read, write, and optional access to components of an entity. An iterator is used to ensure fast and safe access to the components. <strong>Accessors:</strong><ul class="simple"><li><strong>Read access</strong>: just use the component's type</li>
@@ -604,7 +542,7 @@
 <span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">weapon</span> <span class="Operator">=</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">spellbook</span> <span class="Operator">=</span> <span class="Identifier">Spellbook</span><span class="Punctuation">(</span><span class="Identifier">spells</span><span class="Punctuation">:</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="StringLit">&quot;Fireball&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Ice Storm&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Lightning&quot;</span><span class="Punctuation">]</span><span class="Punctuation">)</span>
-<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">character</span><span class="Punctuation">,</span> <span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">character</span><span class="Punctuation">,</span> <span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
 
 <span class="Keyword">for</span> <span class="Punctuation">(</span><span class="Identifier">character</span><span class="Punctuation">,</span> <span class="Identifier">weapon</span><span class="Punctuation">,</span> <span class="Identifier">armor</span><span class="Punctuation">,</span> <span class="Identifier">spellbook</span><span class="Punctuation">)</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">components</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span> <span class="Identifier">Write</span><span class="Punctuation">[</span><span class="Identifier">Weapon</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Identifier">Opt</span><span class="Punctuation">[</span><span class="Identifier">Armor</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Identifier">Opt</span><span class="Punctuation">[</span><span class="Identifier">Spellbook</span><span class="Punctuation">]</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
   <span class="Identifier">echo</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span>
@@ -619,8 +557,8 @@
     <span class="Identifier">echo</span> <span class="StringLit">&quot;Marcus's spellbook contains: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">spells</span>
   <span class="Identifier">armor</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
     <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;Marcus should have a spellbook.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L413" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L413" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L416" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L416" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -631,7 +569,7 @@
   <dt><pre><span class="Keyword">iterator</span> <a href="#query.i%2CWorld%2CQuery%5BT%3A%20tuple%5D"><span class="Identifier">query</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">query</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="queries.html#Query"><span class="Identifier">Query</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">.</span><span class="Identifier">accessTuple</span></pre></dt>
   <dd>
     
-    <p>Query entities by components. Components are matched based on the query's type parameter.</p>
+    <p>Query for components on entities. Components are matched based on the query's type parameter.</p>
 <p><strong>Accessors:</strong></p>
 <ul class="simple"><li><strong>Read access</strong>: match entities that have the component for read only access. Just use the component's type.</li>
 <li><strong>Write access</strong>: match entities that have the comoponent for write access. Use <tt class="docutils literal"><span class="pre"><span class="Identifier">Write</span><span class="Punctuation">[</span><span class="Identifier">Component</span><span class="Punctuation">]</span></span></tt>.</li>
@@ -648,9 +586,9 @@
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Elena&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Amulet</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Arcane Stone&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
-<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addEntity</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Brom&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Armor</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Fur Armor&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">100</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Sword&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Elena&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">80</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Amulet</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Arcane Stone&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+<span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Brom&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">(</span><span class="Identifier">health</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">,</span> <span class="Identifier">maxHealth</span><span class="Punctuation">:</span> <span class="DecNumber">140</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Armor</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Fur Armor&quot;</span><span class="Punctuation">)</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
 
 <span class="Comment"># Query for characters, health with write access, an optional weapon, and no armor.</span>
 <span class="Keyword">var</span> <span class="Identifier">query</span><span class="Punctuation">:</span> <span class="Identifier">Query</span><span class="Punctuation">[</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span> <span class="Identifier">Write</span><span class="Punctuation">[</span><span class="Identifier">Health</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Identifier">Opt</span><span class="Punctuation">[</span><span class="Identifier">Weapon</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="Keyword">Not</span><span class="Punctuation">[</span><span class="Identifier">Armor</span><span class="Punctuation">]</span><span class="Punctuation">)</span><span class="Punctuation">]</span>
@@ -666,8 +604,8 @@
   <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
     <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Elena&quot;</span>
     <span class="Identifier">echo</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span><span class="Punctuation">,</span> <span class="StringLit">&quot; has no weapon.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L673" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L673" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L680" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L680" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -675,14 +613,37 @@
 </div>
 <div id="queryForRemoval-iterators-all">
   <div id="queryForRemoval.i,World,typedesc[T]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D"><span class="Identifier">queryForRemoval</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
+  <dt><pre><span class="Keyword">iterator</span> <a href="#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D"><span class="Identifier">queryForRemoval</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Other">(</span><a href="components.html#Meta"><span class="Identifier">Meta</span></a><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    -
+    Query for components to be removed from entities and components on entities to be removed. Only read access is allowed.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">discard</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L718" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L718" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L725" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L725" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="write-iterators-all">
+  <div id="write.i,World,EntityId,typedesc[T]">
+  <dt><pre><span class="Keyword">iterator</span> <a href="#write.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">write</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
+  <dd>
+    
+    Write access to a single component of an entity. An iterator is used to ensure fast and safe access to the component.
+<p><strong class="examples_text">Example:</strong></p>
+<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
+
+<span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
+
+<span class="Keyword">for</span> <span class="Identifier">character</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">write</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
+  <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">=</span> <span class="StringLit">&quot;Mark&quot;</span>
+
+<span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Mark&quot;</span></pre>
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L358" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L358" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -713,7 +674,7 @@
 <div class="section" id="19">
   <h1><a class="toc-backref" href="#19">Exports</a></h1>
   <dl class="item">
-    <a href="components.html#Id"><span class="Identifier">Id</span></a>, <a href="components.html#Meta"><span class="Identifier">Meta</span></a>, <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a>, <a href="components.html#id,Meta"><span class="Identifier">id</span></a>, <a href="components.html#Operation"><span class="Identifier">Operation</span></a>, <a href="components.html#Meta_2"><span class="Identifier">Meta</span></a>, <a href="components.html#clearOperations,Meta"><span class="Identifier">clearOperations</span></a>, <a href="components.html#enqueueOperation,Meta,Operation"><span class="Identifier">enqueueOperation</span></a>, <a href="components.html#OperationKind"><span class="Identifier">OperationKind</span></a>, <a href="components.html#Id_2"><span class="Identifier">Id</span></a>, <a href="components.html#OperationMode_2"><span class="Identifier">OperationMode</span></a>, <a href="components.html#WithMeta.m,typedesc[T]"><span class="Identifier">WithMeta</span></a>, <a href="components.html#withMeta,T"><span class="Identifier">withMeta</span></a>, <a href="components.html#operations,Meta"><span class="Identifier">operations</span></a>
+    <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a>, <a href="components.html#Meta"><span class="Identifier">Meta</span></a>, <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a>, <a href="components.html#Operation"><span class="Identifier">Operation</span></a>, <a href="components.html#EntityId_2"><span class="Identifier">EntityId</span></a>, <a href="components.html#Meta_2"><span class="Identifier">Meta</span></a>, <a href="components.html#clearOperations,Meta"><span class="Identifier">clearOperations</span></a>, <a href="components.html#enqueueOperation,Meta,Operation"><span class="Identifier">enqueueOperation</span></a>, <a href="components.html#OperationKind"><span class="Identifier">OperationKind</span></a>, <a href="components.html#id,Meta"><span class="Identifier">id</span></a>, <a href="components.html#OperationMode_2"><span class="Identifier">OperationMode</span></a>, <a href="components.html#WithMeta.m,typedesc[T]"><span class="Identifier">WithMeta</span></a>, <a href="components.html#withMeta.m,T"><span class="Identifier">withMeta</span></a>, <a href="components.html#operations,Meta"><span class="Identifier">operations</span></a>
   </dl>
 </div>
 
@@ -723,7 +684,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-16 01:15:50 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-26 23:15:18 UTC</small>
       </div>
     </div>
   </div>

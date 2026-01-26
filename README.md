@@ -96,14 +96,14 @@ assert entityId == meta.id
 ### Advanced querying
 ```nim
 # Query components for writting
-var characterWithSwordsQuery = Query[(Character, Write[Health])]()
-for (character, health) in world.query(characterWithSwordsQuery):
+var charactersWithHealth = Query[(Character, Write[Health])]()
+for (character, health) in world.query(charactersWithHealth):
   health.current += 10
 ```
 ```nim
 # Query for optional components
-var characterWithSwordsQuery = Query[(Character, Opt[Weapon])]()
-for (character, weapon) in world.query(characterWithSwordsQuery):
+var charactersWithWeapons = Query[(Character, Opt[Weapon])]()
+for (character, weapon) in world.query(charactersWithWeapons):
   weapon.isSmoething:
     echo character.name, " has a weapon, ", weapon.name
   weapon.isNothing:
