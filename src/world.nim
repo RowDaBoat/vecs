@@ -312,15 +312,15 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   id.ComponentId
 
 
-proc hasComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =
+proc has*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =
   ## Check if an entity has a given component.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
-    assert w.hasComponent(marcus, Character)
-    assert not w.hasComponent(marcus, Health)
+    let marcus = w.add((Character(name: "Marcus"),), Immediate)
+    assert w.has(marcus, Character)
+    assert not w.has(marcus, Health)
 
   checkNotATuple(T)
   world.checkEntityExists(id)
@@ -330,19 +330,19 @@ proc hasComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bo
   compId in entity.archetypeId
 
 
-proc readComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T =
+proc read*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T =
   ## Directly read a single component of an entity.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
-    let character = w.readComponent(marcus, Character)
+    let marcus = w.add((Character(name: "Marcus"),), Immediate)
+    let character = w.read(marcus, Character)
     assert character.name == "Marcus"
 
   checkNotATuple(T)
 
-  if not world.hasComponent(id, compDesc):
+  if not world.has(id, compDesc):
     raise componentDoesNotExist(id, compDesc)
 
   let entity = world.entities[id.value]
@@ -355,19 +355,19 @@ proc readComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T
   cast[Retype](ecsSeqAny)[archetypeEntityId]
 
 
-iterator component*[T](world: var World, id: EntityId, compDesc: typedesc[T]): var T =
+iterator write*[T](world: var World, id: EntityId, compDesc: typedesc[T]): var T =
   ## Write access to a single component of an entity.
   ## An iterator is used to ensure fast and safe access to the component.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
+    let marcus = w.add((Character(name: "Marcus"),), Immediate)
 
     for character in w.component(marcus, Character):
       character.name = "Mark"
 
-    assert w.readComponent(marcus, Character).name == "Mark"
+    assert w.read(marcus, Character).name == "Mark"
 
   checkNotATuple(T)
   world.checkEntityExists(id)
@@ -383,7 +383,7 @@ iterator component*[T](world: var World, id: EntityId, compDesc: typedesc[T]): v
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
 
-proc readComponents*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
+proc read*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
   ## Direct read access to multiple components of an entity.
   ## The `T` tuple must contain no `Write`, `Opt`, or `Not` accessors.
   runnableExamples:
@@ -393,9 +393,9 @@ proc readComponents*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
     let character = Character(name: "Marcus")
     let sword = Weapon(name: "Sword")
     let elements = Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"])
-    let marcus = w.addEntity((character, sword, elements), Immediate)
+    let marcus = w.add((character, sword, elements), Immediate)
 
-    let (weapon, spellbook) = w.readComponents(marcus, (Weapon, Spellbook))
+    let (weapon, spellbook) = w.read(marcus, (Weapon, Spellbook))
 
     assert weapon.name == "Sword"
     assert spellbook.spells == @["Fireball", "Ice Storm", "Lightning"]
@@ -406,10 +406,8 @@ proc readComponents*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
 
-  var found = true
-
   tup.fieldTypes:
-    if not world.hasComponent(id, typeof FieldType):
+    if not world.has(id, typeof FieldType):
       raise componentsDoNotExist(id, tup)
 
   world.buildReadTuple(tup, archetype, archetypeEntityId)
@@ -430,7 +428,7 @@ iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
     let character = Character(name: "Marcus")
     let weapon = Weapon(name: "Sword")
     let spellbook = Spellbook(spells: @["Fireball", "Ice Storm", "Lightning"])
-    let marcus = w.addEntity((character, weapon, spellbook), Immediate)
+    let marcus = w.add((character, weapon, spellbook), Immediate)
 
     for (character, weapon, armor, spellbook) in w.components(marcus, (Character, Write[Weapon], Opt[Armor], Opt[Spellbook])):
       echo character.name
@@ -462,7 +460,7 @@ iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
     yield world.buildAccessTuple(tup, archetype, archetypeEntityId)
 
 
-proc addComponents*[T: tuple](world: var World, id: EntityId, components: T, mode: OperationMode = Deferred) =
+proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: OperationMode = Deferred) =
   ## Add components to an entity.
   ## If the `mode` is `Deferred`, the components will be added when `consolidate()` is called, `Deferred` is the default mode.
   ## If the `mode` is `Immediate`, the components will be added immediately.
@@ -472,12 +470,12 @@ proc addComponents*[T: tuple](world: var World, id: EntityId, components: T, mod
     import show
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
-    w.addComponents(marcus, (Health(health: 100, maxHealth: 100), Weapon(name: "Sword", attack: 10)))
+    let marcus = w.add (Character(name: "Marcus"),)
+    w.add(marcus, (Health(health: 100, maxHealth: 100), Weapon(name: "Sword", attack: 10)))
     w.consolidate()
 
-    assert w.hasComponent(marcus, Health)
-    assert w.hasComponent(marcus, Weapon)
+    assert w.has(marcus, Health)
+    assert w.has(marcus, Weapon)
 
   world.checkEntityExists(id)
 
@@ -499,13 +497,13 @@ proc addComponents*[T: tuple](world: var World, id: EntityId, components: T, mod
   if mode == Immediate:
     world.consolidateAddComponents(id, addersById)
   else:
-    for meta in world.component(id, Meta):
+    for meta in world.write(id, Meta):
       meta.enqueueOperation(Operation(kind: AddComponents, addersById: addersById))
 
     world.toConsolidate.incl id
 
 
-proc addComponent*[T](world: var World, id: EntityId, component: T, mode: OperationMode = Deferred) =
+proc add*[T](world: var World, id: EntityId, component: T, mode: OperationMode = Deferred) =
   ## Add a component to an entity.
   ## If the `mode` is `Deferred`, the component will be added when `consolidate()` is called, `Deferred` is the default mode.
   ## If the `mode` is `Immediate`, the component will be added immediately.
@@ -515,17 +513,17 @@ proc addComponent*[T](world: var World, id: EntityId, component: T, mode: Operat
     import show
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
-    w.addComponent(marcus, Health(health: 100, maxHealth: 100))
+    let marcus = w.add (Character(name: "Marcus"),)
+    w.add(marcus, Health(health: 100, maxHealth: 100))
     w.consolidate()
 
-    assert w.hasComponent(marcus, Health)
+    assert w.has(marcus, Health)
 
   checkNotATuple(T)
-  world.addComponents(id, (component,), mode)
+  world.add(id, (component,), mode)
 
 
-proc removeComponents*[T: tuple](world: var World, id: EntityId, descriptions: typedesc[T], mode: OperationMode = Deferred) =
+proc remove*[T: tuple](world: var World, id: EntityId, descriptions: typedesc[T], mode: OperationMode = Deferred) =
   ## Remove multiple components from an entity.
   ## If the `mode` is `Deferred`, the components will be removed when `consolidate()` is called, `Deferred` is the default mode.
   ## If the `mode` is `Immediate`, the components will be removed immediately.
@@ -534,12 +532,12 @@ proc removeComponents*[T: tuple](world: var World, id: EntityId, descriptions: t
     import examples
 
     var w = World()
-    let marcus = w.addEntity((Character(name: "Marcus"), Weapon(name: "Sword")), Immediate)
-    w.removeComponents(marcus, (Weapon, Character))
+    let marcus = w.add((Character(name: "Marcus"), Weapon(name: "Sword")), Immediate)
+    w.remove(marcus, (Weapon, Character))
     w.consolidate()
 
-    assert not w.hasComponent(marcus, Character)
-    assert not w.hasComponent(marcus, Weapon)
+    assert not w.has(marcus, Character)
+    assert not w.has(marcus, Weapon)
 
   world.checkEntityExists(id)
 
@@ -557,13 +555,13 @@ proc removeComponents*[T: tuple](world: var World, id: EntityId, descriptions: t
   if mode == Immediate:
     world.consolidateRemoveComponents(id, compIdsToRemove)
   else:
-    for meta in world.component(id, Meta):
+    for meta in world.write(id, Meta):
       meta.enqueueOperation(Operation(kind: RemoveComponents, compIdsToRemove: compIdsToRemove))
 
   world.toConsolidate.incl id
 
 
-proc removeComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T], mode: OperationMode = Deferred) =
+proc remove*[T](world: var World, id: EntityId, compDesc: typedesc[T], mode: OperationMode = Deferred) =
   ## Remove a component from an entity.
   ## If the `mode` is `Deferred`, the component will be removed when `consolidate()` is called, `Deferred` is the default mode.
   ## If the `mode` is `Immediate`, the component will be removed immediately.
@@ -572,17 +570,17 @@ proc removeComponent*[T](world: var World, id: EntityId, compDesc: typedesc[T], 
     import examples
 
     var w = World()
-    let marcus = w.addEntity((Character(name: "Marcus"), Weapon(name: "Sword")), Immediate)
-    w.removeComponent(marcus, Weapon)
+    let marcus = w.add((Character(name: "Marcus"), Weapon(name: "Sword")), Immediate)
+    w.remove(marcus, Weapon)
     w.consolidate()
 
-    assert w.hasComponent(marcus, Weapon) == false
+    assert w.has(marcus, Weapon) == false
 
   checkNotATuple(T)
-  removeComponents(world, id, (T,), mode)
+  remove(world, id, (T,), mode)
 
 
-proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode = Deferred): EntityId {.discardable.} =
+proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Deferred): EntityId {.discardable.} =
   ## Add an entity with components. Automatically adds the special `Meta` component, so queries can access metadata like the entity's `Id`.
   ## If the `mode` is `Deferred`, the entity with the `Meta` component is created immediately, but the components will be added when `consolidate()` is called, `Deferred` is the default mode.
   ## If the `mode` is `Immediate`, the components will be added immediately.
@@ -592,10 +590,10 @@ proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode =
     import examples
 
     var w = World()
-    let marcus = w.addEntity((Character(name: "Marcus"),), Immediate)
+    let marcus = w.add((Character(name: "Marcus"),), Immediate)
 
-    assert w.readComponent(marcus, Meta).id == marcus
-    assert w.readComponent(marcus, Character).name == "Marcus"
+    assert w.read(marcus, Meta).id == marcus
+    assert w.read(marcus, Character).name == "Marcus"
 
   if mode == Immediate:
     var archetype = world.archetypeFrom WithMeta(T)
@@ -604,7 +602,7 @@ proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode =
     let id = world.entities.add entity
     result = EntityId(value: id)
 
-    for meta in world.component(result, Meta):
+    for meta in world.write(result, Meta):
       meta.id = result
   else:
     var archetype = world.archetypeFrom (Meta,)
@@ -613,13 +611,13 @@ proc addEntity*[T: tuple](world: var World, components: T, mode: OperationMode =
     let id = world.entities.add entity
     result = EntityId(value: id)
 
-    for meta in world.component(result, Meta):
+    for meta in world.write(result, Meta):
       meta.id = result
 
-    world.addComponents(result, components)
+    world.add(result, components)
 
 
-proc addEntityWithSpecificId*(world: var World, id: EntityId) =
+proc addWithSpecificId*(world: var World, id: EntityId) =
   ## Add an entity with a given id immediately.
   ## The entity will have a single Meta component.
   ## This is useful mostly for deserialization.
@@ -628,7 +626,7 @@ proc addEntityWithSpecificId*(world: var World, id: EntityId) =
     import examples
 
     var w = World()
-    w.addEntityWithSpecificId(Id(id: 10))
+    w.addWithSpecificId(Id(id: 10))
 
   checkIdIsValid(id)
   world.checkEntityDoesNotExist(id)
@@ -638,7 +636,7 @@ proc addEntityWithSpecificId*(world: var World, id: EntityId) =
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
   world.entities[id.value] = entity
 
-proc removeEntity*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
+proc remove*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
   ## Remove an entity from the world.
   ## If the `mode` is `Deferred`, the entity will be removed when `consolidate()` is called, `Deferred` is the default mode.
   ## If the `mode` is `Immediate`, the entity will be removed immediately.
@@ -647,8 +645,8 @@ proc removeEntity*(world: var World, id: EntityId, mode: OperationMode = Deferre
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
-    w.removeEntity(marcus)
+    let marcus = w.add (Character(name: "Marcus"),)
+    w.remove(marcus)
     w.consolidate()
 
     var query: Query[(Character,)]
@@ -660,21 +658,21 @@ proc removeEntity*(world: var World, id: EntityId, mode: OperationMode = Deferre
   if mode == Immediate:
     world.consolidateRemoveEntity(id)
   else:
-    for meta in world.component(id, Meta):
+    for meta in world.write(id, Meta):
       meta.enqueueOperation(Operation(kind: RemoveEntity))
 
     world.toConsolidate.incl id
 
 
-proc hasEntity*(world: var World, id: EntityId): bool =
+proc has*(world: var World, id: EntityId): bool =
   ## Check if an entity exists.
   runnableExamples:
     import examples
 
     var w = World()
-    let marcus = w.addEntity (Character(name: "Marcus"),)
-    assert w.hasEntity(marcus) == true
-    assert w.hasEntity(Id(id: 10)) == false
+    let marcus = w.add (Character(name: "Marcus"),)
+    assert w.has(marcus) == true
+    assert w.has(Id(id: 10)) == false
 
   world.entities.has(id.value)
 
@@ -697,9 +695,9 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     import examples
 
     var w = World()
-    w.addEntity((Character(name: "Marcus"), Health(health: 100, maxHealth: 100), Weapon(name: "Sword")), Immediate)
-    w.addEntity((Character(name: "Elena"), Health(health: 80, maxHealth: 80), Amulet(name: "Arcane Stone")), Immediate)
-    w.addEntity((Character(name: "Brom"), Health(health: 140, maxHealth: 140), Armor(name: "Fur Armor")), Immediate)
+    w.add((Character(name: "Marcus"), Health(health: 100, maxHealth: 100), Weapon(name: "Sword")), Immediate)
+    w.add((Character(name: "Elena"), Health(health: 80, maxHealth: 80), Amulet(name: "Arcane Stone")), Immediate)
+    w.add((Character(name: "Brom"), Health(health: 140, maxHealth: 140), Armor(name: "Fur Armor")), Immediate)
 
     # Query for characters, health with write access, an optional weapon, and no armor.
     var query: Query[(Character, Write[Health], Opt[Weapon], Not[Armor])]
@@ -770,7 +768,7 @@ proc cleanupEmptyArchetypes*(world: var World) =
 proc consolidate*(world: var World) =
   ## Consolidates all additions and removals in the world.
   for id in world.toConsolidate:
-    for meta in world.component(id, Meta):
+    for meta in world.write(id, Meta):
       let operations = meta.operations
       meta.clearOperations()
 

@@ -13,14 +13,14 @@ type Node = object
 
 
 proc node(w: var World, name: string, children: varargs[Id[Node]]): Id[Node] =
-  w.addEntity((Node(name: name, children: @children),), Immediate) of Node
+  w.add((Node(name: name, children: @children),), Immediate) of Node
 
 
 suite "Id should":
   setup:
     var world = World()
     let marcus = (Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
-    let marcusId = world.addEntity(marcus, Immediate)
+    let marcusId = world.add(marcus, Immediate)
 
 
   test "convert EntityId to Id and back":
@@ -40,12 +40,12 @@ suite "Id should":
   test "check if entity has component":
     let id = marcusId of Character
 
-    check world.hasComponent(id)
+    check world.has(id)
 
 
   test "read a single component":
     let id = marcusId of Character
-    let character = world.readComponent(id)
+    let character = world.read(id)
 
     check character.name == "Marcus"
 
@@ -53,16 +53,16 @@ suite "Id should":
   test "write to a single component via iterator":
     let id = marcusId of Health
 
-    for health in world.component(id):
+    for health in world.write(id):
       health.health = 50
 
-    check world.readComponent(marcusId, Health).health == 50
+    check world.read(marcusId, Health).health == 50
 
 
   test "read multiple components":
     let id = marcusId of (Character, Health)
 
-    let (character, health) = world.readComponents(id)
+    let (character, health) = world.read(id)
 
     check character.name == "Marcus"
     check health.health == 100
@@ -92,7 +92,7 @@ suite "Id should":
 
     while stack.len > 0:
       let current = stack.pop()
-      let node = w.readComponent(current)
+      let node = w.read(current)
       visited.add node.name
 
       for i in countdown(node.children.high, 0):

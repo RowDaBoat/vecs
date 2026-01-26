@@ -10,13 +10,13 @@ suite "Queries should":
     let marcus = (Character(name: "Marcus", class: "Warrior"), Health(health: 120, maxHealth: 120))
     let elena = (Character(name: "Elena", class: "Mage"), Health(health: 80, maxHealth: 80))
     let grimm = (Character(name: "Grimm", class: "Paladin"), Health(health: 15, maxHealth: 100))
-    let marcusId = world.addEntity(marcus, Immediate)
-    let elenaId = world.addEntity(elena, Immediate)
-    let grimmId = world.addEntity(grimm, Immediate)
+    let marcusId = world.add(marcus, Immediate)
+    let elenaId = world.add(elena, Immediate)
+    let grimmId = world.add(grimm, Immediate)
 
   test "query components for removal":
 
-    world.removeComponent(elenaId, Health)
+    world.remove(elenaId, Health)
     var removeCount = 0
 
     for (meta, health) in world.queryForRemoval(Health):
@@ -34,7 +34,7 @@ suite "Queries should":
     for (meta, health) in world.queryForRemoval(Health):
       fail()
 
-    world.removeComponent(grimmId, Health, Immediate)
+    world.remove(grimmId, Health, Immediate)
 
     checkpoint("After an immediate removal, no components should appear in a query for components to be removed")
     for (meta, health) in world.queryForRemoval(Health):
@@ -52,7 +52,7 @@ suite "Queries should":
 
   test "query for deferred component addition":
     var sword = Weapon(name: "Excalibur", attack: 25)
-    world.addEntity((sword,))
+    world.add((sword,))
 
     checkpoint("Query should return nothing before consolidation.")
     var query: Query[(Meta, Weapon)]
@@ -76,7 +76,7 @@ suite "Queries should":
   test "query for removal should not yield added components":
     checkpoint("Adding a component should not make it appear in removal query.")
     var sword = Weapon(name: "Sword", attack: 10)
-    world.addComponent(elenaId, sword)
+    world.add(elenaId, sword)
 
     var removalCount = 0
     for (meta, weapon) in world.queryForRemoval(Weapon):

@@ -10,169 +10,169 @@ suite "World should":
     var world = World()
     var marcus = (Character(name: "Marcus"), Health(health: 100, maxHealth: 100))
     let elena = (Character(name: "Elena"), Health(health: 80, maxHealth: 80))
-    let marcusId = world.addEntity(marcus, OperationMode.Immediate)
+    let marcusId = world.add(marcus, OperationMode.Immediate)
 
 
   test "add entities immediately":
-    let elenaId = world.addEntity(elena, OperationMode.Immediate)
+    let elenaId = world.add(elena, OperationMode.Immediate)
 
     checkpoint("Elena should exist and have components immediately.")
-    check world.hasEntity(elenaId)
-    check world.hasComponent(elenaId, Character)
-    check world.hasComponent(elenaId, Health)
+    check world.has(elenaId)
+    check world.has(elenaId, Character)
+    check world.has(elenaId, Health)
 
 
   test "deferr addition of entities until consolidation":
-    let elenaId = world.addEntity elena
+    let elenaId = world.add elena
 
     checkpoint("Elena should exist, but not have components yet.")
-    check world.hasEntity(elenaId)
-    check not world.hasComponent(elenaId, Character)
-    check not world.hasComponent(elenaId, Health)
+    check world.has(elenaId)
+    check not world.has(elenaId, Character)
+    check not world.has(elenaId, Health)
 
     world.consolidate()
 
     checkpoint("Elena should exist and have components now.")
-    check world.hasEntity(elenaId)
-    check world.hasComponent(elenaId, Character)
-    check world.hasComponent(elenaId, Health)
+    check world.has(elenaId)
+    check world.has(elenaId, Character)
+    check world.has(elenaId, Health)
 
 
   test "remove entities immediately":
-    world.removeEntity(marcusId, OperationMode.Immediate)
+    world.remove(marcusId, OperationMode.Immediate)
 
     checkpoint("Marcus should not exist.")
-    check not world.hasEntity(marcusId)
+    check not world.has(marcusId)
 
 
   test "deferr removal of entities until consolidation":
-    world.removeEntity marcusId
+    world.remove marcusId
 
     checkpoint("Marcus should still exist.")
-    check world.hasEntity(marcusId)
+    check world.has(marcusId)
 
     world.consolidate()
 
     checkpoint("Marcus should not exist.")
-    check not world.hasEntity(marcusId)
+    check not world.has(marcusId)
 
 
   test "add a component immediately":
     var sword = (Weapon(name: "Sword", attack: 10))
-    world.addComponent(marcusId, sword, OperationMode.Immediate)
+    world.add(marcusId, sword, OperationMode.Immediate)
 
     checkpoint("Marcus should have a weapon.")
-    check world.hasComponent(marcusId, Weapon)
+    check world.has(marcusId, Weapon)
 
 
   test "deferr addition of a component until consolidation":
     var sword = (Weapon(name: "Sword", attack: 10))
-    world.addComponent(marcusId, sword)
+    world.add(marcusId, sword)
 
     checkpoint("Marcus should not have a weapon yet.")
-    check not world.hasComponent(marcusId, Weapon)
+    check not world.has(marcusId, Weapon)
 
     world.consolidate()
 
     checkpoint("Marcus should have a weapon now.")
-    check world.hasComponent(marcusId, Weapon)
+    check world.has(marcusId, Weapon)
 
 
   test "add multiple components immediately":
     var sword = (Weapon(name: "Sword", attack: 10))
     var shield = (Shield(name: "Shield", defense: 15))
-    world.addComponents(marcusId, (sword, shield), OperationMode.Immediate)
+    world.add(marcusId, (sword, shield), OperationMode.Immediate)
 
     checkpoint("Marcus should have a weapon and a shield.")
-    check world.hasComponent(marcusId, Weapon)
-    check world.hasComponent(marcusId, Shield)
+    check world.has(marcusId, Weapon)
+    check world.has(marcusId, Shield)
 
 
   test "deferr addition of multiple components until consolidation":
     var sword = (Weapon(name: "Sword", attack: 10))
     var shield = (Shield(name: "Shield", defense: 15))
-    world.addComponents(marcusId, (sword, shield))
+    world.add(marcusId, (sword, shield))
 
     checkpoint("Marcus should not have a weapon nor a shieldyet.")
-    check not world.hasComponent(marcusId, Weapon)
-    check not world.hasComponent(marcusId, Shield)
+    check not world.has(marcusId, Weapon)
+    check not world.has(marcusId, Shield)
 
     world.consolidate()
 
     checkpoint("Marcus should have a weapon and a shield now.")
-    check world.hasComponent(marcusId, Weapon)
-    check world.hasComponent(marcusId, Shield)
+    check world.has(marcusId, Weapon)
+    check world.has(marcusId, Shield)
 
 
   test "remove a component immediately":
-    world.removeComponent(marcusId, Health, OperationMode.Immediate)
+    world.remove(marcusId, Health, OperationMode.Immediate)
 
     checkpoint("Marcus should not have a health component anymore.")
-    check not world.hasComponent(marcusId, Health)
+    check not world.has(marcusId, Health)
 
 
   test "deferr removal of a component until consolidation":
-    world.removeComponent(marcusId, Health)
+    world.remove(marcusId, Health)
 
     checkpoint("Marcus should still have a health component.")
-    check world.hasComponent(marcusId, Health)
+    check world.has(marcusId, Health)
 
     world.consolidate()
 
     checkpoint("Marcus should not have a health component anymore.")
-    check not world.hasComponent(marcusId, Health)
+    check not world.has(marcusId, Health)
 
 
   test "remove multiple components immediately":
-    world.removeComponents(marcusId, (Character, Health), OperationMode.Immediate)
+    world.remove(marcusId, (Character, Health), OperationMode.Immediate)
 
     checkpoint("Marcus should not have a health nor a character component anymore.")
-    check not world.hasComponent(marcusId, Health)
-    check not world.hasComponent(marcusId, Character)
+    check not world.has(marcusId, Health)
+    check not world.has(marcusId, Character)
 
 
   test "deferr the removal of multiple components until consolidation":
-    world.removeComponents(marcusId, (Character, Health))
+    world.remove(marcusId, (Character, Health))
 
     checkpoint("Marcus should still have character and health components.")
-    check world.hasComponent(marcusId, Character)
-    check world.hasComponent(marcusId, Health)
+    check world.has(marcusId, Character)
+    check world.has(marcusId, Health)
 
     world.consolidate()
 
     checkpoint("Marcus should not have a health nor a character component anymore.")
-    check not world.hasComponent(marcusId, Health)
-    check not world.hasComponent(marcusId, Character)
+    check not world.has(marcusId, Health)
+    check not world.has(marcusId, Character)
 
   test "add a component after a consolidated addition of an entity":
     var w = World()
-    w.addEntity (Character(name: "Marcus"),)
+    w.add (Character(name: "Marcus"),)
     w.consolidate()
 
     var disarmed {.global.}: Query[(Meta, Character, Not[Weapon])]
     for (meta, character) in w.query(disarmed):
-      w.addComponent(meta.id, Weapon(name: "Sword", attack: 10))
+      w.add(meta.id, Weapon(name: "Sword", attack: 10))
 
     w.consolidate()
 
 
   test "add an entity in immediate mode, and then add component on a query":
     var w = World()
-    let id = w.addEntity (Character(name: "Marcus"), Immediate)
+    let id = w.add (Character(name: "Marcus"), Immediate)
 
     var weaponAdded = false
     var disarmed {.global.}: Query[(Meta, Not[Weapon])]
     for (meta,) in w.query(disarmed):
       weaponAdded = true
-      w.addComponent(meta.id, Weapon(name: "Sword", attack: 10))
+      w.add(meta.id, Weapon(name: "Sword", attack: 10))
 
     checkpoint("Weapon should have been added in the query.")
     check weaponAdded
 
     checkpoint("Marcus should not have a weapon yet.")
-    check not w.hasComponent(id, Weapon)
+    check not w.has(id, Weapon)
 
     w.consolidate()
 
     checkpoint("Marcus should have a weapon.")
-    check w.hasComponent(id, Weapon)
+    check w.has(id, Weapon)

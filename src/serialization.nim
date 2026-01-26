@@ -37,7 +37,7 @@ iterator iteratetJsonComponents(json: JsonNode, world: var World): (EntityId, Js
     let intId = entity["id"].getInt
     let id = EntityId(value: intId)
     let components = entity["components"]
-    world.addEntityWithSpecificId id
+    world.addWithSpecificId id
 
     for jsonComponent in components:
       let componentType = jsonComponent["*component"].getStr
@@ -46,11 +46,11 @@ iterator iteratetJsonComponents(json: JsonNode, world: var World): (EntityId, Js
       yield (id, jsonComponent, componentType)
 
 
-proc addComponentFromJson[T: tuple](world: var World, id: EntityId, jsonComponent: JsonNode, componentType: string, tup: typedesc[T]) =
+proc addFromJson[T: tuple](world: var World, id: EntityId, jsonComponent: JsonNode, componentType: string, tup: typedesc[T]) =
   for name, value in fieldPairs default T:
     if $(typeof value) == componentType:
       let componentToAdd = jsonComponent.to(typeof value)
-      world.addComponent(id, componentToAdd, Immediate)
+      world.add(id, componentToAdd, Immediate)
 
 
 proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
@@ -60,9 +60,9 @@ proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
     import examples
 
     var w = World()
-    w.addEntity((Character(name: "Marcus"), Health(health: 100, maxHealth: 100)), Immediate)
-    w.addEntity((Character(name: "Elena"), Health(health: 80, maxHealth: 80)), Immediate)
-    w.addEntity((Character(name: "Brom"), Health(health: 140, maxHealth: 140)), Immediate)
+    w.add((Character(name: "Marcus"), Health(health: 100, maxHealth: 100)), Immediate)
+    w.add((Character(name: "Elena"), Health(health: 80, maxHealth: 80)), Immediate)
+    w.add((Character(name: "Brom"), Health(health: 140, maxHealth: 140)), Immediate)
     echo w.serializeToText (Character, Health)
 
   let entities = createEntityTable(world, tup)
@@ -128,6 +128,6 @@ proc deserializeFromText*[T: tuple](text: string, tup: typedesc[T]): World =
   result = World()
 
   for (id, jsonComponent, componentType) in iteratetJsonComponents(json, result):
-    result.addComponentFromJson(id, jsonComponent, componentType, T)
+    result.addFromJson(id, jsonComponent, componentType, T)
 
   result.cleanupEmptyArchetypes()

@@ -10,21 +10,21 @@ import components
 echo "World"
 var world = World()
 let ids = @[
-  world.addEntity (
+  world.add (
     Character(name: "Marcus", class: "Warrior"),
     Health(health: 120, maxHealth: 120),
     Weapon(name: "Iron Blade", attack: 25),
     Shield(name: "Steel Shield", defense: 15),
     Armor(name: "Chain Mail", defense: 20, buffs: @["Strength"])
   ),
-  world.addEntity (
+  world.add (
     Character(name: "Elena", class: "Mage"),
     Health(health: 80, maxHealth: 80),
     Amulet(name: "Arcane Stone", attack: 30, magic: @["Fireball", "Ice Storm", "Lightning"]),
     Armor(name: "Robe of the Archmage", defense: 10, buffs: @["Intelligence"]),
     Spellbook(spells: @["Fireball", "Ice Storm", "Lightning", "Teleport"])
   ),
-  world.addEntity (
+  world.add (
     Character(name: "Grimm", class: "Paladin"),
     Health(health: 15, maxHealth: 100),
     Weapon(name: "Holy Avenger (Damaged)", attack: 10),
@@ -32,21 +32,21 @@ let ids = @[
     Armor(name: "Plate Armor", defense: 25, buffs: @["Strength", "Faith"]),
     Skillset(skills: @["Divine Smite", "Lay on Hands", "Aura of Protection"])
   ),
-  world.addEntity (
+  world.add (
     Character(name: "Zara", class: "Rogue"),
     Health(health: 90, maxHealth: 90),
     Weapon(name: "Shadow Dagger", attack: 22),
     Armor(name: "Leather Armor", defense: 12, buffs: @["Agility", "Stealth"]),
     Skillset(skills: @["Backstab", "Stealth", "Lockpicking", "Trap Disarm"])
   ),
-  world.addEntity (
+  world.add (
     Character(name: "Brom", class: "Barbarian"),
     Health(health: 140, maxHealth: 140),
     Weapon(name: "Battle Axe", attack: 32),
     Armor(name: "Fur Armor", defense: 15, buffs: @["Strength", "Rage"]),
     Skillset(skills: @["Rage", "Intimidate", "Berserker Rage"])
   ),
-  world.addEntity (
+  world.add (
     Character(name: "Lyra", class: "Ranger"),
     Health(health: 95, maxHealth: 95),
     Weapon(name: "Hunting Bow", attack: 26),
@@ -115,7 +115,7 @@ echo "  Characters:"
 for (character, health) in world.query(charactersQuery):
   echo "  ", character.name, " ", health
 
-world.removeEntity grimm
+world.remove grimm
 echo "\n  Grimm left the party.\n"
 
 echo "  Characters:"
@@ -131,7 +131,7 @@ echo "  Skilled characters:"
 for (character, skillset) in world.query(characterSkillsQuery):
   echo "  ", character.name, "'s skills are: ", skillset.skills
 
-world.addComponent(marcus, Skillset(skills: @["Parry", "Bash", "Riposte"]))
+world.add(marcus, Skillset(skills: @["Parry", "Bash", "Riposte"]))
 echo "\n  Marcus has learned a skillset!\n"
 
 echo "  Skilled characters:"
@@ -147,7 +147,7 @@ echo "  Skilled characters:"
 for (character, skillset) in world.query(characterSkillsQuery):
   echo "  ", character.name, "'s skills are: ", skillset.skills
 
-world.removeComponent(zara, Skillset)
+world.remove(zara, Skillset)
 echo "\n  Zara forgot her skills!\n"
 
 echo "  Skilled characters:"
@@ -159,7 +159,7 @@ echo ".--------------------------."
 echo "| Using the Meta component |"
 echo "'--------------------------'"
 
-let id = world.addEntity (Character(name: "Leon", class: "Paladin"),)
+let id = world.add (Character(name: "Leon", class: "Paladin"),)
 
 echo "  A character with Id: ", id
 

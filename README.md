@@ -15,36 +15,54 @@ The API reference is available [here](https://rowdaboat.github.io/vecs/).
 
 ### Basic Usage
 ```nim
+# Import the library
+import vecs
+```
+```nim
+# Declare some components, components are regular value objects.
+type Charcter = object
+  name*: string
+  class*: string
+
+type Health = object
+  current*: int
+  max*: int
+
+type Weapon = object
+  name*: string
+  attack*: int
+```
+```nim
 # Create a world
 var world = World()
 ```
 ```nim
-# Add an entity
-let entityId = world.addEntity (
+# Add an entity with components
+let entityId = world.add (
   Character(name: "Marcus", class: "Warrior"),
-  Health(health: 120, maxHealth: 120)
+  Health(current: 120, max: 120)
 )
 ```
 ```nim
-# Get a component from an entity
-let health = world.readComponent(entityId, Health):
-echo health.health
+# Get a component from an entity to read its values
+let health = world.read(entityId, Health)
+echo health.current " / " & health.max
 ```
 ```nim
 # Get a component from an entity with write access
-for health in world.component(entityId, Health):
-  health.health += 75
+for health in world.write(entityId, Health):
+  health.current += 75
 ```
 ```nim
-# Get multiple components from an entity
-for (character, health) in world.readComponents(entityId, (Character, Health)):
-  echo character.name & "'s health is: " & health.health
+# Read multiple components from an entity
+let (character, health) = world.read(entityId, (Character, Health))
+echo character.name & "'s health is: " & health.current
 ```
 ```nim
-# Get multiple components from an entity with write access
+# Write to multiple components from an entity
 for (character, health) in world.components(entityId, (Write[Character], Write[Health])):
   character.name = "Happy " & character.name
-  health.health += 75
+  health.current += 75
 ```
 ```nim
 # Query for components
@@ -55,23 +73,23 @@ for (character, sword) in world.query(characterWithSwordsQuery):
 ```
 ```nim
 # Removing an entity
-world.removeEntity entityId
+world.remove entityId
 ```
 ```nim
 # Adding a component
-world.addComponent(entityId, Shield(name: "Steel Shield", defense: 15))
+world.add(entityId, Shield(name: "Steel Shield", defense: 15))
 ```
 ```nim
 # Removing a component
-world.removeComponent(entityId, Shield)
+world.remove(entityId, Shield)
 ```
 ```nim
 # The `Meta` component is automatically added, and holds the `Id` of the entity.
 # This is useful for embedding references to other entities into components.
-let entityId = world.addEntity((Character(name: "Leon", class: "Paladin"),), Immediate)
+let entityId = world.add((Character(name: "Leon", class: "Paladin"),), Immediate)
 
-for meta in world.component(entityId, Meta):
-  assert entityId == meta.id
+let meta = world.read(entityId, Meta):
+assert entityId == meta.id
 ```
 
 
@@ -80,7 +98,7 @@ for meta in world.component(entityId, Meta):
 # Query components for writting
 var characterWithSwordsQuery = Query[(Character, Write[Health])]()
 for (character, health) in world.query(characterWithSwordsQuery):
-  health.health += 10
+  health.current += 10
 ```
 ```nim
 # Query for optional components
