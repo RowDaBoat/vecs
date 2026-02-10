@@ -5,7 +5,7 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import macros, tables, intsets
-import archetype, ecsSeq
+import archetype, ecsseq
 
 
 type EntityId* = object

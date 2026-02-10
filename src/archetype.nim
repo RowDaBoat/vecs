@@ -6,7 +6,7 @@
 ## `vecs` is a free open source ECS library for Nim.
 import std/[macros, genasts, hashes, intsets, sets]
 import tables
-import ecsSeq
+import ecsseq
 
 type ComponentId* = distinct int
 

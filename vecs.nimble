@@ -16,6 +16,7 @@ task test, "Run the test suite":
   exec "nim r test/world.nim"
   exec "nim r test/queries.nim"
   exec "nim r test/id.nim"
+  exec "nim r test/ecsseq.nim"
 
 task docs, "Generate documentation":
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"
