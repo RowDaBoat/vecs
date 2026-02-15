@@ -11,18 +11,16 @@ type EcsSeqAny* = ref object of RootObj
 type EcsSeq*[T] = ref object of EcsSeqAny
   data: seq[T]
 
-type Builder* = proc(): EcsSeqAny
-
+type Builder* = proc(): EcsSeqAny {.nimcall.}
 type Adder* = proc(ecsSeq: var EcsSeqAny): int
-
-type Mover* = proc(fromEcsSeq: var EcsSeqAny, index: int, toEcsSeq: var EcsSeqAny): int
+type Mover* = proc(fromEcsSeq: var EcsSeqAny, index: int, toEcsSeq: var EcsSeqAny): int {.nimcall.}
 
 iterator ids*(self: EcsSeqAny): int =
   for index in 0..<self.deleted.len:
     if not self.deleted[index]:
       yield index
 
-proc add*[T](self: EcsSeq[T], item: T): int =
+proc add*[T](self: EcsSeq[T], item: sink T): int =
   if self.free.len > 0:
     let index = self.free.pop()
     self.data[index] = item
@@ -72,7 +70,7 @@ proc `$`*[T](self: EcsSeq[T]): string =
 
   result &= "]"
 
-proc ecsSeqBuilder*[T](): proc(): EcsSeqAny =
+proc ecsSeqBuilder*[T](): Builder =
   proc(): EcsSeqAny = EcsSeq[T]()
 
 proc ecsSeqMover*[T](): Mover =
