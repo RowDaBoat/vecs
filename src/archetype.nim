@@ -123,7 +123,8 @@ proc moveAdding*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArc
     result = mover(fromEcsSeq, fromArchetypeEntityId, toEcsSeq)
 
   for compId, adder in adders.pairs:
-    assert result == adder(toArchetype.componentLists[compId])
+    let index = adder(toArchetype.componentLists[compId])
+    assert result == index
 
 proc moveRemoving*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArchetype: var Archetype): int =
   for index in 0..<fromArchetype.componentIds.len:

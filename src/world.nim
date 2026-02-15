@@ -263,7 +263,6 @@ proc consolidateRemoveEntity(world: var World, id: EntityId) =
 proc consolidateAddComponents(world: var World, id: EntityId, componentAddersById: Table[ComponentId, Adder]) =
   var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeId]
-
   var componentIds: seq[ComponentId] = @[]
 
   for componentId in componentAddersById.keys:

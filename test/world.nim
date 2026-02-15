@@ -2,8 +2,10 @@
 # Copyright (c) 2025 RowDaBoat
 
 import unittest
+import std/assertions
 import ../src/examples
 import ../src/vecs
+
 
 suite "World should":
   setup:
@@ -176,3 +178,44 @@ suite "World should":
 
     checkpoint("Marcus should have a weapon.")
     check w.has(id, Weapon)
+
+
+  test "make deferred components queriable only after consolidation":
+    var sword = (Weapon(name: "Sword", attack: 10))
+    world.add(marcusId, sword)
+
+    checkpoint("Marcus should not have a weapon yet.")
+    var query: Query[(Meta, Character, Weapon)]
+    for (meta, character, weapon) in world.query(query):
+      fail()
+
+    world.consolidate()
+
+    var count = 0
+    for (meta, character, weapon) in world.query(query):
+      inc count
+      check character.name == "Marcus"
+      check weapon.name == "Sword"
+      check weapon.attack == 10
+
+    checkpoint("Marcus should now have a weapon.")
+    check count == 1
+
+
+#[
+  test "handle duplicate deferred adds of the same component type gracefully":
+    var w = World()
+    let id = w.add((Character(name: "Marcus"),), Immediate)
+
+    checkpoint("Add the same component type twice before consolidation.")
+    w.add(id, Weapon(name: "Sword", attack: 10))
+    w.add(id, Weapon(name: "Axe", attack: 15))
+
+    checkpoint("Marcus should not have a weapon yet.")
+    check not w.has(id, Weapon)
+
+    w.consolidate()
+
+    checkpoint("Marcus should have a weapon after consolidation.")
+    check w.has(id, Weapon)
+]#
