@@ -202,20 +202,22 @@ suite "World should":
     check count == 1
 
 
-#[
-  test "handle duplicate deferred adds of the same component type gracefully":
+  test "raise a defect when adding two components of the same type in deferred mode":
     var w = World()
+    var failed = false
     let id = w.add((Character(name: "Marcus"),), Immediate)
 
-    checkpoint("Add the same component type twice before consolidation.")
+    checkpoint("Deferr the addition of two components of the same type.")
     w.add(id, Weapon(name: "Sword", attack: 10))
     w.add(id, Weapon(name: "Axe", attack: 15))
 
-    checkpoint("Marcus should not have a weapon yet.")
-    check not w.has(id, Weapon)
+    checkpoint("Expect a 'DoubleAddDefect' error.")
+    try:
+      w.consolidate()
+    except DoubleAddDefect:
+      failed = true
+    except CatchableError:
+      checkpoint("No 'DoubleAddDefect' error was raised.")
+      fail()
 
-    w.consolidate()
-
-    checkpoint("Marcus should have a weapon after consolidation.")
-    check w.has(id, Weapon)
-]#
+    assert failed

@@ -21,6 +21,9 @@ type World* = object
   version: int = 0
 
 
+type DoubleAddDefect* = object of Defect
+
+
 proc hash*(id: ArchetypeId): Hash =
   for compId in id.items:
     result = result xor (compId.int mod 32)
@@ -266,6 +269,10 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentAddersByI
   var componentIds: seq[ComponentId] = @[]
 
   for componentId in componentAddersById.keys:
+    if componentId in previousArchetype.id:
+      let message = "Component " & $componentId & " already exists in Entity " & $id & "."
+      raise newException(DoubleAddDefect, message)
+
     componentIds.add componentId
 
   var nextArchetype = world.nextArchetypeAddingFrom(previousArchetype, componentIds)
