@@ -1,6 +1,6 @@
 nimTitle	operations	operations.html	module src/operations		0
-nim	RemoveEntity	operations.html#RemoveEntity	OperationKind.RemoveEntity		5
-nim	AddComponents	operations.html#AddComponents	OperationKind.AddComponents		5
-nim	RemoveComponents	operations.html#RemoveComponents	OperationKind.RemoveComponents		5
-nim	OperationKind	operations.html#OperationKind	enum OperationKind		5
-nim	Operation	operations.html#Operation	object Operation		11
+nim	RemoveEntity	operations.html#RemoveEntity	OperationKind.RemoveEntity		8
+nim	AddComponents	operations.html#AddComponents	OperationKind.AddComponents		8
+nim	RemoveComponents	operations.html#RemoveComponents	OperationKind.RemoveComponents		8
+nim	OperationKind	operations.html#OperationKind	enum OperationKind		8
+nim	Operation	operations.html#Operation	object Operation		14

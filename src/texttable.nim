@@ -1,10 +1,8 @@
-#
-#            vecs - ECS library
-#        (c) Copyright 2025 RowDaBoat
-#
-
-## `vecs` is a free open source ECS library for Nim.
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
 import strutils
+
 
 proc separator(sides: string, widths: seq[int]): string =
   result &= sides
@@ -14,6 +12,7 @@ proc separator(sides: string, widths: seq[int]): string =
 
   result &= repeat("-", widths.len - 1)
   result &= sides & "\n"
+
 
 proc lineText(data: seq[seq[seq[string]]], widths: seq[int], row: int, line: int): string =
   result &= "|"
@@ -29,13 +28,16 @@ proc lineText(data: seq[seq[seq[string]]], widths: seq[int], row: int, line: int
 
   result &= "\n"
 
+
 proc maxLen(strSeq: seq[string]): int =
   for s in strSeq:
     result = max(result, s.len)
 
+
 proc maxHeight(data: seq[seq[seq[string]]], row: int): int =
   for column in data:
     result = max(result, column[row].len)
+
 
 proc computeWidths(data: seq[seq[seq[string]]], columns: int): seq[int] =
   result.setLen(columns)
@@ -43,6 +45,7 @@ proc computeWidths(data: seq[seq[seq[string]]], columns: int): seq[int] =
   for index, column in data:
     for cell in column:
       result[index] = max(result[index], maxLen(cell))
+
 
 proc textTable*(data: seq[seq[seq[string]]]): string =
   let widths = computeWidths(data, data.len)

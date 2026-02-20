@@ -1,3 +1,3 @@
 nimTitle	show	show.html	module src/show		0
-nim	Spec	show.html#Spec	object Spec		14
-nim	show	show.html#show,World,typedesc[T],int	proc show[T: tuple](world: var World; tupleDesc: typedesc[T]; maxWidth: int = 20): string		41
+nim	Spec	show.html#Spec	object Spec		11
+nim	show	show.html#show,World,typedesc[T],int	proc show[T: tuple](world: var World; tupleDesc: typedesc[T]; maxWidth: int = 20): string		38

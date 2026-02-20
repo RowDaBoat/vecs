@@ -1,8 +1,8 @@
 nimTitle	components	components.html	module src/components		0
-nim	Meta	components.html#Meta	object Meta		11
-nim	id	components.html#id,Meta	proc id(meta: Meta): EntityId		16
-nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		20
-nim	withMeta	components.html#withMeta.m,T	macro withMeta[T: tuple](t: T): untyped		26
-nim	enqueueOperation	components.html#enqueueOperation,Meta,Operation	proc enqueueOperation(self: var Meta; operation: Operation)		36
-nim	operations	components.html#operations,Meta	proc operations(self: Meta): seq[Operation]		40
-nim	clearOperations	components.html#clearOperations,Meta	proc clearOperations(self: var Meta)		44
+nim	Meta	components.html#Meta	object Meta		8
+nim	id	components.html#id,Meta	proc id(meta: Meta): EntityId		13
+nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		17
+nim	withMeta	components.html#withMeta.m,T	macro withMeta[T: tuple](t: T): untyped		23
+nim	enqueueOperation	components.html#enqueueOperation,Meta,Operation	proc enqueueOperation(self: var Meta; operation: Operation)		33
+nim	operations	components.html#operations,Meta	proc operations(self: Meta): seq[Operation]		37
+nim	clearOperations	components.html#clearOperations,Meta	proc clearOperations(self: var Meta)		41

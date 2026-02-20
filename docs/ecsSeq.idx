@@ -1,16 +1,16 @@
 nimTitle	ecsseq	ecsseq.html	module src/ecsseq		0
-nim	EcsSeqAny	ecsseq.html#EcsSeqAny	type EcsSeqAny		7
-nim	EcsSeq	ecsseq.html#EcsSeq	type EcsSeq		11
-nim	Builder	ecsseq.html#Builder	type Builder		14
-nim	Adder	ecsseq.html#Adder	type Adder		15
-nim	Mover	ecsseq.html#Mover	type Mover		16
-nim	ids	ecsseq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		18
-nim	add	ecsseq.html#add,EcsSeq[T],sinkT	proc add[T](self: EcsSeq[T]; item: sink T): int		23
-nim	del	ecsseq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		34
-nim	len	ecsseq.html#len,EcsSeqAny	proc len(self: EcsSeqAny): int		38
-nim	has	ecsseq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		41
-nim	`[]`	ecsseq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		46
-nim	`[]=`	ecsseq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		49
-nim	`$`	ecsseq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		62
-nim	ecsSeqBuilder	ecsseq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): Builder		73
-nim	ecsSeqMover	ecsseq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		76
+nim	EcsSeqAny	ecsseq.html#EcsSeqAny	type EcsSeqAny		4
+nim	EcsSeq	ecsseq.html#EcsSeq	type EcsSeq		8
+nim	Builder	ecsseq.html#Builder	type Builder		11
+nim	Adder	ecsseq.html#Adder	type Adder		12
+nim	Mover	ecsseq.html#Mover	type Mover		13
+nim	ids	ecsseq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		15
+nim	add	ecsseq.html#add,EcsSeq[T],sinkT	proc add[T](self: EcsSeq[T]; item: sink T): int		20
+nim	del	ecsseq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		31
+nim	len	ecsseq.html#len,EcsSeqAny	proc len(self: EcsSeqAny): int		35
+nim	has	ecsseq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		38
+nim	`[]`	ecsseq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		43
+nim	`[]=`	ecsseq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		46
+nim	`$`	ecsseq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		59
+nim	ecsSeqBuilder	ecsseq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): Builder		70
+nim	ecsSeqMover	ecsseq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		73
