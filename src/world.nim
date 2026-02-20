@@ -764,7 +764,23 @@ iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T)
   ## Query for components to be removed from entities and components on entities to be removed.
   ## Only read access is allowed.
   runnableExamples:
-    discard
+    import examples
+
+    var w = World()
+    let marcus = w.add((Character(name: "Marcus"), Weapon(name: "Sword", attack: 10)), Immediate)
+    let elena = w.add((Character(name: "Elena"), Weapon(name: "Dagger", attack: 5)), Immediate)
+    let brom = w.add((Character(name: "Brom"), Weapon(name: "Axe", attack: 15)), Immediate)
+
+    w.remove(marcus, Weapon)
+    w.remove(elena, Weapon)
+    w.remove(brom)
+
+    var removedWeapons: seq[(Meta, Weapon)] = @[]
+    for (meta, weapon) in w.queryForRemoval(Weapon):
+      removedWeapons.add (meta, weapon)
+      assert weapon.name in ["Sword", "Dagger", "Axe"]
+
+    assert removedWeapons.len == 3
 
   checkNotATuple(T)
   var ofType {.global.}: Query[(Meta, T)]

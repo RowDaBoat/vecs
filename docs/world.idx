@@ -21,8 +21,8 @@ nim	remove	world.html#remove,World,EntityId,OperationMode	proc remove(world: var
 nim	has	world.html#has,World,EntityId	proc has(world: var World; id: EntityId): bool		694
 nim	query	world.html#query.i,World,Query[T: tuple]	iterator query[T: tuple](world: var World; query: var Query[T]): T.accessTuple		707
 nim	queryForRemoval	world.html#queryForRemoval.i,World,typedesc[T]	iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)		763
-nim	cleanupEmptyArchetypes	world.html#cleanupEmptyArchetypes,World	proc cleanupEmptyArchetypes(world: var World)		786
-nim	consolidate	world.html#consolidate,World	proc consolidate(world: var World)		806
+nim	cleanupEmptyArchetypes	world.html#cleanupEmptyArchetypes,World	proc cleanupEmptyArchetypes(world: var World)		802
+nim	consolidate	world.html#consolidate,World	proc consolidate(world: var World)		822
 nimgrp	remove	world.html#remove-procs-all	proc		539
 nimgrp	has	world.html#has-procs-all	proc		321
 nimgrp	read	world.html#read-procs-all	proc		339
