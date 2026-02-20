@@ -6,8 +6,8 @@
 ## `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables, sets
-import archetype, entity, ecsseq, queries, components
-export components.EntityId, components.Meta, components.OperationMode
+import entityid, archetype, entity, ecsseq, queries, components, operations, operationmodes
+export entityid.EntityId, components.Meta, operationmodes
 export components
 
 
@@ -500,11 +500,16 @@ proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: Operati
 
     addersById[componentId] = adder
 
-  if mode == Immediate:
+  if mode.kind == ImmediateMode:
     world.consolidateAddComponents(id, addersById)
+  elif mode.kind == AfterMode:
+    for meta in world.write(id, Meta):
+      let operation = Operation(id: meta.id, kind: AddComponents, addersById: addersById)
+      mode.query[].operations.add operation
   else:
     for meta in world.write(id, Meta):
-      meta.enqueueOperation(Operation(kind: AddComponents, addersById: addersById))
+      let operation = Operation(id: meta.id, kind: AddComponents, addersById: addersById)
+      meta.enqueueOperation(operation)
 
     world.toConsolidate.incl id
 
@@ -558,13 +563,18 @@ proc remove*[T: tuple](world: var World, id: EntityId, descriptions: typedesc[T]
 
     compIdsToRemove.incl componentId
 
-  if mode == Immediate:
+  if mode.kind == ImmediateMode:
     world.consolidateRemoveComponents(id, compIdsToRemove)
+  elif mode.kind == AfterMode:
+    for meta in world.write(id, Meta):
+      let operation = Operation(id: meta.id, kind: RemoveComponents, compIdsToRemove: compIdsToRemove)
+      mode.query[].operations.add operation
   else:
     for meta in world.write(id, Meta):
-      meta.enqueueOperation(Operation(kind: RemoveComponents, compIdsToRemove: compIdsToRemove))
+      let operation = Operation(id: meta.id, kind: RemoveComponents, compIdsToRemove: compIdsToRemove)
+      meta.enqueueOperation(operation)
 
-  world.toConsolidate.incl id
+    world.toConsolidate.incl id
 
 
 proc remove*[T](world: var World, id: EntityId, compDesc: typedesc[T], mode: OperationMode = Deferred) =
@@ -601,7 +611,7 @@ proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Defer
     assert w.read(marcus, Meta).id == marcus
     assert w.read(marcus, Character).name == "Marcus"
 
-  if mode == Immediate:
+  if mode.kind == ImmediateMode:
     var archetype = world.archetypeFrom WithMeta(T)
     let archetypeEntityId = archetype.add withMeta(components)
     let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
@@ -620,7 +630,7 @@ proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Defer
     for meta in world.write(result, Meta):
       meta.id = result
 
-    world.add(result, components)
+    world.add(result, components, mode)
 
 
 proc addWithSpecificId*(world: var World, id: EntityId) =
@@ -661,11 +671,16 @@ proc remove*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
 
   world.checkEntityExists(id)
 
-  if mode == Immediate:
+  if mode.kind == ImmediateMode:
     world.consolidateRemoveEntity(id)
+  elif mode.kind == AfterMode:
+    for meta in world.write(id, Meta):
+      let operation = Operation(id: meta.id, kind: RemoveEntity)
+      mode.query[].operations.add operation
   else:
     for meta in world.write(id, Meta):
-      meta.enqueueOperation(Operation(kind: RemoveEntity))
+      let operation = Operation(id: meta.id, kind: RemoveEntity)
+      meta.enqueueOperation(operation)
 
     world.toConsolidate.incl id
 
@@ -726,6 +741,17 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
     let archetype = world.archetypes[archetypeId]
     for archetypeEntityId in archetype.entities:
       yield world.buildAccessTuple(typeof T, archetype, archetypeEntityId)
+
+  for operation in query.operations:
+    case operation.kind:
+    of RemoveEntity:
+      world.consolidateRemoveEntity(operation.id)
+    of AddComponents:
+      world.consolidateAddComponents(operation.id, operation.addersById)
+    of RemoveComponents:
+      world.consolidateRemoveComponents(operation.id, operation.compIdsToRemove)
+
+  query.operations.setLen(0)
 
 
 iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T) =

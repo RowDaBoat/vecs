@@ -136,6 +136,7 @@ for (character,) in world.query(disarmedCharacters):
 - [x] Refactor `Id` component to a `Metadata` component with id, removal, and addition info
 - [x] Additions and removals should be enqueued and consolidated in order later
 - [x] Text serialization
+- [x] Add `after` operation mode, that processes add/remove operations after a query is iterated
 - [ ] Binary serialization
 - [ ] Integrate with [reploid](http://github.com/RowDaBoat/reploid)
 - [ ] Convenience procs

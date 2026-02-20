@@ -13,7 +13,9 @@ skipFiles     = @[]
 requires "nim >= 2.0.0"
 
 task test, "Run the test suite":
-  exec "nim r test/world.nim"
+  exec "nim r test/immediate.nim"
+  exec "nim r test/deferred.nim"
+  exec "nim r test/after.nim"
   exec "nim r test/queries.nim"
   exec "nim r test/id.nim"
   exec "nim r test/ecsseq.nim"

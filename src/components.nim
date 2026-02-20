@@ -5,32 +5,7 @@
 
 ## `vecs` is a free open source ECS library for Nim.
 import macros, tables, intsets
-import archetype, ecsseq
-
-
-type EntityId* = object
-  value*: int = -1
-
-
-type OperationKind* = enum
-  RemoveEntity
-  AddComponents
-  RemoveComponents
-
-
-type Operation* = object
-  case kind*: OperationKind:
-  of RemoveEntity:
-    discard
-  of AddComponents:
-    addersById*: Table[ComponentId, Adder]
-  of RemoveComponents:
-    compIdsToRemove*: PackedSet[ComponentId]
-
-
-type OperationMode* = enum
-  Immediate
-  Deferred
+import entityid, archetype, ecsseq, queries, operations
 
 
 type Meta* = object
