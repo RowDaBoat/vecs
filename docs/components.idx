@@ -1,17 +1,8 @@
 nimTitle	components	components.html	module src/components		0
-nim	EntityId	components.html#EntityId	object EntityId		11
-nim	RemoveEntity	components.html#RemoveEntity	OperationKind.RemoveEntity		15
-nim	AddComponents	components.html#AddComponents	OperationKind.AddComponents		15
-nim	RemoveComponents	components.html#RemoveComponents	OperationKind.RemoveComponents		15
-nim	OperationKind	components.html#OperationKind	enum OperationKind		15
-nim	Operation	components.html#Operation	object Operation		21
-nim	Immediate	components.html#Immediate	OperationMode.Immediate		31
-nim	Deferred	components.html#Deferred	OperationMode.Deferred		31
-nim	OperationMode	components.html#OperationMode	enum OperationMode		31
-nim	Meta	components.html#Meta	object Meta		36
-nim	id	components.html#id,Meta	proc id(meta: Meta): EntityId		41
-nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		45
-nim	withMeta	components.html#withMeta.m,T	macro withMeta[T: tuple](t: T): untyped		51
-nim	enqueueOperation	components.html#enqueueOperation,Meta,Operation	proc enqueueOperation(self: var Meta; operation: Operation)		61
-nim	operations	components.html#operations,Meta	proc operations(self: Meta): seq[Operation]		65
-nim	clearOperations	components.html#clearOperations,Meta	proc clearOperations(self: var Meta)		69
+nim	Meta	components.html#Meta	object Meta		11
+nim	id	components.html#id,Meta	proc id(meta: Meta): EntityId		16
+nim	WithMeta	components.html#WithMeta.m,typedesc[T]	macro WithMeta[T: tuple](t: typedesc[T]): typedesc		20
+nim	withMeta	components.html#withMeta.m,T	macro withMeta[T: tuple](t: T): untyped		26
+nim	enqueueOperation	components.html#enqueueOperation,Meta,Operation	proc enqueueOperation(self: var Meta; operation: Operation)		36
+nim	operations	components.html#operations,Meta	proc operations(self: Meta): seq[Operation]		40
+nim	clearOperations	components.html#clearOperations,Meta	proc clearOperations(self: var Meta)		44

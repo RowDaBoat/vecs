@@ -1,16 +1,16 @@
-nimTitle	ecsSeq	ecsSeq.html	module src/ecsSeq		0
-nim	EcsSeqAny	ecsSeq.html#EcsSeqAny	type EcsSeqAny		7
-nim	EcsSeq	ecsSeq.html#EcsSeq	type EcsSeq		11
-nim	Builder	ecsSeq.html#Builder	type Builder		14
-nim	Adder	ecsSeq.html#Adder	type Adder		16
-nim	Mover	ecsSeq.html#Mover	type Mover		18
-nim	ids	ecsSeq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		20
-nim	add	ecsSeq.html#add,EcsSeq[T],T	proc add[T](self: EcsSeq[T]; item: T): int		25
-nim	del	ecsSeq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		36
-nim	len	ecsSeq.html#len,EcsSeqAny	proc len(self: EcsSeqAny): int		40
-nim	has	ecsSeq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		43
-nim	`[]`	ecsSeq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		48
-nim	`[]=`	ecsSeq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		51
-nim	`$`	ecsSeq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		64
-nim	ecsSeqBuilder	ecsSeq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): proc (): EcsSeqAny		75
-nim	ecsSeqMover	ecsSeq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		78
+nimTitle	ecsseq	ecsseq.html	module src/ecsseq		0
+nim	EcsSeqAny	ecsseq.html#EcsSeqAny	type EcsSeqAny		7
+nim	EcsSeq	ecsseq.html#EcsSeq	type EcsSeq		11
+nim	Builder	ecsseq.html#Builder	type Builder		14
+nim	Adder	ecsseq.html#Adder	type Adder		15
+nim	Mover	ecsseq.html#Mover	type Mover		16
+nim	ids	ecsseq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		18
+nim	add	ecsseq.html#add,EcsSeq[T],sinkT	proc add[T](self: EcsSeq[T]; item: sink T): int		23
+nim	del	ecsseq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		34
+nim	len	ecsseq.html#len,EcsSeqAny	proc len(self: EcsSeqAny): int		38
+nim	has	ecsseq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		41
+nim	`[]`	ecsseq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		46
+nim	`[]=`	ecsseq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		49
+nim	`$`	ecsseq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		62
+nim	ecsSeqBuilder	ecsseq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): Builder		73
+nim	ecsSeqMover	ecsseq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		76

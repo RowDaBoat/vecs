@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>src/ecsSeq</title>
+<title>src/ecsseq</title>
 
 <!-- Google fonts -->
 <link href='https://fonts.googleapis.com/css?family=Lato:400,600,900' rel='stylesheet' type='text/css'/>
@@ -24,7 +24,7 @@
 <body>
   <div class="document" id="documentId">
     <div class="container">
-      <h1 class="title">src/ecsSeq</h1>
+      <h1 class="title">src/ecsseq</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
@@ -56,10 +56,11 @@
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#Adder" title="Adder = proc (ecsSeq: var EcsSeqAny): int">Adder</a></li>
-<li><a class="reference" href="#Builder" title="Builder = proc (): EcsSeqAny">Builder</a></li>
+<li><a class="reference" href="#Builder" title="Builder = proc (): EcsSeqAny {.nimcall.}">Builder</a></li>
 <li><a class="reference" href="#EcsSeq" title="EcsSeq[T] = ref object of EcsSeqAny">EcsSeq</a></li>
 <li><a class="reference" href="#EcsSeqAny" title="EcsSeqAny = ref object of RootObj">EcsSeqAny</a></li>
-<li><a class="reference" href="#Mover" title="Mover = proc (fromEcsSeq: var EcsSeqAny; index: int; toEcsSeq: var EcsSeqAny): int">Mover</a></li>
+<li><a class="reference" href="#Mover" title="Mover = proc (fromEcsSeq: var EcsSeqAny; index: int; toEcsSeq: var EcsSeqAny): int {.
+    nimcall.}">Mover</a></li>
 
     </ul>
   </details>
@@ -81,7 +82,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">add
-  <li><a class="reference" href="#add%2CEcsSeq%5BT%5D%2CT" title="add[T](self: EcsSeq[T]; item: T): int">add[T](self: EcsSeq[T]; item: T): int</a></li>
+  <li><a class="reference" href="#add%2CEcsSeq%5BT%5D%2CsinkT" title="add[T](self: EcsSeq[T]; item: sink T): int">add[T](self: EcsSeq[T]; item: sink T): int</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">del
@@ -89,7 +90,7 @@
 
 </ul>
 <ul class="simple nested-toc-section">ecsSeqBuilder
-  <li><a class="reference" href="#ecsSeqBuilder" title="ecsSeqBuilder[T](): proc (): EcsSeqAny">ecsSeqBuilder[T](): proc (): EcsSeqAny</a></li>
+  <li><a class="reference" href="#ecsSeqBuilder" title="ecsSeqBuilder[T](): Builder">ecsSeqBuilder[T](): Builder</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">ecsSeqMover
@@ -125,8 +126,8 @@
 
   </div>
   <div class="nine columns" id="content">
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L1" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L1" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L1" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L1" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
     <div id="tocRoot"></div>
     
@@ -135,52 +136,53 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="Adder">
-  <dt><pre><a href="ecsSeq.html#Adder"><span class="Identifier">Adder</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">ecsSeq</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
+  <dt><pre><a href="ecsseq.html#Adder"><span class="Identifier">Adder</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">ecsSeq</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L16" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L16" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L15" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L15" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="Builder">
-  <dt><pre><a href="ecsSeq.html#Builder"><span class="Identifier">Builder</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a></pre></dt>
+  <dt><pre><a href="ecsseq.html#Builder"><span class="Identifier">Builder</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a> {.<span class="Identifier">nimcall</span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L14" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L14" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L14" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L14" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="EcsSeq">
-  <dt><pre><a href="ecsSeq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a></pre></dt>
+  <dt><pre><a href="ecsseq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L11" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L11" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L11" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L11" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="EcsSeqAny">
-  <dt><pre><a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span></pre></dt>
+  <dt><pre><a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L7" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L7" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L7" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L7" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="Mover">
-  <dt><pre><a href="ecsSeq.html#Mover"><span class="Identifier">Mover</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">fromEcsSeq</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">toEcsSeq</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
+  <dt><pre><a href="ecsseq.html#Mover"><span class="Identifier">Mover</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">fromEcsSeq</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">toEcsSeq</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+    <span class="Identifier">nimcall</span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L16" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L16" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -192,12 +194,12 @@
   <dl class="item">
     <div id="$-procs-all">
   <div id="$,EcsSeq[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CEcsSeq%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CEcsSeq%5BT%5D"><span class="Identifier">`$`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L64" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L64" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L62" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L62" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -205,12 +207,12 @@
 </div>
 <div id="[]-procs-all">
   <div id="[],EcsSeq[T],int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CEcsSeq%5BT%5D%2Cint"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%2CEcsSeq%5BT%5D%2Cint"><span class="Identifier">`[]`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L48" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L48" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L46" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L46" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -218,25 +220,25 @@
 </div>
 <div id="[]=-procs-all">
   <div id="[]=,EcsSeq[T],int,T">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CEcsSeq%5BT%5D%2Cint%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsSeq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%5B%5D%3D%2CEcsSeq%5BT%5D%2Cint%2CT"><span class="Identifier">`[]=`</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="ecsseq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L51" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L51" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L49" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L49" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 
 </div>
 <div id="add-procs-all">
-  <div id="add,EcsSeq[T],T">
-  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CEcsSeq%5BT%5D%2CT"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">item</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
+  <div id="add,EcsSeq[T],sinkT">
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CEcsSeq%5BT%5D%2CsinkT"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeq"><span class="Identifier">EcsSeq</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">item</span><span class="Other">:</span> <span class="Identifier">sink</span> <span class="Identifier">T</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L25" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L25" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L23" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L23" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -244,12 +246,12 @@
 </div>
 <div id="del-procs-all">
   <div id="del,EcsSeqAny,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#del%2CEcsSeqAny%2Cint"><span class="Identifier">del</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#del%2CEcsSeqAny%2Cint"><span class="Identifier">del</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L36" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L36" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L34" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L34" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -257,12 +259,12 @@
 </div>
 <div id="ecsSeqBuilder-procs-all">
   <div id="ecsSeqBuilder">
-  <dt><pre><span class="Keyword">proc</span> <a href="#ecsSeqBuilder"><span class="Identifier">ecsSeqBuilder</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#ecsSeqBuilder"><span class="Identifier">ecsSeqBuilder</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="ecsseq.html#Builder"><span class="Identifier">Builder</span></a></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L75" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L75" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L73" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L73" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -270,12 +272,12 @@
 </div>
 <div id="ecsSeqMover-procs-all">
   <div id="ecsSeqMover">
-  <dt><pre><span class="Keyword">proc</span> <a href="#ecsSeqMover"><span class="Identifier">ecsSeqMover</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="ecsSeq.html#Mover"><span class="Identifier">Mover</span></a></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#ecsSeqMover"><span class="Identifier">ecsSeqMover</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <a href="ecsseq.html#Mover"><span class="Identifier">Mover</span></a></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L78" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L78" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L76" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L76" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -283,12 +285,12 @@
 </div>
 <div id="has-procs-all">
   <div id="has,EcsSeqAny,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CEcsSeqAny%2Cint"><span class="Identifier">has</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CEcsSeqAny%2Cint"><span class="Identifier">has</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L43" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L43" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L41" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L41" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -296,12 +298,12 @@
 </div>
 <div id="len-procs-all">
   <div id="len,EcsSeqAny">
-  <dt><pre><span class="Keyword">proc</span> <a href="#len%2CEcsSeqAny"><span class="Identifier">len</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#len%2CEcsSeqAny"><span class="Identifier">len</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L40" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L40" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L38" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L38" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -315,12 +317,12 @@
   <dl class="item">
     <div id="ids-iterators-all">
   <div id="ids.i,EcsSeqAny">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#ids.i%2CEcsSeqAny"><span class="Identifier">ids</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsSeq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">iterator</span> <a href="#ids.i%2CEcsSeqAny"><span class="Identifier">ids</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsSeq.nim#L20" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsSeq.nim#L20" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/ecsseq.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/ecsseq.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -336,7 +338,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-26 23:15:16 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-02-20 13:07:03 UTC</small>
       </div>
     </div>
   </div>

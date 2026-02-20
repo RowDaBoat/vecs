@@ -468,8 +468,9 @@ iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
 
 proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: OperationMode = Deferred) =
   ## Add components to an entity.
-  ## If the `mode` is `Deferred`, the components will be added when `consolidate()` is called, `Deferred` is the default mode.
-  ## If the `mode` is `Immediate`, the components will be added immediately.
+  ## If `mode` is `Deferred`, the components will be added when `consolidate()` is called, `Deferred` is the default mode.
+  ## If `mode` is `after(query)`, the components will be added after `query` is iterated.
+  ## If `mode` is `Immediate`, the components will be added immediately.
   ## **Note:** Adding components immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
@@ -516,8 +517,9 @@ proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: Operati
 
 proc add*[T](world: var World, id: EntityId, component: T, mode: OperationMode = Deferred) =
   ## Add a component to an entity.
-  ## If the `mode` is `Deferred`, the component will be added when `consolidate()` is called, `Deferred` is the default mode.
-  ## If the `mode` is `Immediate`, the component will be added immediately.
+  ## If `mode` is `Deferred`, the component will be added when `consolidate()` is called, `Deferred` is the default mode.
+  ## If `mode` is `after(query)`, the component will be added after `query` is iterated.
+  ## If `mode` is `Immediate`, the component will be added immediately.
   ## **Note:** Adding components immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
@@ -536,8 +538,9 @@ proc add*[T](world: var World, id: EntityId, component: T, mode: OperationMode =
 
 proc remove*[T: tuple](world: var World, id: EntityId, descriptions: typedesc[T], mode: OperationMode = Deferred) =
   ## Remove multiple components from an entity.
-  ## If the `mode` is `Deferred`, the components will be removed when `consolidate()` is called, `Deferred` is the default mode.
-  ## If the `mode` is `Immediate`, the components will be removed immediately.
+  ## If `mode` is `Deferred`, the components will be removed when `consolidate()` is called, `Deferred` is the default mode.
+  ## If `mode` is `after(query)`, the components will be removed after `query` is iterated.
+  ## If `mode` is `Immediate`, the components will be removed immediately.
   ## **Note:** Removing components immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
@@ -579,8 +582,9 @@ proc remove*[T: tuple](world: var World, id: EntityId, descriptions: typedesc[T]
 
 proc remove*[T](world: var World, id: EntityId, compDesc: typedesc[T], mode: OperationMode = Deferred) =
   ## Remove a component from an entity.
-  ## If the `mode` is `Deferred`, the component will be removed when `consolidate()` is called, `Deferred` is the default mode.
-  ## If the `mode` is `Immediate`, the component will be removed immediately.
+  ## If `mode` is `Deferred`, the component will be removed when `consolidate()` is called, `Deferred` is the default mode.
+  ## If `mode` is `after(query)`, the component will be removed after `query` is iterated.
+  ## If `mode` is `Immediate`, the component will be removed immediately.
   ## **Note:** Removing a component immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples
@@ -598,8 +602,9 @@ proc remove*[T](world: var World, id: EntityId, compDesc: typedesc[T], mode: Ope
 
 proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Deferred): EntityId {.discardable.} =
   ## Add an entity with components. Automatically adds the special `Meta` component, so queries can access metadata like the entity's `Id`.
-  ## If the `mode` is `Deferred`, the entity with the `Meta` component is created immediately, but the components will be added when `consolidate()` is called, `Deferred` is the default mode.
-  ## If the `mode` is `Immediate`, the components will be added immediately.
+  ## If `mode` is `Deferred`, the entity with a `Meta` component is created immediately, but the components will be added when `consolidate()` is called, `Deferred` is the default mode.
+  ## If `mode` is `after(query)`, the entity with a `Meta` component is created immediately, but the components will be added after `query` is iterated.
+  ## If `mode` is `Immediate`, the entity and components will be added immediately.
   ## **Note:** Adding entities immediately during query iteration leads to undefined behaviour.
   ## Returns the new entity's `Id`.
   runnableExamples:
@@ -654,8 +659,9 @@ proc addWithSpecificId*(world: var World, id: EntityId) =
 
 proc remove*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
   ## Remove an entity from the world.
-  ## If the `mode` is `Deferred`, the entity will be removed when `consolidate()` is called, `Deferred` is the default mode.
-  ## If the `mode` is `Immediate`, the entity will be removed immediately.
+  ## If `mode` is `Deferred`, the entity will be removed when `consolidate()` is called, `Deferred` is the default mode.
+  ## If `mode` is `after(query)`, the entity will be removed after `query` is iterated.
+  ## If `mode` is `Immediate`, the entity will be removed immediately.
   ## **Note:** Removing entities immediately during query iteration leads to undefined behaviour.
   runnableExamples:
     import examples

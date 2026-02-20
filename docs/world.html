@@ -58,7 +58,8 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#World" title="World = object">World</a></li>
+      <li><a class="reference" href="#DoubleAddDefect" title="DoubleAddDefect = object of Defect">DoubleAddDefect</a></li>
+<li><a class="reference" href="#World" title="World = object">World</a></li>
 
     </ul>
   </details>
@@ -182,13 +183,23 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="entity.html">entity</a>, <a class="reference external" href="ecsSeq.html">ecsSeq</a>, <a class="reference external" href="queries.html">queries</a>, <a class="reference external" href="components.html">components</a>
+    <a class="reference external" href="entityid.html">entityid</a>, <a class="reference external" href="archetype.html">archetype</a>, <a class="reference external" href="entity.html">entity</a>, <a class="reference external" href="ecsseq.html">ecsseq</a>, <a class="reference external" href="queries.html">queries</a>, <a class="reference external" href="components.html">components</a>, <a class="reference external" href="operations.html">operations</a>, <a class="reference external" href="operationmodes.html">operationmodes</a>
   </dl>
 </div>
 <div class="section" id="7">
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
-    <div id="World">
+    <div id="DoubleAddDefect">
+  <dt><pre><a href="world.html#DoubleAddDefect"><span class="Identifier">DoubleAddDefect</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Defect</span></pre></dt>
+  <dd>
+    
+    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L24" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L24" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="World">
   <dt><pre><a href="world.html#World"><span class="Identifier">World</span></a> <span class="Other">=</span> <span class="Keyword">object</span></pre></dt>
   <dd>
     
@@ -210,8 +221,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L29" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L29" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L32" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L32" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -220,10 +231,10 @@
 <div id="add-procs-all">
   <div id="add,World,T,OperationMode">
   <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CT%2COperationMode"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
-                   <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">discardable</span>.}</pre></dt>
+                   <span class="Identifier">mode</span><span class="Other">:</span> <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a> {.<span class="Identifier">discardable</span>.}</pre></dt>
   <dd>
     
-    Add an entity with components. Automatically adds the special <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component, so queries can access metadata like the entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the entity with the <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component is created immediately, but the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be added immediately. <strong>Note:</strong> Adding entities immediately during query iteration leads to undefined behaviour. Returns the new entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>.
+    Add an entity with components. Automatically adds the special <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component, so queries can access metadata like the entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the entity with a <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component is created immediately, but the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">after</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span></span></tt>, the entity with a <tt class="docutils literal"><span class="pre"><span class="Identifier">Meta</span></span></tt> component is created immediately, but the components will be added after <tt class="docutils literal"><span class="pre"><span class="Identifier">query</span></span></tt> is iterated. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the entity and components will be added immediately. <strong>Note:</strong> Adding entities immediately during query iteration leads to undefined behaviour. Returns the new entity's <tt class="docutils literal"><span class="pre"><span class="Identifier">Id</span></span></tt>.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
@@ -232,17 +243,17 @@
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Meta</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">id</span> <span class="Operator">==</span> <span class="Identifier">marcus</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L583" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L583" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L603" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L603" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="add,World,EntityId,T,OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CEntityId%2CT%2COperationMode"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
-                   <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CEntityId%2CT%2COperationMode"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">components</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
+                   <span class="Identifier">mode</span><span class="Other">:</span> <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    Add components to an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
+    Add components to an entity. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">after</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span></span></tt>, the components will be added after <tt class="docutils literal"><span class="pre"><span class="Identifier">query</span></span></tt> is iterated. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 <span class="Keyword">import</span> <span class="Identifier">show</span>
@@ -254,17 +265,17 @@
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L463" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L463" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L469" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L469" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="add,World,EntityId,T,OperationMode_2">
-  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CEntityId%2CT%2COperationMode_2"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
-            <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CWorld%2CEntityId%2CT%2COperationMode_2"><span class="Identifier">add</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">component</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span>
+            <span class="Identifier">mode</span><span class="Other">:</span> <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    Add a component to an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
+    Add a component to an entity. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be added when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">after</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span></span></tt>, the component will be added after <tt class="docutils literal"><span class="pre"><span class="Identifier">query</span></span></tt> is iterated. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be added immediately. <strong>Note:</strong> Adding components immediately during query iteration leads to undefined behaviour.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 <span class="Keyword">import</span> <span class="Identifier">show</span>
@@ -275,8 +286,8 @@
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L506" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L506" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L518" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L518" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -284,7 +295,7 @@
 </div>
 <div id="addWithSpecificId-procs-all">
   <div id="addWithSpecificId,World,EntityId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#addWithSpecificId%2CWorld%2CEntityId"><span class="Identifier">addWithSpecificId</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#addWithSpecificId%2CWorld%2CEntityId"><span class="Identifier">addWithSpecificId</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -294,8 +305,8 @@
 
 <span class="Keyword">var</span> <span class="Identifier">w</span> <span class="Operator">=</span> <span class="Identifier">World</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">addWithSpecificId</span><span class="Punctuation">(</span><span class="Identifier">EntityId</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L620" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L620" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L641" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L641" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -308,8 +319,8 @@
   <dd>
     
     Cleans up empty archetypes. This is useful mostly for deserialization routines. Removing archetypes forces caches from queries to be rebuilt.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L748" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L748" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L786" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L786" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -321,8 +332,8 @@
   <dd>
     
      Get the ComponentId for a given component type. This is mostly useful to identify the components of an archetype.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L303" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L303" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L309" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L309" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -335,8 +346,8 @@
   <dd>
     
     Consolidates all additions and removals in the world.
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L768" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L768" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L806" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L806" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -344,7 +355,7 @@
 </div>
 <div id="has-procs-all">
   <div id="has,World,EntityId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CWorld%2CEntityId"><span class="Identifier">has</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CWorld%2CEntityId"><span class="Identifier">has</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -356,13 +367,13 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">true</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">EntityId</span><span class="Punctuation">(</span><span class="Identifier">value</span><span class="Punctuation">:</span> <span class="DecNumber">10</span><span class="Punctuation">)</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L667" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L667" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L694" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L694" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="has,World,EntityId,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">has</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#has%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">has</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
   <dd>
     
     Check if an entity has a given component.
@@ -373,8 +384,8 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Health</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L315" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L315" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L321" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L321" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -386,8 +397,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L24" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L24" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L27" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L27" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -395,7 +406,7 @@
 </div>
 <div id="read-procs-all">
   <div id="read,World,EntityId,typedesc[T]_2">
-  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D_2"><span class="Identifier">read</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D_2"><span class="Identifier">read</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
     Direct read access to multiple components of an entity. The <tt class="docutils literal"><span class="pre"><span class="Identifier">T</span></span></tt> tuple must contain no <tt class="docutils literal"><span class="pre"><span class="Identifier">Write</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Identifier">Opt</span></span></tt>, or <tt class="docutils literal"><span class="pre"><span class="Keyword">Not</span></span></tt> accessors.
@@ -412,13 +423,13 @@
 
 <span class="Identifier">assert</span> <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Sword&quot;</span>
 <span class="Identifier">assert</span> <span class="Identifier">spellbook</span><span class="Operator">.</span><span class="Identifier">spells</span> <span class="Operator">==</span> <span class="Operator">@</span><span class="Punctuation">[</span><span class="StringLit">&quot;Fireball&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Ice Storm&quot;</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Lightning&quot;</span><span class="Punctuation">]</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L386" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L386" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L392" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L392" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="read,World,EntityId,typedesc[T]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">read</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">read</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
     Directly read a single component of an entity.
@@ -429,8 +440,8 @@
 <span class="Keyword">let</span> <span class="Identifier">marcus</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">add</span><span class="Punctuation">(</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">(</span><span class="Identifier">name</span><span class="Punctuation">:</span> <span class="StringLit">&quot;Marcus&quot;</span><span class="Punctuation">)</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">,</span> <span class="Identifier">Immediate</span><span class="Punctuation">)</span>
 <span class="Keyword">let</span> <span class="Identifier">character</span> <span class="Operator">=</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Marcus&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L333" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L333" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L339" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L339" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -438,11 +449,10 @@
 </div>
 <div id="remove-procs-all">
   <div id="remove,World,EntityId,OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2COperationMode"><span class="Identifier">remove</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2COperationMode"><span class="Identifier">remove</span></a><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">mode</span><span class="Other">:</span> <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    Remove an entity from the world. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the entity will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the entity will be removed immediately. <strong>Note:</strong> Removing entities immediately during query iteration leads to undefined behaviour.
+    Remove an entity from the world. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the entity will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">after</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span></span></tt>, the entity will be removed after <tt class="docutils literal"><span class="pre"><span class="Identifier">query</span></span></tt> is iterated. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the entity will be removed immediately. <strong>Note:</strong> Removing entities immediately during query iteration leads to undefined behaviour.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
@@ -454,17 +464,17 @@
 <span class="Keyword">var</span> <span class="Identifier">query</span><span class="Punctuation">:</span> <span class="Identifier">Query</span><span class="Punctuation">[</span><span class="Punctuation">(</span><span class="Identifier">Character</span><span class="Punctuation">,</span><span class="Punctuation">)</span><span class="Punctuation">]</span>
 <span class="Keyword">for</span> <span class="Identifier">character</span> <span class="Keyword">in</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">query</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
   <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;No character should exist.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L639" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L639" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L660" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L660" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="remove,World,EntityId,typedesc[T],OperationMode">
-  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode"><span class="Identifier">remove</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">descriptions</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
-                      <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode"><span class="Identifier">remove</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">descriptions</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
+                      <span class="Identifier">mode</span><span class="Other">:</span> <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    Remove multiple components from an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be removed immediately. <strong>Note:</strong> Removing components immediately during query iteration leads to undefined behaviour.
+    Remove multiple components from an entity. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the components will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">after</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span></span></tt>, the components will be removed after <tt class="docutils literal"><span class="pre"><span class="Identifier">query</span></span></tt> is iterated. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the components will be removed immediately. <strong>Note:</strong> Removing components immediately during query iteration leads to undefined behaviour.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
@@ -475,17 +485,17 @@
 
 <span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span>
 <span class="Identifier">assert</span> <span class="Keyword">not</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L526" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L526" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L539" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L539" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="remove,World,EntityId,typedesc[T],OperationMode_2">
-  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode_2"><span class="Identifier">remove</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
-               <span class="Identifier">mode</span><span class="Other">:</span> <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#remove%2CWorld%2CEntityId%2Ctypedesc%5BT%5D%2COperationMode_2"><span class="Identifier">remove</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span>
+               <span class="Identifier">mode</span><span class="Other">:</span> <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a> <span class="Other">=</span> <span class="Identifier">Deferred</span><span class="Other">)</span></pre></dt>
   <dd>
     
-    Remove a component from an entity. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If the <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be removed immediately. <strong>Note:</strong> Removing a component immediately during query iteration leads to undefined behaviour.
+    Remove a component from an entity. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt>, the component will be removed when <tt class="docutils literal"><span class="pre"><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span></span></tt> is called, <tt class="docutils literal"><span class="pre"><span class="Identifier">Deferred</span></span></tt> is the default mode. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">after</span><span class="Punctuation">(</span><span class="Identifier">query</span><span class="Punctuation">)</span></span></tt>, the component will be removed after <tt class="docutils literal"><span class="pre"><span class="Identifier">query</span></span></tt> is iterated. If <tt class="docutils literal"><span class="pre"><span class="Identifier">mode</span></span></tt> is <tt class="docutils literal"><span class="pre"><span class="Identifier">Immediate</span></span></tt>, the component will be removed immediately. <strong>Note:</strong> Removing a component immediately during query iteration leads to undefined behaviour.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">import</span> <span class="Identifier">examples</span>
 
@@ -495,8 +505,8 @@
 <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">consolidate</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">has</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Weapon</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="Identifier">false</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L564" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L564" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L583" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L583" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -517,8 +527,8 @@
     <p>Iterate through all the world's archetypes.</p>
 <p>This is mostly useful just to implement custom queries. To use Archetypes, the archetype module must be imported.</p>
 
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L294" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L294" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L300" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L300" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -526,7 +536,7 @@
 </div>
 <div id="components-iterators-all">
   <div id="components.i,World,EntityId,typedesc[T]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#components.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">tup</span><span class="Other">.</span><span class="Identifier">accessTuple</span></pre></dt>
+  <dt><pre><span class="Keyword">iterator</span> <a href="#components.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">tup</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">tup</span><span class="Other">.</span><span class="Identifier">accessTuple</span></pre></dt>
   <dd>
     
     Read, write, and optional access to components of an entity. An iterator is used to ensure fast and safe access to the components. <strong>Accessors:</strong><ul class="simple"><li><strong>Read access</strong>: just use the component's type</li>
@@ -557,8 +567,8 @@
     <span class="Identifier">echo</span> <span class="StringLit">&quot;Marcus's spellbook contains: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">value</span><span class="Operator">.</span><span class="Identifier">spells</span>
   <span class="Identifier">armor</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
     <span class="Identifier">raiseAssert</span> <span class="StringLit">&quot;Marcus should have a spellbook.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L416" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L416" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L422" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L422" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -604,8 +614,8 @@
   <span class="Identifier">weapon</span><span class="Operator">.</span><span class="Identifier">isNothing</span><span class="Punctuation">:</span>
     <span class="Identifier">assert</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Elena&quot;</span>
     <span class="Identifier">echo</span> <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span><span class="Punctuation">,</span> <span class="StringLit">&quot; has no weapon.&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L680" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L680" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L707" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L707" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -619,8 +629,8 @@
     Query for components to be removed from entities and components on entities to be removed. Only read access is allowed.
 <p><strong class="examples_text">Example:</strong></p>
 <pre class="listing"><span class="Keyword">discard</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L725" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L725" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L763" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L763" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -628,7 +638,7 @@
 </div>
 <div id="write-iterators-all">
   <div id="write.i,World,EntityId,typedesc[T]">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#write.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">write</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
+  <dt><pre><span class="Keyword">iterator</span> <a href="#write.i%2CWorld%2CEntityId%2Ctypedesc%5BT%5D"><span class="Identifier">write</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">world</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="world.html#World"><span class="Identifier">World</span></a><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a><span class="Other">;</span> <span class="Identifier">compDesc</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
     Write access to a single component of an entity. An iterator is used to ensure fast and safe access to the component.
@@ -642,8 +652,8 @@
   <span class="Identifier">character</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">=</span> <span class="StringLit">&quot;Mark&quot;</span>
 
 <span class="Identifier">assert</span> <span class="Identifier">w</span><span class="Operator">.</span><span class="Identifier">read</span><span class="Punctuation">(</span><span class="Identifier">marcus</span><span class="Punctuation">,</span> <span class="Identifier">Character</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">name</span> <span class="Operator">==</span> <span class="StringLit">&quot;Mark&quot;</span></pre>
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L358" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L358" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L364" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L364" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -661,8 +671,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L32" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L32" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/world.nim#L35" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/world.nim#L35" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -674,7 +684,7 @@
 <div class="section" id="19">
   <h1><a class="toc-backref" href="#19">Exports</a></h1>
   <dl class="item">
-    <a href="components.html#EntityId"><span class="Identifier">EntityId</span></a>, <a href="components.html#Meta"><span class="Identifier">Meta</span></a>, <a href="components.html#OperationMode"><span class="Identifier">OperationMode</span></a>, <a href="components.html#Operation"><span class="Identifier">Operation</span></a>, <a href="components.html#EntityId_2"><span class="Identifier">EntityId</span></a>, <a href="components.html#Meta_2"><span class="Identifier">Meta</span></a>, <a href="components.html#clearOperations,Meta"><span class="Identifier">clearOperations</span></a>, <a href="components.html#enqueueOperation,Meta,Operation"><span class="Identifier">enqueueOperation</span></a>, <a href="components.html#OperationKind"><span class="Identifier">OperationKind</span></a>, <a href="components.html#id,Meta"><span class="Identifier">id</span></a>, <a href="components.html#OperationMode_2"><span class="Identifier">OperationMode</span></a>, <a href="components.html#WithMeta.m,typedesc[T]"><span class="Identifier">WithMeta</span></a>, <a href="components.html#withMeta.m,T"><span class="Identifier">withMeta</span></a>, <a href="components.html#operations,Meta"><span class="Identifier">operations</span></a>
+    <a href="entityid.html#EntityId"><span class="Identifier">EntityId</span></a>, <a href="components.html#Meta"><span class="Identifier">Meta</span></a>, <a href="operationmodes.html#OperationMode"><span class="Identifier">OperationMode</span></a>, <a href="operationmodes.html#after,Query[T: tuple]"><span class="Identifier">after</span></a>, <a href="operationmodes.html#Deferred"><span class="Identifier">Deferred</span></a>, <a href="operationmodes.html#Immediate"><span class="Identifier">Immediate</span></a>, <a href="operationmodes.html#OperationModeKind"><span class="Identifier">OperationModeKind</span></a>, <a href="components.html#clearOperations,Meta"><span class="Identifier">clearOperations</span></a>, <a href="components.html#Meta_2"><span class="Identifier">Meta</span></a>, <a href="components.html#WithMeta.m,typedesc[T]"><span class="Identifier">WithMeta</span></a>, <a href="components.html#withMeta.m,T"><span class="Identifier">withMeta</span></a>, <a href="components.html#enqueueOperation,Meta,Operation"><span class="Identifier">enqueueOperation</span></a>, <a href="components.html#id,Meta"><span class="Identifier">id</span></a>, <a href="components.html#operations,Meta"><span class="Identifier">operations</span></a>
   </dl>
 </div>
 
@@ -684,7 +694,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-26 23:15:18 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-02-20 13:07:05 UTC</small>
       </div>
     </div>
   </div>

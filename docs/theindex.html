@@ -25,14 +25,14 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="archetype.html">archetype</a>, <a href="component.html">component</a>, <a href="components.html">components</a>, <a href="ecsSeq.html">ecsSeq</a>, <a href="entity.html">entity</a>, <a href="id.html">id</a>, <a href="queries.html">queries</a>, <a href="queries/opNot.html">queries/opNot</a>, <a href="queries/opOpt.html">queries/opOpt</a>, <a href="queries/opWrite.html">queries/opWrite</a>, <a href="queries/query.html">queries/query</a>, <a href="query.html">query</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="textTable.html">textTable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="archetype.html">archetype</a>, <a href="component.html">component</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="queries/opNot.html">queries/opNot</a>, <a href="queries/opOpt.html">queries/opOpt</a>, <a href="queries/opWrite.html">queries/opWrite</a>, <a href="queries/query.html">queries/query</a>, <a href="query.html">query</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="textTable.html">textTable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc `$`(id: ComponentId): string" href="archetype.html#%24%2CComponentId">archetype: proc `$`(id: ComponentId): string</a></li>
           <li><a class="reference external"
           data-doc-search-tag="component: proc `$`(id: ComponentId): string" href="component.html#%24%2CComponentId">component: proc `$`(id: ComponentId): string</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc `$`[T](self: EcsSeq[T]): string" href="ecsSeq.html#%24%2CEcsSeq%5BT%5D">ecsSeq: proc `$`[T](self: EcsSeq[T]): string</a></li>
+          data-doc-search-tag="ecsseq: proc `$`[T](self: EcsSeq[T]): string" href="ecsseq.html#%24%2CEcsSeq%5BT%5D">ecsseq: proc `$`[T](self: EcsSeq[T]): string</a></li>
           </ul></dd>
 <dt><a name="%60%3D%3D%60" href="#%60%3D%3D%60"><span>`==`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -40,11 +40,11 @@
           </ul></dd>
 <dt><a name="%60%5B%5D%3D%60" href="#%60%5B%5D%3D%60"><span>`[]=`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)" href="ecsSeq.html#%5B%5D%3D%2CEcsSeq%5BT%5D%2Cint%2CT">ecsSeq: proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)</a></li>
+          data-doc-search-tag="ecsseq: proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)" href="ecsseq.html#%5B%5D%3D%2CEcsSeq%5BT%5D%2Cint%2CT">ecsseq: proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)</a></li>
           </ul></dd>
 <dt><a name="%60%5B%5D%60" href="#%60%5B%5D%60"><span>`[]`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc `[]`[T](self: EcsSeq[T]; index: int): var T" href="ecsSeq.html#%5B%5D%2CEcsSeq%5BT%5D%2Cint">ecsSeq: proc `[]`[T](self: EcsSeq[T]; index: int): var T</a></li>
+          data-doc-search-tag="ecsseq: proc `[]`[T](self: EcsSeq[T]; index: int): var T" href="ecsseq.html#%5B%5D%2CEcsSeq%5BT%5D%2Cint">ecsseq: proc `[]`[T](self: EcsSeq[T]; index: int): var T</a></li>
           </ul></dd>
 <dt><a name="%60of%60" href="#%60of%60"><span>`of`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -58,7 +58,7 @@
           <li><a class="reference external"
           data-doc-search-tag="archetype: proc add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int" href="archetype.html#add%2CArchetype%2CTable%5BComponentId%2CAdder%5D">archetype: proc add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc add[T](self: EcsSeq[T]; item: T): int" href="ecsSeq.html#add%2CEcsSeq%5BT%5D%2CT">ecsSeq: proc add[T](self: EcsSeq[T]; item: T): int</a></li>
+          data-doc-search-tag="ecsseq: proc add[T](self: EcsSeq[T]; item: sink T): int" href="ecsseq.html#add%2CEcsSeq%5BT%5D%2CsinkT">ecsseq: proc add[T](self: EcsSeq[T]; item: sink T): int</a></li>
           <li><a class="reference external"
           data-doc-search-tag="world: proc add[T: tuple](world: var World; id: EntityId; components: T;
               mode: OperationMode = Deferred)" href="world.html#add%2CWorld%2CEntityId%2CT%2COperationMode">world: proc add[T: tuple](world: var World; id: EntityId; components: T;
@@ -72,15 +72,23 @@
           </ul></dd>
 <dt><a name="AddComponents" href="#AddComponents"><span>AddComponents:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: OperationKind.AddComponents" href="components.html#AddComponents">components: OperationKind.AddComponents</a></li>
+          data-doc-search-tag="operations: OperationKind.AddComponents" href="operations.html#AddComponents">operations: OperationKind.AddComponents</a></li>
           </ul></dd>
 <dt><a name="Adder" href="#Adder"><span>Adder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: type Adder" href="ecsSeq.html#Adder">ecsSeq: type Adder</a></li>
+          data-doc-search-tag="ecsseq: type Adder" href="ecsseq.html#Adder">ecsseq: type Adder</a></li>
           </ul></dd>
 <dt><a name="addWithSpecificId" href="#addWithSpecificId"><span>addWithSpecificId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="world: proc addWithSpecificId(world: var World; id: EntityId)" href="world.html#addWithSpecificId%2CWorld%2CEntityId">world: proc addWithSpecificId(world: var World; id: EntityId)</a></li>
+          </ul></dd>
+<dt><a name="after" href="#after"><span>after:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="operationmodes: proc after[T: tuple](query: var Query[T]): OperationMode[T]" href="operationmodes.html#after%2CQuery%5BT%3A%20tuple%5D">operationmodes: proc after[T: tuple](query: var Query[T]): OperationMode[T]</a></li>
+          </ul></dd>
+<dt><a name="AfterMode" href="#AfterMode"><span>AfterMode:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="operationmodes: OperationModeKind.AfterMode" href="operationmodes.html#AfterMode">operationmodes: OperationModeKind.AfterMode</a></li>
           </ul></dd>
 <dt><a name="Archetype" href="#Archetype"><span>Archetype:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -100,7 +108,7 @@
           </ul></dd>
 <dt><a name="Builder" href="#Builder"><span>Builder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: type Builder" href="ecsSeq.html#Builder">ecsSeq: type Builder</a></li>
+          data-doc-search-tag="ecsseq: type Builder" href="ecsseq.html#Builder">ecsseq: type Builder</a></li>
           </ul></dd>
 <dt><a name="cleanupEmptyArchetypes" href="#cleanupEmptyArchetypes"><span>cleanupEmptyArchetypes:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -146,11 +154,15 @@
           </ul></dd>
 <dt><a name="Deferred" href="#Deferred"><span>Deferred:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: OperationMode.Deferred" href="components.html#Deferred">components: OperationMode.Deferred</a></li>
+          data-doc-search-tag="operationmodes: let Deferred" href="operationmodes.html#Deferred">operationmodes: let Deferred</a></li>
+          </ul></dd>
+<dt><a name="DeferredMode" href="#DeferredMode"><span>DeferredMode:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="operationmodes: OperationModeKind.DeferredMode" href="operationmodes.html#DeferredMode">operationmodes: OperationModeKind.DeferredMode</a></li>
           </ul></dd>
 <dt><a name="del" href="#del"><span>del:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc del(self: EcsSeqAny; index: int)" href="ecsSeq.html#del%2CEcsSeqAny%2Cint">ecsSeq: proc del(self: EcsSeqAny; index: int)</a></li>
+          data-doc-search-tag="ecsseq: proc del(self: EcsSeqAny; index: int)" href="ecsseq.html#del%2CEcsSeqAny%2Cint">ecsseq: proc del(self: EcsSeqAny; index: int)</a></li>
           </ul></dd>
 <dt><a name="deserializeFromText" href="#deserializeFromText"><span>deserializeFromText:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -160,21 +172,25 @@
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc disjointed(archetype: Archetype; candidateId: ArchetypeId): bool" href="archetype.html#disjointed%2CArchetype%2CArchetypeId">archetype: proc disjointed(archetype: Archetype; candidateId: ArchetypeId): bool</a></li>
           </ul></dd>
+<dt><a name="DoubleAddDefect" href="#DoubleAddDefect"><span>DoubleAddDefect:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="world: object DoubleAddDefect" href="world.html#DoubleAddDefect">world: object DoubleAddDefect</a></li>
+          </ul></dd>
 <dt><a name="EcsSeq" href="#EcsSeq"><span>EcsSeq:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: type EcsSeq" href="ecsSeq.html#EcsSeq">ecsSeq: type EcsSeq</a></li>
+          data-doc-search-tag="ecsseq: type EcsSeq" href="ecsseq.html#EcsSeq">ecsseq: type EcsSeq</a></li>
           </ul></dd>
 <dt><a name="EcsSeqAny" href="#EcsSeqAny"><span>EcsSeqAny:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: type EcsSeqAny" href="ecsSeq.html#EcsSeqAny">ecsSeq: type EcsSeqAny</a></li>
+          data-doc-search-tag="ecsseq: type EcsSeqAny" href="ecsseq.html#EcsSeqAny">ecsseq: type EcsSeqAny</a></li>
           </ul></dd>
 <dt><a name="ecsSeqBuilder" href="#ecsSeqBuilder"><span>ecsSeqBuilder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc ecsSeqBuilder[T](): proc (): EcsSeqAny" href="ecsSeq.html#ecsSeqBuilder">ecsSeq: proc ecsSeqBuilder[T](): proc (): EcsSeqAny</a></li>
+          data-doc-search-tag="ecsseq: proc ecsSeqBuilder[T](): Builder" href="ecsseq.html#ecsSeqBuilder">ecsseq: proc ecsSeqBuilder[T](): Builder</a></li>
           </ul></dd>
 <dt><a name="ecsSeqMover" href="#ecsSeqMover"><span>ecsSeqMover:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc ecsSeqMover[T](): Mover" href="ecsSeq.html#ecsSeqMover">ecsSeq: proc ecsSeqMover[T](): Mover</a></li>
+          data-doc-search-tag="ecsseq: proc ecsSeqMover[T](): Mover" href="ecsseq.html#ecsSeqMover">ecsseq: proc ecsSeqMover[T](): Mover</a></li>
           </ul></dd>
 <dt><a name="enqueueOperation" href="#enqueueOperation"><span>enqueueOperation:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -190,7 +206,7 @@
           </ul></dd>
 <dt><a name="EntityId" href="#EntityId"><span>EntityId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: object EntityId" href="components.html#EntityId">components: object EntityId</a></li>
+          data-doc-search-tag="entityid: object EntityId" href="entityid.html#EntityId">entityid: object EntityId</a></li>
           </ul></dd>
 <dt><a name="entityId" href="#entityId"><span>entityId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -202,7 +218,7 @@
           </ul></dd>
 <dt><a name="has" href="#has"><span>has:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc has(self: EcsSeqAny; index: int): bool" href="ecsSeq.html#has%2CEcsSeqAny%2Cint">ecsSeq: proc has(self: EcsSeqAny; index: int): bool</a></li>
+          data-doc-search-tag="ecsseq: proc has(self: EcsSeqAny; index: int): bool" href="ecsseq.html#has%2CEcsSeqAny%2Cint">ecsseq: proc has(self: EcsSeqAny; index: int): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="id: template has[T](world: var World; id: Id[T]): bool" href="id.html#has.t%2CWorld%2CId%5BT%5D">id: template has[T](world: var World; id: Id[T]): bool</a></li>
           <li><a class="reference external"
@@ -224,11 +240,15 @@
           </ul></dd>
 <dt><a name="ids" href="#ids"><span>ids:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: iterator ids(self: EcsSeqAny): int" href="ecsSeq.html#ids.i%2CEcsSeqAny">ecsSeq: iterator ids(self: EcsSeqAny): int</a></li>
+          data-doc-search-tag="ecsseq: iterator ids(self: EcsSeqAny): int" href="ecsseq.html#ids.i%2CEcsSeqAny">ecsseq: iterator ids(self: EcsSeqAny): int</a></li>
           </ul></dd>
 <dt><a name="Immediate" href="#Immediate"><span>Immediate:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: OperationMode.Immediate" href="components.html#Immediate">components: OperationMode.Immediate</a></li>
+          data-doc-search-tag="operationmodes: let Immediate" href="operationmodes.html#Immediate">operationmodes: let Immediate</a></li>
+          </ul></dd>
+<dt><a name="ImmediateMode" href="#ImmediateMode"><span>ImmediateMode:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="operationmodes: OperationModeKind.ImmediateMode" href="operationmodes.html#ImmediateMode">operationmodes: OperationModeKind.ImmediateMode</a></li>
           </ul></dd>
 <dt><a name="isEmpty" href="#isEmpty"><span>isEmpty:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -248,7 +268,7 @@
           </ul></dd>
 <dt><a name="len" href="#len"><span>len:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: proc len(self: EcsSeqAny): int" href="ecsSeq.html#len%2CEcsSeqAny">ecsSeq: proc len(self: EcsSeqAny): int</a></li>
+          data-doc-search-tag="ecsseq: proc len(self: EcsSeqAny): int" href="ecsseq.html#len%2CEcsSeqAny">ecsseq: proc len(self: EcsSeqAny): int</a></li>
           </ul></dd>
 <dt><a name="makeArchetype" href="#makeArchetype"><span>makeArchetype:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -278,7 +298,7 @@
           </ul></dd>
 <dt><a name="Mover" href="#Mover"><span>Mover:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="ecsSeq: type Mover" href="ecsSeq.html#Mover">ecsSeq: type Mover</a></li>
+          data-doc-search-tag="ecsseq: type Mover" href="ecsseq.html#Mover">ecsseq: type Mover</a></li>
           </ul></dd>
 <dt><a name="moveRemoving" href="#moveRemoving"><span>moveRemoving:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -294,15 +314,19 @@
           </ul></dd>
 <dt><a name="Operation" href="#Operation"><span>Operation:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: object Operation" href="components.html#Operation">components: object Operation</a></li>
+          data-doc-search-tag="operations: object Operation" href="operations.html#Operation">operations: object Operation</a></li>
           </ul></dd>
 <dt><a name="OperationKind" href="#OperationKind"><span>OperationKind:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: enum OperationKind" href="components.html#OperationKind">components: enum OperationKind</a></li>
+          data-doc-search-tag="operations: enum OperationKind" href="operations.html#OperationKind">operations: enum OperationKind</a></li>
           </ul></dd>
 <dt><a name="OperationMode" href="#OperationMode"><span>OperationMode:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: enum OperationMode" href="components.html#OperationMode">components: enum OperationMode</a></li>
+          data-doc-search-tag="operationmodes: object OperationMode" href="operationmodes.html#OperationMode">operationmodes: object OperationMode</a></li>
+          </ul></dd>
+<dt><a name="OperationModeKind" href="#OperationModeKind"><span>OperationModeKind:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="operationmodes: enum OperationModeKind" href="operationmodes.html#OperationModeKind">operationmodes: enum OperationModeKind</a></li>
           </ul></dd>
 <dt><a name="operations" href="#operations"><span>operations:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -360,11 +384,11 @@
           </ul></dd>
 <dt><a name="RemoveComponents" href="#RemoveComponents"><span>RemoveComponents:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: OperationKind.RemoveComponents" href="components.html#RemoveComponents">components: OperationKind.RemoveComponents</a></li>
+          data-doc-search-tag="operations: OperationKind.RemoveComponents" href="operations.html#RemoveComponents">operations: OperationKind.RemoveComponents</a></li>
           </ul></dd>
 <dt><a name="RemoveEntity" href="#RemoveEntity"><span>RemoveEntity:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="components: OperationKind.RemoveEntity" href="components.html#RemoveEntity">components: OperationKind.RemoveEntity</a></li>
+          data-doc-search-tag="operations: OperationKind.RemoveEntity" href="operations.html#RemoveEntity">operations: OperationKind.RemoveEntity</a></li>
           </ul></dd>
 <dt><a name="reset" href="#reset"><span>reset:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -424,7 +448,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-26 23:15:19 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-02-20 13:07:07 UTC</small>
       </div>
     </div>
   </div>
