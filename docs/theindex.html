@@ -25,12 +25,10 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="archetype.html">archetype</a>, <a href="component.html">component</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="queries/opNot.html">queries/opNot</a>, <a href="queries/opOpt.html">queries/opOpt</a>, <a href="queries/opWrite.html">queries/opWrite</a>, <a href="queries/query.html">queries/query</a>, <a href="query.html">query</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="textTable.html">textTable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="archetype.html">archetype</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="texttable.html">texttable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc `$`(id: ComponentId): string" href="archetype.html#%24%2CComponentId">archetype: proc `$`(id: ComponentId): string</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="component: proc `$`(id: ComponentId): string" href="component.html#%24%2CComponentId">component: proc `$`(id: ComponentId): string</a></li>
           <li><a class="reference external"
           data-doc-search-tag="ecsseq: proc `$`[T](self: EcsSeq[T]): string" href="ecsseq.html#%24%2CEcsSeq%5BT%5D">ecsseq: proc `$`[T](self: EcsSeq[T]): string</a></li>
           </ul></dd>
@@ -121,8 +119,6 @@
 <dt><a name="ComponentId" href="#ComponentId"><span>ComponentId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: type ComponentId" href="archetype.html#ComponentId">archetype: type ComponentId</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="component: type ComponentId" href="component.html#ComponentId">component: type ComponentId</a></li>
           </ul></dd>
 <dt><a name="componentIdFrom" href="#componentIdFrom"><span>componentIdFrom:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -257,14 +253,10 @@
 <dt><a name="isNothing" href="#isNothing"><span>isNothing:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: template isNothing[T](self: Opt[T]; body: untyped)" href="queries.html#isNothing.t%2COpt%5BT%5D%2Cuntyped">queries: template isNothing[T](self: Opt[T]; body: untyped)</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="opOpt: template isNothing[T](self: Opt[T]; body: untyped)" href="queries/opOpt.html#isNothing.t%2COpt%5BT%5D%2Cuntyped">opOpt: template isNothing[T](self: Opt[T]; body: untyped)</a></li>
           </ul></dd>
 <dt><a name="isSomething" href="#isSomething"><span>isSomething:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: template isSomething[T](self: Opt[T]; body: untyped)" href="queries.html#isSomething.t%2COpt%5BT%5D%2Cuntyped">queries: template isSomething[T](self: Opt[T]; body: untyped)</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="opOpt: template isSomething[T](self: Opt[T]; body: untyped)" href="queries/opOpt.html#isSomething.t%2COpt%5BT%5D%2Cuntyped">opOpt: template isSomething[T](self: Opt[T]; body: untyped)</a></li>
           </ul></dd>
 <dt><a name="len" href="#len"><span>len:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -309,8 +301,6 @@
 <dt><a name="Not" href="#Not"><span>Not:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: object Not" href="queries.html#Not">queries: object Not</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="opNot: object Not" href="queries/opNot.html#Not">opNot: object Not</a></li>
           </ul></dd>
 <dt><a name="Operation" href="#Operation"><span>Operation:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -335,16 +325,10 @@
 <dt><a name="Opt" href="#Opt"><span>Opt:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: type Opt" href="queries.html#Opt">queries: type Opt</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="opOpt: type Opt" href="queries/opOpt.html#Opt">opOpt: type Opt</a></li>
           </ul></dd>
 <dt><a name="Query" href="#Query"><span>Query:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: object Query" href="queries.html#Query">queries: object Query</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="query: object Query" href="queries/query.html#Query">query: object Query</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="query: object Query" href="query.html#Query">query: object Query</a></li>
           </ul></dd>
 <dt><a name="query" href="#query"><span>query:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -393,10 +377,6 @@
 <dt><a name="reset" href="#reset"><span>reset:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: proc reset[T: tuple](query: var Query[T]; version: int)" href="queries.html#reset%2CQuery%5BT%3A%20tuple%5D%2Cint">queries: proc reset[T: tuple](query: var Query[T]; version: int)</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="query: proc reset[T: tuple](query: var Query[T]; version: int)" href="queries/query.html#reset%2CQuery%5BT%3A%20tuple%5D%2Cint">query: proc reset[T: tuple](query: var Query[T]; version: int)</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="query: proc reset[T: tuple](query: var Query[T]; version: int)" href="query.html#reset%2CQuery%5BT%3A%20tuple%5D%2Cint">query: proc reset[T: tuple](query: var Query[T]; version: int)</a></li>
           </ul></dd>
 <dt><a name="serializeToText" href="#serializeToText"><span>serializeToText:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -412,7 +392,7 @@
           </ul></dd>
 <dt><a name="textTable" href="#textTable"><span>textTable:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="textTable: proc textTable(data: seq[seq[seq[string]]]): string" href="textTable.html#textTable%2Cseq%5Bseq%5Bseq%5Bstring%5D%5D%5D">textTable: proc textTable(data: seq[seq[seq[string]]]): string</a></li>
+          data-doc-search-tag="texttable: proc textTable(data: seq[seq[seq[string]]]): string" href="texttable.html#textTable%2Cseq%5Bseq%5Bseq%5Bstring%5D%5D%5D">texttable: proc textTable(data: seq[seq[seq[string]]]): string</a></li>
           </ul></dd>
 <dt><a name="typeHash" href="#typeHash"><span>typeHash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -437,8 +417,6 @@
 <dt><a name="Write" href="#Write"><span>Write:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="queries: object Write" href="queries.html#Write">queries: object Write</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="opWrite: object Write" href="queries/opWrite.html#Write">opWrite: object Write</a></li>
           </ul></dd>
 <dt><a name="write" href="#write"><span>write:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -448,7 +426,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-02-20 14:27:58 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-12 11:33:55 UTC</small>
       </div>
     </div>
   </div>

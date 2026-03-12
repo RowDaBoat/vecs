@@ -11,19 +11,19 @@ nim	read	world.html#read,World,EntityId,typedesc[T]	proc read[T](world: var Worl
 nim	write	world.html#write.i,World,EntityId,typedesc[T]	iterator write[T](world: var World; id: EntityId; compDesc: typedesc[T]): var T		361
 nim	read	world.html#read,World,EntityId,typedesc[T]_2	proc read[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): T		389
 nim	components	world.html#components.i,World,EntityId,typedesc[T]	iterator components[T: tuple](world: var World; id: EntityId; tup: typedesc[T]): tup.accessTuple		419
-nim	add	world.html#add,World,EntityId,T,OperationMode	proc add[T: tuple](world: var World; id: EntityId; components: T;\n              mode: OperationMode = Deferred)		466
-nim	add	world.html#add,World,EntityId,T,OperationMode_2	proc add[T](world: var World; id: EntityId; component: T;\n       mode: OperationMode = Deferred)		515
-nim	remove	world.html#remove,World,EntityId,typedesc[T],OperationMode	proc remove[T: tuple](world: var World; id: EntityId; descriptions: typedesc[T];\n                 mode: OperationMode = Deferred)		536
-nim	remove	world.html#remove,World,EntityId,typedesc[T],OperationMode_2	proc remove[T](world: var World; id: EntityId; compDesc: typedesc[T];\n          mode: OperationMode = Deferred)		580
-nim	add	world.html#add,World,T,OperationMode	proc add[T: tuple](world: var World; components: T; mode: OperationMode = Deferred): EntityId		600
-nim	addWithSpecificId	world.html#addWithSpecificId,World,EntityId	proc addWithSpecificId(world: var World; id: EntityId)		638
-nim	remove	world.html#remove,World,EntityId,OperationMode	proc remove(world: var World; id: EntityId; mode: OperationMode = Deferred)		657
-nim	has	world.html#has,World,EntityId	proc has(world: var World; id: EntityId): bool		691
-nim	query	world.html#query.i,World,Query[T: tuple]	iterator query[T: tuple](world: var World; query: var Query[T]): T.accessTuple		704
-nim	queryForRemoval	world.html#queryForRemoval.i,World,typedesc[T]	iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)		760
-nim	cleanupEmptyArchetypes	world.html#cleanupEmptyArchetypes,World	proc cleanupEmptyArchetypes(world: var World)		799
-nim	consolidate	world.html#consolidate,World	proc consolidate(world: var World)		819
-nimgrp	remove	world.html#remove-procs-all	proc		536
+nim	add	world.html#add,World,EntityId,T,OperationMode	proc add[T: tuple](world: var World; id: EntityId; components: T;\n              mode: OperationMode = Deferred)		464
+nim	add	world.html#add,World,EntityId,T,OperationMode_2	proc add[T](world: var World; id: EntityId; component: T;\n       mode: OperationMode = Deferred)		513
+nim	remove	world.html#remove,World,EntityId,typedesc[T],OperationMode	proc remove[T: tuple](world: var World; id: EntityId; descriptions: typedesc[T];\n                 mode: OperationMode = Deferred)		534
+nim	remove	world.html#remove,World,EntityId,typedesc[T],OperationMode_2	proc remove[T](world: var World; id: EntityId; compDesc: typedesc[T];\n          mode: OperationMode = Deferred)		578
+nim	add	world.html#add,World,T,OperationMode	proc add[T: tuple](world: var World; components: T; mode: OperationMode = Deferred): EntityId		598
+nim	addWithSpecificId	world.html#addWithSpecificId,World,EntityId	proc addWithSpecificId(world: var World; id: EntityId)		636
+nim	remove	world.html#remove,World,EntityId,OperationMode	proc remove(world: var World; id: EntityId; mode: OperationMode = Deferred)		655
+nim	has	world.html#has,World,EntityId	proc has(world: var World; id: EntityId): bool		689
+nim	query	world.html#query.i,World,Query[T: tuple]	iterator query[T: tuple](world: var World; query: var Query[T]): T.accessTuple		702
+nim	queryForRemoval	world.html#queryForRemoval.i,World,typedesc[T]	iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)		758
+nim	cleanupEmptyArchetypes	world.html#cleanupEmptyArchetypes,World	proc cleanupEmptyArchetypes(world: var World)		797
+nim	consolidate	world.html#consolidate,World	proc consolidate(world: var World)		817
+nimgrp	remove	world.html#remove-procs-all	proc		534
 nimgrp	has	world.html#has-procs-all	proc		318
 nimgrp	read	world.html#read-procs-all	proc		336
-nimgrp	add	world.html#add-procs-all	proc		466
+nimgrp	add	world.html#add-procs-all	proc		464

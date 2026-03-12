@@ -444,22 +444,20 @@ iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T])
 
       spellbook.isSomething:
         echo "Marcus's spellbook contains: ", value.spells
-      armor.isNothing:
+      spellbook.isNothing:
         raiseAssert "Marcus should have a spellbook."
+
+    assert w.read(marcus, Weapon).attack == 10
 
   world.checkEntityExists(id)
 
   let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeId]
   let archetypeEntityId = entity.archetypeEntityId
+  let requiredArchetypeIds = world.requiredArchetypeIdsFrom T
+  let excludedArchetypeIds = world.excludedArchetypeIdsFrom T
 
-  var found = true
-
-  tup.fieldTypes:
-    let compId = world.componentIdFrom typeof FieldType
-    found = found and archetype.componentLists.hasKey(compId)
-
-  if found:
+  if archetype.contains(requiredArchetypeIds) and archetype.disjointed(excludedArchetypeIds):
     yield world.buildAccessTuple(tup, archetype, archetypeEntityId)
 
 
