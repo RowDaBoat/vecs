@@ -755,9 +755,9 @@ iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple 
   query.operations.setLen(0)
 
 
-iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T) =
+iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T).accessTuple =
   ## Query for components to be removed from entities and components on entities to be removed.
-  ## Only read access is allowed.
+  ## The yielded components have write access.
   runnableExamples:
     import examples
 
@@ -779,19 +779,22 @@ iterator queryForRemoval*[T](world: var World, compDesc: typedesc[T]): (Meta, T)
 
   checkNotATuple(T)
   var ofType {.global.}: Query[(Meta, T)]
-  var tuples : seq[(Meta, T)] = @[]
+  var ids : seq[EntityId] = @[]
 
   for (meta, component) in world.query(ofType):
     for operation in meta.operations:
       if operation.kind == RemoveEntity:
-        tuples.add (meta, component)
+        ids.add meta.id
         break
       elif operation.kind == RemoveComponents and world.componentIdFrom(T) in operation.compIdsToRemove:
-        tuples.add (meta, component)
+        ids.add meta.id
         break
 
-  for tup in tuples:
-    yield tup
+  for id in ids:
+    let entity = world.entities[id.value]
+    let archetype = world.archetypes[entity.archetypeId]
+    let archetypeEntityId = entity.archetypeEntityId
+    yield world.buildAccessTuple((Write[Meta], Write[T]), archetype, archetypeEntityId)
 
 
 proc cleanupEmptyArchetypes*(world: var World) =
@@ -808,7 +811,7 @@ proc cleanupEmptyArchetypes*(world: var World) =
       upVersion = true
     else:
       newArchetypeIds.add archetypeId
-  
+
   if upVersion:
     inc world.version
     world.archetypeIds = newArchetypeIds
