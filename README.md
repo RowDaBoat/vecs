@@ -117,6 +117,32 @@ for (character,) in world.query(disarmedCharacters):
 ```
 
 
+### Events
+```nim
+# Declare event types, events are regular value objects.
+type DamageEvent = object
+  amount: int
+
+type HealEvent = object
+  amount: int
+```
+```nim
+# Emit an event from anywhere in the game loop
+world.emit(DamageEvent(amount: 25))
+world.emit(HealEvent(amount: 10))
+```
+```nim
+# Collect and process events — drains the queue
+for event in world.collect(DamageEvent):
+  echo "Damage dealt: ", event.amount
+```
+```nim
+# Each event type is isolated — collecting DamageEvent does not affect HealEvent
+for event in world.collect(HealEvent):
+  echo "Health restored: ", event.amount
+```
+
+
 ## Roadmap
 - [x] Add entities
 - [x] Archetypes

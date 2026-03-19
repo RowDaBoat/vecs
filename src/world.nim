@@ -3,9 +3,10 @@
 # `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables, sets
-import entityid, archetype, entity, ecsseq, queries, components, operations, operationmodes
+import entityid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
 export entityid.EntityId, components.Meta, operationmodes
 export components
+export events
 
 
 type World* = object
@@ -16,6 +17,7 @@ type World* = object
   movers: Table[ComponentId, Mover]
   toConsolidate: HashSet[EntityId]
   version: int = 0
+  eventQueues: Table[EventKind, RootRef]
 
 
 type DoubleAddDefect* = object of Defect
@@ -834,3 +836,47 @@ proc consolidate*(world: var World) =
           world.consolidateRemoveComponents(meta.id, operation.compIdsToRemove)
 
   world.toConsolidate.clear()
+
+
+proc emit*[T](world: var World, event: T) =
+  ## Enqueue an event of type `T` into the world's event queue for that type.
+  ## Events are collected and drained by `collect`.
+  runnableExamples:
+    type DamageEvent = object
+      amount: int
+
+    var w = World()
+    w.emit(DamageEvent(amount: 10))
+
+  let kind = eventKindFrom(T)
+
+  if not world.eventQueues.hasKey(kind):
+    world.eventQueues[kind] = EventQueue[T]()
+
+  let queue = cast[EventQueue[T]](world.eventQueues[kind])
+  queue.data.add(event)
+
+
+iterator collect*[T](world: var World, _: typedesc[T]): T =
+  ## Yield all queued events of type `T` and drain the queue.
+  ## A second call to `collect` for the same type in the same frame yields nothing.
+  runnableExamples:
+    type DamageEvent = object
+      amount: int
+
+    var w = World()
+    w.emit(DamageEvent(amount: 10))
+    w.emit(DamageEvent(amount: 20))
+
+    for event in w.collect(DamageEvent):
+      assert event.amount > 0
+
+  let kind = eventKindFrom(T)
+
+  if world.eventQueues.hasKey(kind):
+    let queue = cast[EventQueue[T]](world.eventQueues[kind])
+
+    for event in queue.data:
+      yield event
+
+    queue.data.setLen(0)
