@@ -25,7 +25,7 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="archetype.html">archetype</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="texttable.html">texttable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="archetype.html">archetype</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="events.html">events</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="texttable.html">texttable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc `$`(id: ComponentId): string" href="archetype.html#%24%2CComponentId">archetype: proc `$`(id: ComponentId): string</a></li>
@@ -34,6 +34,8 @@
           </ul></dd>
 <dt><a name="%60%3D%3D%60" href="#%60%3D%3D%60"><span>`==`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="events: proc `==`(a, b: EventKind): bool" href="events.html#%3D%3D%2CEventKind%2CEventKind">events: proc `==`(a, b: EventKind): bool</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="world: proc `==`(a, b: ComponentId): bool" href="world.html#%3D%3D%2CComponentId%2CComponentId">world: proc `==`(a, b: ComponentId): bool</a></li>
           </ul></dd>
 <dt><a name="%60%5B%5D%3D%60" href="#%60%5B%5D%3D%60"><span>`[]=`:</span></a></dt><dd><ul class="simple">
@@ -116,6 +118,10 @@
 <li><a class="reference external"
           data-doc-search-tag="components: proc clearOperations(self: var Meta)" href="components.html#clearOperations%2CMeta">components: proc clearOperations(self: var Meta)</a></li>
           </ul></dd>
+<dt><a name="collect" href="#collect"><span>collect:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="world: iterator collect[T](world: var World; _: typedesc[T]): T" href="world.html#collect.i%2CWorld%2Ctypedesc%5BT%5D">world: iterator collect[T](world: var World; _: typedesc[T]): T</a></li>
+          </ul></dd>
 <dt><a name="ComponentId" href="#ComponentId"><span>ComponentId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: type ComponentId" href="archetype.html#ComponentId">archetype: type ComponentId</a></li>
@@ -188,6 +194,10 @@
 <li><a class="reference external"
           data-doc-search-tag="ecsseq: proc ecsSeqMover[T](): Mover" href="ecsseq.html#ecsSeqMover">ecsseq: proc ecsSeqMover[T](): Mover</a></li>
           </ul></dd>
+<dt><a name="emit" href="#emit"><span>emit:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="world: proc emit[T](world: var World; event: T)" href="world.html#emit%2CWorld%2CT">world: proc emit[T](world: var World; event: T)</a></li>
+          </ul></dd>
 <dt><a name="enqueueOperation" href="#enqueueOperation"><span>enqueueOperation:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="components: proc enqueueOperation(self: var Meta; operation: Operation)" href="components.html#enqueueOperation%2CMeta%2COperation">components: proc enqueueOperation(self: var Meta; operation: Operation)</a></li>
@@ -208,6 +218,18 @@
 <li><a class="reference external"
           data-doc-search-tag="id: proc entityId[T](id: Id[T]): EntityId" href="id.html#entityId%2CId%5BT%5D">id: proc entityId[T](id: Id[T]): EntityId</a></li>
           </ul></dd>
+<dt><a name="EventKind" href="#EventKind"><span>EventKind:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="events: type EventKind" href="events.html#EventKind">events: type EventKind</a></li>
+          </ul></dd>
+<dt><a name="eventKindFrom" href="#eventKindFrom"><span>eventKindFrom:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="events: macro eventKindFrom[T](typ: typedesc[T]): EventKind" href="events.html#eventKindFrom.m%2Ctypedesc%5BT%5D">events: macro eventKindFrom[T](typ: typedesc[T]): EventKind</a></li>
+          </ul></dd>
+<dt><a name="EventQueue" href="#EventQueue"><span>EventQueue:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="events: type EventQueue" href="events.html#EventQueue">events: type EventQueue</a></li>
+          </ul></dd>
 <dt><a name="fieldTypes" href="#fieldTypes"><span>fieldTypes:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: macro fieldTypes(tup: typed; body: untyped): untyped" href="archetype.html#fieldTypes.m%2Ctyped%2Cuntyped">archetype: macro fieldTypes(tup: typed; body: untyped): untyped</a></li>
@@ -224,6 +246,8 @@
           </ul></dd>
 <dt><a name="hash" href="#hash"><span>hash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="events: proc hash(a: EventKind): Hash" href="events.html#hash%2CEventKind">events: proc hash(a: EventKind): Hash</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="world: proc hash(id: ArchetypeId): Hash" href="world.html#hash%2CArchetypeId">world: proc hash(id: ArchetypeId): Hash</a></li>
           </ul></dd>
 <dt><a name="id" href="#id"><span>id:</span></a></dt><dd><ul class="simple">
@@ -336,7 +360,7 @@
           </ul></dd>
 <dt><a name="queryForRemoval" href="#queryForRemoval"><span>queryForRemoval:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)" href="world.html#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D">world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T)</a></li>
+          data-doc-search-tag="world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T).accessTuple" href="world.html#queryForRemoval.i%2CWorld%2Ctypedesc%5BT%5D">world: iterator queryForRemoval[T](world: var World; compDesc: typedesc[T]): (Meta, T).accessTuple</a></li>
           </ul></dd>
 <dt><a name="read" href="#read"><span>read:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -426,7 +450,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-12 11:33:55 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-19 03:37:23 UTC</small>
       </div>
     </div>
   </div>
