@@ -17,7 +17,7 @@ type World* = object
   movers: Table[ComponentId, Mover]
   toConsolidate: HashSet[EntityId]
   version: int = 0
-  eventQueues: Table[EventKind, RootRef]
+  eventQueues: Table[EventKind, EventQueueBase]
 
 
 type DoubleAddDefect* = object of Defect
@@ -837,10 +837,13 @@ proc consolidate*(world: var World) =
 
   world.toConsolidate.clear()
 
+  for queue in world.eventQueues.mvalues:
+    queue.clear()
+
 
 proc emit*[T](world: var World, event: T) =
   ## Enqueue an event of type `T` into the world's event queue for that type.
-  ## Events are collected and drained by `collect`.
+  ## Events are drained by `consolidate` at the frame boundary.
   runnableExamples:
     type DamageEvent = object
       amount: int
@@ -858,8 +861,9 @@ proc emit*[T](world: var World, event: T) =
 
 
 iterator collect*[T](world: var World, _: typedesc[T]): T =
-  ## Yield all queued events of type `T` and drain the queue.
-  ## A second call to `collect` for the same type in the same frame yields nothing.
+  ## Yield all queued events of type `T`.
+  ## Multiple systems can collect the same event type within a frame.
+  ## Events are drained by `consolidate` at the frame boundary.
   runnableExamples:
     type DamageEvent = object
       amount: int
@@ -878,5 +882,3 @@ iterator collect*[T](world: var World, _: typedesc[T]): T =
 
     for event in queue.data:
       yield event
-
-    queue.data.setLen(0)

@@ -39,11 +39,25 @@ suite "Events should":
     check amounts == @[10, 20, 30]
 
 
-  test "drain the queue on collect":
+  test "allow multiple collects within a frame":
     world.emit(DamageEvent(amount: 10))
 
+    var firstCount = 0
     for event in world.collect(DamageEvent):
-      discard
+      inc firstCount
+
+    var secondCount = 0
+    for event in world.collect(DamageEvent):
+      inc secondCount
+
+    check firstCount == 1
+    check secondCount == 1
+
+
+  test "drain events on consolidate":
+    world.emit(DamageEvent(amount: 10))
+
+    world.consolidate()
 
     var count = 0
     for event in world.collect(DamageEvent):
@@ -80,12 +94,14 @@ suite "Events should":
     check count == 0
 
 
-  test "emit and collect multiple times in sequence":
+  test "emit and collect across frames":
     world.emit(DamageEvent(amount: 10))
     world.emit(DamageEvent(amount: 20))
 
     for event in world.collect(DamageEvent):
       discard
+
+    world.consolidate()
 
     world.emit(DamageEvent(amount: 30))
 

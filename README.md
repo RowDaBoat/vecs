@@ -163,6 +163,7 @@ for event in world.collect(HealEvent):
 - [x] Additions and removals should be enqueued and consolidated in order later
 - [x] Text serialization
 - [x] Add `after` operation mode, that processes add/remove operations after a query is iterated
+- [x] Minimal events system
 - [ ] Binary serialization
 - [ ] Integrate with [reploid](http://github.com/RowDaBoat/reploid)
 - [ ] Convenience procs
