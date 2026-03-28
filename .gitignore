@@ -2,6 +2,8 @@ bin
 .DS_Store
 *.local.*
 *.local
+.nimble
+.envrc
 
 test/id
 test/queries
