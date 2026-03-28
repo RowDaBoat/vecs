@@ -1,5 +1,3 @@
-import std/[ os,strformat ]
-
 packageName   = "vecs"
 version       = "0.0.1"
 author        = "Row"
@@ -21,6 +19,7 @@ task test, "Run the test suite":
   exec "nim r test/ecsseq.nim"
   exec "nim r test/components.nim"
   exec "nim r test/events.nim"
+  exec "nim r -d:ArchetypeWords=2 test/manycomponents.nim 2>&1"
 
 task docs, "Generate documentation":
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"

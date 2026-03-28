@@ -1,6 +1,9 @@
 import std/[macros, genasts, hashes, tables]
 
 
+const ArchetypeWords* {.intdefine.} = 1
+
+
 type ComponentId* = distinct uint
 
 
@@ -17,6 +20,10 @@ macro toComponentId*[T](typ: typedesc[T]): ComponentId =
   let hash = typ.getTypeInst.repr.hash
 
   if hash notin componentIds:
+    let error = "Component limit exceeded, increase ArchetypeWords and try again."
+    let hint = "try setting: -d:ArchetypeWords=" & $(ArchetypeWords + 1)
+    assert nextComponentId < ArchetypeWords * 64, error & "\n" & hint
+
     componentIds[hash] = ComponentId(nextComponentId)
     inc nextComponentId
 
