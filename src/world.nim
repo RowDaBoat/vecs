@@ -3,7 +3,7 @@
 # `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables, sets
-import entityid, componentid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
+import entityid, componentid, archetypeid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
 export entityid.EntityId, components.Meta, operationmodes
 export components
 export events
@@ -21,11 +21,6 @@ type World* = object
 
 
 type DoubleAddDefect* = object of Defect
-
-
-proc hash*(id: ArchetypeId): Hash =
-  for compId in id.items:
-    result = result xor (compId.int mod 32)
 
 
 proc `==`*(a, b: ComponentId): bool {.borrow.}

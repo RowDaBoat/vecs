@@ -1,17 +1,10 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 # `vecs` is a free open source ECS library for Nim.
-import std/[macros, genasts, hashes, intsets, sets]
+import std/[macros, genasts, hashes, sets]
 import tables
 import ecsseq
-import componentid
-
-type ArchetypeId* = PackedSet[ComponentId]
-
-
-proc archetypeIdFrom*(compIds: seq[ComponentId]): ArchetypeId =
-  for compId in compIds:
-    result.incl compId
+import componentid, archetypeid
 
 
 type Archetype* = ref object
@@ -147,11 +140,11 @@ proc contains*(archetype: Archetype, candidateId: ComponentId): bool =
 
 
 proc contains*(archetype: Archetype, candidateId: ArchetypeId): bool =
-  candidateId <= archetype.id
+  archetype.id.contains candidateId
 
 
 proc disjointed*(archetype: Archetype, candidateId: ArchetypeId): bool =
-  archetype.id.disjoint candidateId
+  archetype.id.disjointed candidateId
 
 
 proc isEmpty*(archetype: Archetype): bool =
