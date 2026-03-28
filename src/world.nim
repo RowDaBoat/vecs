@@ -3,7 +3,7 @@
 # `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables, sets
-import entityid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
+import entityid, componentid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
 export entityid.EntityId, components.Meta, operationmodes
 export components
 export events
@@ -29,10 +29,6 @@ proc hash*(id: ArchetypeId): Hash =
 
 
 proc `==`*(a, b: ComponentId): bool {.borrow.}
-
-
-macro typeHash*[T](typ: typedesc[T]): int =
-  typ.getTypeInst.repr.hash.newIntLitNode
 
 
 # Errors
@@ -308,13 +304,13 @@ iterator archetypes*(world: var World): Archetype =
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   ## Get the ComponentId for a given component type.
   ## This is mostly useful to identify the components of an archetype.
-  var id: int = typeHash(T)
+  var id = T.toComponentId
 
-  if not world.builders.hasKey(id.ComponentId):
-    world.builders[id.ComponentId] = ecsSeqBuilder[T]()
-    world.movers[id.ComponentId] = ecsSeqMover[T]()
+  if not world.builders.hasKey(id):
+    world.builders[id] = ecsSeqBuilder[T]()
+    world.movers[id] = ecsSeqMover[T]()
 
-  id.ComponentId
+  id
 
 
 proc has*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =

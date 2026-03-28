@@ -4,20 +4,14 @@
 import std/[macros, genasts, hashes, intsets, sets]
 import tables
 import ecsseq
+import componentid
 
-
-type ComponentId* = distinct int
 type ArchetypeId* = PackedSet[ComponentId]
 
 
 proc archetypeIdFrom*(compIds: seq[ComponentId]): ArchetypeId =
   for compId in compIds:
     result.incl compId
-
-
-proc hash(id: ComponentId): Hash {.borrow.}
-proc `==`(a, b: ComponentId): bool {.borrow.}
-proc `$`*(id: ComponentId): string = $id.int
 
 
 type Archetype* = ref object
