@@ -1,7 +1,7 @@
 import std/[macros, genasts, hashes, tables]
 
 
-type ComponentId* = distinct uint64
+type ComponentId* = distinct uint
 
 
 proc hash*(id: ComponentId): Hash {.borrow.}
@@ -20,7 +20,7 @@ macro toComponentId*[T](typ: typedesc[T]): ComponentId =
     componentIds[hash] = ComponentId(nextComponentId)
     inc nextComponentId
 
-  let idVal = componentIds[hash].uint64
+  let idVal = componentIds[hash].uint
 
   genAst(idVal):
     ComponentId(idVal)

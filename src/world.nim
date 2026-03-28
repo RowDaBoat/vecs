@@ -13,8 +13,8 @@ type World* = object
   entities: EcsSeq[Entity] = EcsSeq[Entity]()
   archetypeIds: seq[ArchetypeId] = @[]
   archetypes: Table[ArchetypeId, Archetype]
-  builders: Table[ComponentId, Builder]
-  movers: Table[ComponentId, Mover]
+  builders: seq[Builder]
+  movers: seq[Mover]
   toConsolidate: HashSet[EntityId]
   version: int = 0
   eventQueues: Table[EventKind, EventQueueBase]
@@ -86,8 +86,8 @@ proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, com
     var movers: seq[Mover] = @[]
 
     for componentId in componentIdsToAdd:
-      builders.add world.builders[componentId]
-      movers.add world.movers[componentId]
+      builders.add world.builders[componentId.uint]
+      movers.add world.movers[componentId.uint]
 
     world.archetypes[nextArchetypeId] = previousArchetype.makeNextAdding(componentIdsToAdd, builders, movers)
     world.archetypeIds.add nextArchetypeId
@@ -124,10 +124,10 @@ proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): var Arch
     var movers: seq[Mover] = @[]
 
     for name, typ in fieldPairs default T:
-      let compId = world.componentIdFrom typeof typ
-      componentIds.add compId
-      builders.add world.builders[compId]
-      movers.add world.movers[compId]
+      let componentId = world.componentIdFrom typeof typ
+      componentIds.add componentId
+      builders.add world.builders[componentId.int]
+      movers.add world.movers[componentId.int]
 
     world.archetypes[archetypeId] = makeArchetype(componentIds, builders, movers)
     world.archetypeIds.add archetypeId
@@ -304,13 +304,16 @@ iterator archetypes*(world: var World): Archetype =
 proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   ## Get the ComponentId for a given component type.
   ## This is mostly useful to identify the components of an archetype.
-  var id = T.toComponentId
+  result = T.toComponentId
+  let id = result.int
 
-  if not world.builders.hasKey(id):
+  if world.builders.len <= id:
+    world.builders.setLen(id + 1)
+    world.movers.setLen(id + 1)
+
+  if world.builders[id] == nil:
     world.builders[id] = ecsSeqBuilder[T]()
     world.movers[id] = ecsSeqMover[T]()
-
-  id
 
 
 proc has*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =

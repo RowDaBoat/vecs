@@ -39,15 +39,13 @@ macro fieldTypes*(tup: typed, body: untyped): untyped =
   result = nnkBlockStmt.newTree(newEmptyNode(), result)
 
 
-proc makeArchetype*(compIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover]): Archetype =
-  let archetypeId = archetypeIdFrom compIds
-  var componentIds: seq[ComponentId] = @[]
+proc makeArchetype*(componentIds: seq[ComponentId], builders: seq[Builder], movers: seq[Mover]): Archetype =
+  let archetypeId = archetypeIdFrom componentIds
   var componentLists = initTable[ComponentId, EcsSeqAny]()
 
-  for index in 0..<compIds.len:
-    let compId = compIds[index]
-    componentIds.add compId
-    componentLists[compId] = builders[index]()
+  for index in 0..<componentIds.len:
+    let componentId = componentIds[index]
+    componentLists[componentId] = builders[index]()
 
   Archetype(
     id: archetypeId,
