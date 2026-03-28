@@ -8,3 +8,4 @@ bin
 test/id
 test/queries
 test/world
+test/events
