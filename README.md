@@ -10,7 +10,7 @@ The main design differences between `vecs` and `yeacs` are in the implementation
 
 
 ## Documentation
-The API reference is available [here](https://rowdaboat.github.io/vecs/).
+The API reference is available [here](https://rowdaboat.github.io/vecs/theindex.html).
 
 
 ### Basic Usage
