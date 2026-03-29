@@ -35,6 +35,6 @@ template isNothing*[T](self: Opt[T], body: untyped) =
 
 
 proc reset*[T: tuple](query: var Query[T], version: int) =
-  query.matchedArchetypes = @[]
+  query.matchedArchetypes.setLen(0)
   query.lastArchetypeCount = 0
   query.lastVersion = version

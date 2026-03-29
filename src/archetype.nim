@@ -85,18 +85,14 @@ iterator components*[T](archetype: Archetype, componentId: ComponentId): T =
     yield cast[EcsSeq[T]](ecsSeq)[index]
 
 
+proc addField[T](ecsSeqAny: EcsSeqAny, item: sink T): int =
+  cast[EcsSeq[T]](ecsSeqAny).add item
+
+
 proc add*[T: tuple](archetype: var Archetype, components: sink T): int =
-  var index = 0
-  T.fieldTypes:
-    let compId = archetype.componentIds[index]
-    let ecsSeqAny = archetype.componentLists[compId]
-    type Retype = EcsSeq[FieldType]
-
-    for field in components.fields:
-      when field is FieldType:
-        result = cast[Retype](ecsSeqAny).add field
-
-    inc index
+  for name, field in fieldPairs components:
+    let componentId = (typeof field).toComponentId
+    result = addField(archetype.componentLists[componentId], field)
 
 
 proc add*(archetype: var Archetype, adders: Table[ComponentId, Adder]): int =

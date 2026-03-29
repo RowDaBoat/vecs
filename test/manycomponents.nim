@@ -6,10 +6,6 @@ import std/[macros, assertions]
 import ../src/vecs
 
 
-#const ArchetypeWords* {.intdefine.} = 1
-#static: assert ArchetypeWords >= 2, "This test requires -d:ArchetypeWords=2"
-
-
 macro defineComponents(): untyped =
   result = newStmtList()
 
