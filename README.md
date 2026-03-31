@@ -132,7 +132,7 @@ world.emit(DamageEvent(amount: 25))
 world.emit(HealEvent(amount: 10))
 ```
 ```nim
-# Collect and process events — drains the queue
+# Collect and process events, the events can be collected multiple times
 for event in world.collect(DamageEvent):
   echo "Damage dealt: ", event.amount
 ```
@@ -141,7 +141,13 @@ for event in world.collect(DamageEvent):
 for event in world.collect(HealEvent):
   echo "Health restored: ", event.amount
 ```
+```nim
+# Calling consolidate() drains all event queues
+world.consolidate()
 
+for event in world.collect(DamageEvent):
+  echo "Won't be called"
+```
 
 ## Roadmap
 - [x] Add entities
