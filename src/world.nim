@@ -814,7 +814,7 @@ proc cleanupEmptyArchetypes*(world: var World) =
 
 
 proc consolidate*(world: var World) =
-  ## Consolidates all additions and removals in the world.
+  ## Consolidates all additions and removals in the world and drains all event queues.
   for id in world.toConsolidate:
     for meta in world.write(id, Meta):
       let operations = meta.operations
@@ -837,7 +837,7 @@ proc consolidate*(world: var World) =
 
 proc emit*[T](world: var World, event: T) =
   ## Enqueue an event of type `T` into the world's event queue for that type.
-  ## Events are drained by `consolidate` at the frame boundary.
+  ## Events are drained by `consolidate`.
   runnableExamples:
     type DamageEvent = object
       amount: int
@@ -857,7 +857,7 @@ proc emit*[T](world: var World, event: T) =
 iterator collect*[T](world: var World, _: typedesc[T]): T =
   ## Yield all queued events of type `T`.
   ## Multiple systems can collect the same event type within a frame.
-  ## Events are drained by `consolidate` at the frame boundary.
+  ## Events are drained by `consolidate`.
   runnableExamples:
     type DamageEvent = object
       amount: int

@@ -56,8 +56,9 @@
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#EventKind" title="EventKind = distinct int">EventKind</a></li>
-<li><a class="reference" href="#EventQueue" title="EventQueue[T] = ref object of RootObj
+<li><a class="reference" href="#EventQueue" title="EventQueue[T] = ref object of EventQueueBase
   data*: seq[T]">EventQueue</a></li>
+<li><a class="reference" href="#EventQueueBase" title="EventQueueBase = ref object of RootObj">EventQueueBase</a></li>
 
     </ul>
   </details>
@@ -72,6 +73,19 @@
 </ul>
 <ul class="simple nested-toc-section">hash
   <li><a class="reference" href="#hash%2CEventKind" title="hash(a: EventKind): Hash">hash(a: EventKind): Hash</a></li>
+
+</ul>
+
+    </ul>
+  </details>
+</li>
+<li>
+  <details open>
+    <summary><a class="reference reference-toplevel" href="#14" id="64">Methods</a></summary>
+    <ul class="simple simple-toc-section">
+      <ul class="simple nested-toc-section">clear
+  <li><a class="reference" href="#clear.e%2CEventQueueBase" title="clear(queue: EventQueueBase)">clear(queue: EventQueueBase)</a></li>
+<li><a class="reference" href="#clear.e%2CEventQueue%5BT%5D" title="clear[T](queue: EventQueue[T])">clear[T](queue: EventQueue[T])</a></li>
 
 </ul>
 
@@ -115,8 +129,18 @@
   </dd>
 </div>
 <div id="EventQueue">
-  <dt><pre><a href="events.html#EventQueue"><span class="Identifier">EventQueue</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
+  <dt><pre><a href="events.html#EventQueue"><span class="Identifier">EventQueue</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="events.html#EventQueueBase"><span class="Identifier">EventQueueBase</span></a>
   <span class="Identifier">data</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span></pre></dt>
+  <dd>
+    
+    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L13" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L13" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="EventQueueBase">
+  <dt><pre><a href="events.html#EventQueueBase"><span class="Identifier">EventQueueBase</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span></pre></dt>
   <dd>
     
     
@@ -137,8 +161,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L14" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L14" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L17" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L17" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -150,8 +174,37 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L15" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L15" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+
+  </dl>
+</div>
+<div class="section" id="14">
+  <h1><a class="toc-backref" href="#14">Methods</a></h1>
+  <dl class="item">
+    <div id="clear-methods-all">
+  <div id="clear.e,EventQueueBase">
+  <dt><pre><span class="Keyword">method</span> <a href="#clear.e%2CEventQueueBase"><span class="Identifier">clear</span></a><span class="Other">(</span><span class="Identifier">queue</span><span class="Other">:</span> <a href="events.html#EventQueueBase"><span class="Identifier">EventQueueBase</span></a><span class="Other">)</span> {.<span class="Identifier">base</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L21" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L21" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="clear.e,EventQueue[T]">
+  <dt><pre><span class="Keyword">method</span> <a href="#clear.e%2CEventQueue%5BT%5D"><span class="Identifier">clear</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">queue</span><span class="Other">:</span> <a href="events.html#EventQueue"><span class="Identifier">EventQueue</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+  <dd>
+    
+    
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L25" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L25" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -169,8 +222,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/events.nim#L29" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/events.nim#L29" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -186,7 +239,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-19 03:37:20 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-31 12:57:13 UTC</small>
       </div>
     </div>
   </div>

@@ -62,8 +62,6 @@
   id*: ArchetypeId
   componentIds*: seq[ComponentId]
   componentLists*: Table[ComponentId, EcsSeqAny]">Archetype</a></li>
-<li><a class="reference" href="#ArchetypeId" title="ArchetypeId = PackedSet[ComponentId]">ArchetypeId</a></li>
-<li><a class="reference" href="#ComponentId" title="ComponentId = distinct int">ComponentId</a></li>
 
     </ul>
   </details>
@@ -72,17 +70,9 @@
   <details open>
     <summary><a class="reference reference-toplevel" href="#12" id="62">Procs</a></summary>
     <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">$
-  <li><a class="reference" href="#%24%2CComponentId" title="`$`(id: ComponentId): string">`$`(id: ComponentId): string</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">add
+      <ul class="simple nested-toc-section">add
   <li><a class="reference" href="#add%2CArchetype%2CTable%5BComponentId%2CAdder%5D" title="add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int">add(archetype: var Archetype; adders: Table[ComponentId, Adder]): int</a></li>
 <li><a class="reference" href="#add%2CArchetype%2CsinkT" title="add[T: tuple](archetype: var Archetype; components: sink T): int">add[T: tuple](archetype: var Archetype; components: sink T): int</a></li>
-
-</ul>
-<ul class="simple nested-toc-section">archetypeIdFrom
-  <li><a class="reference" href="#archetypeIdFrom%2Cseq%5BComponentId%5D" title="archetypeIdFrom(compIds: seq[ComponentId]): ArchetypeId">archetypeIdFrom(compIds: seq[ComponentId]): ArchetypeId</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">contains
@@ -99,8 +89,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">makeArchetype
-  <li><a class="reference" href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D" title="makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
-              movers: seq[Mover]): Archetype">makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
+  <li><a class="reference" href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D" title="makeArchetype(componentIds: seq[ComponentId]; builders: seq[Builder];
+              movers: seq[Mover]): Archetype">makeArchetype(componentIds: seq[ComponentId]; builders: seq[Builder];
               movers: seq[Mover]): Archetype</a></li>
 
 </ul>
@@ -176,7 +166,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="ecsseq.html">ecsseq</a>
+    <a class="reference external" href="ecsseq.html">ecsseq</a>, <a class="reference external" href="componentid.html">componentid</a>, <a class="reference external" href="archetypeid.html">archetypeid</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -184,34 +174,14 @@
   <dl class="item">
     <div id="Archetype">
   <dt><pre><a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
-  <span class="Identifier">id</span><span class="Operator">*</span><span class="Other">:</span> <a href="archetype.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a>
-  <span class="Identifier">componentIds</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span>
-  <span class="Identifier">componentLists</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">,</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">]</span></pre></dt>
-  <dd>
-    
-    
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L23" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L23" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-<div id="ArchetypeId">
-  <dt><pre><a href="archetype.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a> <span class="Other">=</span> <span class="Identifier">PackedSet</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span></pre></dt>
+  <span class="Identifier">id</span><span class="Operator">*</span><span class="Other">:</span> <a href="archetypeid.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a>
+  <span class="Identifier">componentIds</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span>
+  <span class="Identifier">componentLists</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">,</span> <a href="ecsseq.html#EcsSeqAny"><span class="Identifier">EcsSeqAny</span></a><span class="Other">]</span></pre></dt>
   <dd>
     
     
     <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L10" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
 <a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L10" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-<div id="ComponentId">
-  <dt><pre><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
-  <dd>
-    
-    
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L9" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L9" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -221,28 +191,15 @@
 <div class="section" id="12">
   <h1><a class="toc-backref" href="#12">Procs</a></h1>
   <dl class="item">
-    <div id="$-procs-all">
-  <div id="$,ComponentId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24%2CComponentId"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L20" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L20" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-
-</div>
-<div id="add-procs-all">
+    <div id="add-procs-all">
   <div id="add,Archetype,Table[ComponentId,Adder]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CArchetype%2CTable%5BComponentId%2CAdder%5D"><span class="Identifier">add</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">adders</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">,</span> <a href="ecsseq.html#Adder"><span class="Identifier">Adder</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#add%2CArchetype%2CTable%5BComponentId%2CAdder%5D"><span class="Identifier">add</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">adders</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">,</span> <a href="ecsseq.html#Adder"><span class="Identifier">Adder</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L117" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L117" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L98" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L98" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -251,22 +208,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L103" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L103" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
-
-  </dd>
-</div>
-
-</div>
-<div id="archetypeIdFrom-procs-all">
-  <div id="archetypeIdFrom,seq[ComponentId]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#archetypeIdFrom%2Cseq%5BComponentId%5D"><span class="Identifier">archetypeIdFrom</span></a><span class="Other">(</span><span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-  <dd>
-    
-    
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L13" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L13" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L92" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L92" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -274,24 +217,24 @@
 </div>
 <div id="contains-procs-all">
   <div id="contains,Archetype,ArchetypeId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#contains%2CArchetype%2CArchetypeId"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">candidateId</span><span class="Other">:</span> <a href="archetype.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#contains%2CArchetype%2CArchetypeId"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">candidateId</span><span class="Other">:</span> <a href="archetypeid.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L157" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L157" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L138" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L138" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
 <div id="contains,Archetype,ComponentId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#contains%2CArchetype%2CComponentId"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">candidateId</span><span class="Other">:</span> <a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#contains%2CArchetype%2CComponentId"><span class="Identifier">contains</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">candidateId</span><span class="Other">:</span> <a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L153" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L153" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L134" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L134" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -299,13 +242,13 @@
 </div>
 <div id="disjointed-procs-all">
   <div id="disjointed,Archetype,ArchetypeId">
-  <dt><pre><span class="Keyword">proc</span> <a href="#disjointed%2CArchetype%2CArchetypeId"><span class="Identifier">disjointed</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">candidateId</span><span class="Other">:</span> <a href="archetype.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#disjointed%2CArchetype%2CArchetypeId"><span class="Identifier">disjointed</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">candidateId</span><span class="Other">:</span> <a href="archetypeid.html#ArchetypeId"><span class="Identifier">ArchetypeId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L161" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L161" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L142" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L142" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -317,8 +260,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L165" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L165" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L146" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L146" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -326,14 +269,14 @@
 </div>
 <div id="makeArchetype-procs-all">
   <div id="makeArchetype,seq[ComponentId],seq[Builder],seq[Mover]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D"><span class="Identifier">makeArchetype</span></a><span class="Other">(</span><span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsseq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D"><span class="Identifier">makeArchetype</span></a><span class="Other">(</span><span class="Identifier">componentIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsseq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span>
                    <span class="Identifier">movers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsseq.html#Mover"><span class="Identifier">Mover</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L48" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L48" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L35" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L35" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -341,14 +284,14 @@
 </div>
 <div id="makeNextAdding-procs-all">
   <div id="makeNextAdding,Archetype,seq[ComponentId],seq[Builder],seq[Mover]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#makeNextAdding%2CArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D"><span class="Identifier">makeNextAdding</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#makeNextAdding%2CArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D"><span class="Identifier">makeNextAdding</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">;</span>
                     <span class="Identifier">builders</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsseq.html#Builder"><span class="Identifier">Builder</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">movers</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ecsseq.html#Mover"><span class="Identifier">Mover</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L67" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L67" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L52" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L52" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -356,13 +299,13 @@
 </div>
 <div id="makeNextRemoving-procs-all">
   <div id="makeNextRemoving,Archetype,seq[ComponentId]">
-  <dt><pre><span class="Keyword">proc</span> <a href="#makeNextRemoving%2CArchetype%2Cseq%5BComponentId%5D"><span class="Identifier">makeNextRemoving</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#makeNextRemoving%2CArchetype%2Cseq%5BComponentId%5D"><span class="Identifier">makeNextRemoving</span></a><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">compIds</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L74" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L74" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L59" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L59" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -371,13 +314,13 @@
 <div id="moveAdding-procs-all">
   <div id="moveAdding,Archetype,int,Archetype,Table[ComponentId,Adder]">
   <dt><pre><span class="Keyword">proc</span> <a href="#moveAdding%2CArchetype%2Cint%2CArchetype%2CTable%5BComponentId%2CAdder%5D"><span class="Identifier">moveAdding</span></a><span class="Other">(</span><span class="Identifier">fromArchetype</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">fromArchetypeEntityId</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
-                <span class="Identifier">toArchetype</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">adders</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">,</span> <a href="ecsseq.html#Adder"><span class="Identifier">Adder</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+                <span class="Identifier">toArchetype</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">adders</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">,</span> <a href="ecsseq.html#Adder"><span class="Identifier">Adder</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L127" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L127" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L108" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L108" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -391,8 +334,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L140" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L140" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L121" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L121" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -405,8 +348,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L122" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L122" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L103" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L103" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -420,12 +363,12 @@
   <dl class="item">
     <div id="components-iterators-all">
   <div id="components.i,Archetype,ComponentId">
-  <dt><pre><span class="Keyword">iterator</span> <a href="#components.i%2CArchetype%2CComponentId"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">componentId</span><span class="Other">:</span> <a href="archetype.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
+  <dt><pre><span class="Keyword">iterator</span> <a href="#components.i%2CArchetype%2CComponentId"><span class="Identifier">components</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">archetype</span><span class="Other">:</span> <a href="archetype.html#Archetype"><span class="Identifier">Archetype</span></a><span class="Other">;</span> <span class="Identifier">componentId</span><span class="Other">:</span> <a href="componentid.html#ComponentId"><span class="Identifier">ComponentId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">T</span></pre></dt>
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L97" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L97" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L82" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L82" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -438,8 +381,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L90" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L90" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L75" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L75" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -457,8 +400,8 @@
   <dd>
     
     
-    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L31" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L31" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/vecs.git/tree/version-2-2/src/archetype.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/vecs.git/edit/devel/src/archetype.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -474,7 +417,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-19 03:37:20 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-31 12:57:13 UTC</small>
       </div>
     </div>
   </div>

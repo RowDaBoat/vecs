@@ -1,0 +1,12 @@
+nimTitle	archetypeid	archetypeid.html	module src/archetypeid		0
+nim	unroll	archetypeid.html#unroll.m,untyped,staticint,staticint,untyped	macro unroll(idx: untyped; lo, hi: static int; body: untyped): untyped		15
+nim	ArchetypeWords	archetypeid.html#ArchetypeWords	const ArchetypeWords		21
+nim	ArchetypeId	archetypeid.html#ArchetypeId	object ArchetypeId		25
+nim	incl	archetypeid.html#incl,ArchetypeId,ComponentId	proc incl(self: var ArchetypeId; componentId: ComponentId)		29
+nim	excl	archetypeid.html#excl,ArchetypeId,ComponentId	proc excl(self: var ArchetypeId; componentId: ComponentId)		35
+nim	archetypeIdFrom	archetypeid.html#archetypeIdFrom,seq[ComponentId]	proc archetypeIdFrom(componentIds: seq[ComponentId]): ArchetypeId		41
+nim	contains	archetypeid.html#contains,ArchetypeId,ComponentId	proc contains(self: ArchetypeId; componentId: ComponentId): bool		46
+nim	contains	archetypeid.html#contains,ArchetypeId,ArchetypeId	proc contains(self: ArchetypeId; archetypeId: ArchetypeId): bool		52
+nim	disjointed	archetypeid.html#disjointed,ArchetypeId,ArchetypeId	proc disjointed(self: ArchetypeId; archetypeId: ArchetypeId): bool		63
+nim	hash	archetypeid.html#hash,ArchetypeId	proc hash(id: ArchetypeId): Hash		74
+nimgrp	contains	archetypeid.html#contains-procs-all	proc		46

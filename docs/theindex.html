@@ -25,15 +25,17 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="archetype.html">archetype</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="events.html">events</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="texttable.html">texttable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="archetype.html">archetype</a>, <a href="archetypeid.html">archetypeid</a>, <a href="componentid.html">componentid</a>, <a href="components.html">components</a>, <a href="ecsseq.html">ecsseq</a>, <a href="entity.html">entity</a>, <a href="entityid.html">entityid</a>, <a href="events.html">events</a>, <a href="id.html">id</a>, <a href="operationmodes.html">operationmodes</a>, <a href="operations.html">operations</a>, <a href="queries.html">queries</a>, <a href="serialization.html">serialization</a>, <a href="show.html">show</a>, <a href="texttable.html">texttable</a>, <a href="vecs.html">vecs</a>, <a href="world.html">world</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: proc `$`(id: ComponentId): string" href="archetype.html#%24%2CComponentId">archetype: proc `$`(id: ComponentId): string</a></li>
+          data-doc-search-tag="componentid: proc `$`(id: ComponentId): string" href="componentid.html#%24%2CComponentId">componentid: proc `$`(id: ComponentId): string</a></li>
           <li><a class="reference external"
           data-doc-search-tag="ecsseq: proc `$`[T](self: EcsSeq[T]): string" href="ecsseq.html#%24%2CEcsSeq%5BT%5D">ecsseq: proc `$`[T](self: EcsSeq[T]): string</a></li>
           </ul></dd>
 <dt><a name="%60%3D%3D%60" href="#%60%3D%3D%60"><span>`==`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="componentid: proc `==`(a, b: ComponentId): bool" href="componentid.html#%3D%3D%2CComponentId%2CComponentId">componentid: proc `==`(a, b: ComponentId): bool</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="events: proc `==`(a, b: EventKind): bool" href="events.html#%3D%3D%2CEventKind%2CEventKind">events: proc `==`(a, b: EventKind): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="world: proc `==`(a, b: ComponentId): bool" href="world.html#%3D%3D%2CComponentId%2CComponentId">world: proc `==`(a, b: ComponentId): bool</a></li>
@@ -96,15 +98,21 @@
           </ul></dd>
 <dt><a name="ArchetypeId" href="#ArchetypeId"><span>ArchetypeId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: type ArchetypeId" href="archetype.html#ArchetypeId">archetype: type ArchetypeId</a></li>
+          data-doc-search-tag="archetypeid: object ArchetypeId" href="archetypeid.html#ArchetypeId">archetypeid: object ArchetypeId</a></li>
           </ul></dd>
 <dt><a name="archetypeIdFrom" href="#archetypeIdFrom"><span>archetypeIdFrom:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: proc archetypeIdFrom(compIds: seq[ComponentId]): ArchetypeId" href="archetype.html#archetypeIdFrom%2Cseq%5BComponentId%5D">archetype: proc archetypeIdFrom(compIds: seq[ComponentId]): ArchetypeId</a></li>
+          data-doc-search-tag="archetypeid: proc archetypeIdFrom(componentIds: seq[ComponentId]): ArchetypeId" href="archetypeid.html#archetypeIdFrom%2Cseq%5BComponentId%5D">archetypeid: proc archetypeIdFrom(componentIds: seq[ComponentId]): ArchetypeId</a></li>
           </ul></dd>
 <dt><a name="archetypes" href="#archetypes"><span>archetypes:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="world: iterator archetypes(world: var World): Archetype" href="world.html#archetypes.i%2CWorld">world: iterator archetypes(world: var World): Archetype</a></li>
+          </ul></dd>
+<dt><a name="ArchetypeWords" href="#ArchetypeWords"><span>ArchetypeWords:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeid: const ArchetypeWords" href="archetypeid.html#ArchetypeWords">archetypeid: const ArchetypeWords</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="componentid: const ArchetypeWords" href="componentid.html#ArchetypeWords">componentid: const ArchetypeWords</a></li>
           </ul></dd>
 <dt><a name="Builder" href="#Builder"><span>Builder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -113,6 +121,12 @@
 <dt><a name="cleanupEmptyArchetypes" href="#cleanupEmptyArchetypes"><span>cleanupEmptyArchetypes:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="world: proc cleanupEmptyArchetypes(world: var World)" href="world.html#cleanupEmptyArchetypes%2CWorld">world: proc cleanupEmptyArchetypes(world: var World)</a></li>
+          </ul></dd>
+<dt><a name="clear" href="#clear"><span>clear:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="events: method clear[T](queue: EventQueue[T])" href="events.html#clear.e%2CEventQueue%5BT%5D">events: method clear[T](queue: EventQueue[T])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="events: method clear(queue: EventQueueBase)" href="events.html#clear.e%2CEventQueueBase">events: method clear(queue: EventQueueBase)</a></li>
           </ul></dd>
 <dt><a name="clearOperations" href="#clearOperations"><span>clearOperations:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -124,11 +138,15 @@
           </ul></dd>
 <dt><a name="ComponentId" href="#ComponentId"><span>ComponentId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: type ComponentId" href="archetype.html#ComponentId">archetype: type ComponentId</a></li>
+          data-doc-search-tag="componentid: type ComponentId" href="componentid.html#ComponentId">componentid: type ComponentId</a></li>
           </ul></dd>
 <dt><a name="componentIdFrom" href="#componentIdFrom"><span>componentIdFrom:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="world: proc componentIdFrom[T](world: var World; desc: typedesc[T]): ComponentId" href="world.html#componentIdFrom%2CWorld%2Ctypedesc%5BT%5D">world: proc componentIdFrom[T](world: var World; desc: typedesc[T]): ComponentId</a></li>
+          </ul></dd>
+<dt><a name="componentIds" href="#componentIds"><span>componentIds:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="componentid: var componentIds" href="componentid.html#componentIds">componentid: var componentIds</a></li>
           </ul></dd>
 <dt><a name="components" href="#components"><span>components:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -147,6 +165,10 @@
           data-doc-search-tag="archetype: proc contains(archetype: Archetype; candidateId: ArchetypeId): bool" href="archetype.html#contains%2CArchetype%2CArchetypeId">archetype: proc contains(archetype: Archetype; candidateId: ArchetypeId): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="archetype: proc contains(archetype: Archetype; candidateId: ComponentId): bool" href="archetype.html#contains%2CArchetype%2CComponentId">archetype: proc contains(archetype: Archetype; candidateId: ComponentId): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="archetypeid: proc contains(self: ArchetypeId; archetypeId: ArchetypeId): bool" href="archetypeid.html#contains%2CArchetypeId%2CArchetypeId">archetypeid: proc contains(self: ArchetypeId; archetypeId: ArchetypeId): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="archetypeid: proc contains(self: ArchetypeId; componentId: ComponentId): bool" href="archetypeid.html#contains%2CArchetypeId%2CComponentId">archetypeid: proc contains(self: ArchetypeId; componentId: ComponentId): bool</a></li>
           </ul></dd>
 <dt><a name="createEntityTable" href="#createEntityTable"><span>createEntityTable:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -173,6 +195,8 @@
 <dt><a name="disjointed" href="#disjointed"><span>disjointed:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc disjointed(archetype: Archetype; candidateId: ArchetypeId): bool" href="archetype.html#disjointed%2CArchetype%2CArchetypeId">archetype: proc disjointed(archetype: Archetype; candidateId: ArchetypeId): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="archetypeid: proc disjointed(self: ArchetypeId; archetypeId: ArchetypeId): bool" href="archetypeid.html#disjointed%2CArchetypeId%2CArchetypeId">archetypeid: proc disjointed(self: ArchetypeId; archetypeId: ArchetypeId): bool</a></li>
           </ul></dd>
 <dt><a name="DoubleAddDefect" href="#DoubleAddDefect"><span>DoubleAddDefect:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -230,6 +254,14 @@
 <li><a class="reference external"
           data-doc-search-tag="events: type EventQueue" href="events.html#EventQueue">events: type EventQueue</a></li>
           </ul></dd>
+<dt><a name="EventQueueBase" href="#EventQueueBase"><span>EventQueueBase:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="events: type EventQueueBase" href="events.html#EventQueueBase">events: type EventQueueBase</a></li>
+          </ul></dd>
+<dt><a name="excl" href="#excl"><span>excl:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeid: proc excl(self: var ArchetypeId; componentId: ComponentId)" href="archetypeid.html#excl%2CArchetypeId%2CComponentId">archetypeid: proc excl(self: var ArchetypeId; componentId: ComponentId)</a></li>
+          </ul></dd>
 <dt><a name="fieldTypes" href="#fieldTypes"><span>fieldTypes:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: macro fieldTypes(tup: typed; body: untyped): untyped" href="archetype.html#fieldTypes.m%2Ctyped%2Cuntyped">archetype: macro fieldTypes(tup: typed; body: untyped): untyped</a></li>
@@ -246,9 +278,11 @@
           </ul></dd>
 <dt><a name="hash" href="#hash"><span>hash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="events: proc hash(a: EventKind): Hash" href="events.html#hash%2CEventKind">events: proc hash(a: EventKind): Hash</a></li>
+          data-doc-search-tag="archetypeid: proc hash(id: ArchetypeId): Hash" href="archetypeid.html#hash%2CArchetypeId">archetypeid: proc hash(id: ArchetypeId): Hash</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="world: proc hash(id: ArchetypeId): Hash" href="world.html#hash%2CArchetypeId">world: proc hash(id: ArchetypeId): Hash</a></li>
+          data-doc-search-tag="componentid: proc hash(id: ComponentId): Hash" href="componentid.html#hash%2CComponentId">componentid: proc hash(id: ComponentId): Hash</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="events: proc hash(a: EventKind): Hash" href="events.html#hash%2CEventKind">events: proc hash(a: EventKind): Hash</a></li>
           </ul></dd>
 <dt><a name="id" href="#id"><span>id:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -270,6 +304,10 @@
 <li><a class="reference external"
           data-doc-search-tag="operationmodes: OperationModeKind.ImmediateMode" href="operationmodes.html#ImmediateMode">operationmodes: OperationModeKind.ImmediateMode</a></li>
           </ul></dd>
+<dt><a name="incl" href="#incl"><span>incl:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeid: proc incl(self: var ArchetypeId; componentId: ComponentId)" href="archetypeid.html#incl%2CArchetypeId%2CComponentId">archetypeid: proc incl(self: var ArchetypeId; componentId: ComponentId)</a></li>
+          </ul></dd>
 <dt><a name="isEmpty" href="#isEmpty"><span>isEmpty:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="archetype: proc isEmpty(archetype: Archetype): bool" href="archetype.html#isEmpty%2CArchetype">archetype: proc isEmpty(archetype: Archetype): bool</a></li>
@@ -288,8 +326,8 @@
           </ul></dd>
 <dt><a name="makeArchetype" href="#makeArchetype"><span>makeArchetype:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="archetype: proc makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
-              movers: seq[Mover]): Archetype" href="archetype.html#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D">archetype: proc makeArchetype(compIds: seq[ComponentId]; builders: seq[Builder];
+          data-doc-search-tag="archetype: proc makeArchetype(componentIds: seq[ComponentId]; builders: seq[Builder];
+              movers: seq[Mover]): Archetype" href="archetype.html#makeArchetype%2Cseq%5BComponentId%5D%2Cseq%5BBuilder%5D%2Cseq%5BMover%5D">archetype: proc makeArchetype(componentIds: seq[ComponentId]; builders: seq[Builder];
               movers: seq[Mover]): Archetype</a></li>
           </ul></dd>
 <dt><a name="makeNextAdding" href="#makeNextAdding"><span>makeNextAdding:</span></a></dt><dd><ul class="simple">
@@ -321,6 +359,10 @@
           data-doc-search-tag="archetype: proc moveRemoving(fromArchetype: var Archetype; fromArchetypeEntityId: int;
              toArchetype: var Archetype): int" href="archetype.html#moveRemoving%2CArchetype%2Cint%2CArchetype">archetype: proc moveRemoving(fromArchetype: var Archetype; fromArchetypeEntityId: int;
              toArchetype: var Archetype): int</a></li>
+          </ul></dd>
+<dt><a name="nextComponentId" href="#nextComponentId"><span>nextComponentId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="componentid: var nextComponentId" href="componentid.html#nextComponentId">componentid: var nextComponentId</a></li>
           </ul></dd>
 <dt><a name="Not" href="#Not"><span>Not:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -418,9 +460,13 @@
 <li><a class="reference external"
           data-doc-search-tag="texttable: proc textTable(data: seq[seq[seq[string]]]): string" href="texttable.html#textTable%2Cseq%5Bseq%5Bseq%5Bstring%5D%5D%5D">texttable: proc textTable(data: seq[seq[seq[string]]]): string</a></li>
           </ul></dd>
-<dt><a name="typeHash" href="#typeHash"><span>typeHash:</span></a></dt><dd><ul class="simple">
+<dt><a name="toComponentId" href="#toComponentId"><span>toComponentId:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="world: macro typeHash[T](typ: typedesc[T]): int" href="world.html#typeHash.m%2Ctypedesc%5BT%5D">world: macro typeHash[T](typ: typedesc[T]): int</a></li>
+          data-doc-search-tag="componentid: macro toComponentId[T](typ: typedesc[T]): ComponentId" href="componentid.html#toComponentId.m%2Ctypedesc%5BT%5D">componentid: macro toComponentId[T](typ: typedesc[T]): ComponentId</a></li>
+          </ul></dd>
+<dt><a name="unroll" href="#unroll"><span>unroll:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="archetypeid: macro unroll(idx: untyped; lo, hi: static int; body: untyped): untyped" href="archetypeid.html#unroll.m%2Cuntyped%2Cstaticint%2Cstaticint%2Cuntyped">archetypeid: macro unroll(idx: untyped; lo, hi: static int; body: untyped): untyped</a></li>
           </ul></dd>
 <dt><a name="withMeta" href="#withMeta"><span>withMeta:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -450,7 +496,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-19 03:37:23 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-03-31 12:57:17 UTC</small>
       </div>
     </div>
   </div>

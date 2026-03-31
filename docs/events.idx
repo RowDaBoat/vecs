@@ -1,6 +1,10 @@
 nimTitle	events	events.html	module src/events		0
 nim	EventKind	events.html#EventKind	type EventKind		7
-nim	EventQueue	events.html#EventQueue	type EventQueue		10
-nim	`==`	events.html#==,EventKind,EventKind	proc `==`(a, b: EventKind): bool		14
-nim	hash	events.html#hash,EventKind	proc hash(a: EventKind): Hash		15
-nim	eventKindFrom	events.html#eventKindFrom.m,typedesc[T]	macro eventKindFrom[T](typ: typedesc[T]): EventKind		18
+nim	EventQueueBase	events.html#EventQueueBase	type EventQueueBase		10
+nim	EventQueue	events.html#EventQueue	type EventQueue		13
+nim	`==`	events.html#==,EventKind,EventKind	proc `==`(a, b: EventKind): bool		17
+nim	hash	events.html#hash,EventKind	proc hash(a: EventKind): Hash		18
+nim	clear	events.html#clear.e,EventQueueBase	method clear(queue: EventQueueBase)		21
+nim	clear	events.html#clear.e,EventQueue[T]	method clear[T](queue: EventQueue[T])		25
+nim	eventKindFrom	events.html#eventKindFrom.m,typedesc[T]	macro eventKindFrom[T](typ: typedesc[T]): EventKind		29
+nimgrp	clear	events.html#clear-methods-all	method		21
