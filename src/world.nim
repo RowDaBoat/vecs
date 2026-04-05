@@ -412,7 +412,7 @@ proc read*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
   world.buildReadTuple(tup, archetype, archetypeEntityId)
 
 
-iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): tup.accessTuple =
+iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): accessTuple(tup) =
   ## Read, write, and optional access to components of an entity.
   ## An iterator is used to ensure fast and safe access to the components.
   ## **Accessors:**
