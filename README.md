@@ -117,6 +117,24 @@ for (character,) in world.query(disarmedCharacters):
 ```
 
 
+### Snapshots
+Snapshots are useful for implementing features like Undo/Redo, Copy/Paste/Duplicate
+```nim
+# Take a snapshot of an entity's components at a point in time
+let snap = world.snapshot(entityId)
+```
+```nim
+# Restore the entity to its snapshot state
+# Modified components are reset, removed components are re-added,
+# components added after the snapshot are removed
+world.restore(snap)
+```
+```nim
+# Restore a snapshot onto a different entity — useful for copy/duplicate
+world.restore(snap, targetEntityId)
+```
+
+
 ### Events
 ```nim
 # Declare event types, events are regular value objects.

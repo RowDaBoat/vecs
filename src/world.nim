@@ -15,9 +15,15 @@ type World* = object
   archetypes: Table[ArchetypeId, Archetype]
   builders: seq[Builder]
   movers: seq[Mover]
+  getters: seq[Getter]
   toConsolidate: HashSet[EntityId]
   version: int = 0
   eventQueues: Table[EventKind, EventQueueBase]
+
+
+type Snapshot* = ref object
+  entityId: EntityId
+  componentData: Table[ComponentId, EcsSeqAny]
 
 
 type DoubleAddDefect* = object of Defect
@@ -305,10 +311,12 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   if world.builders.len <= id:
     world.builders.setLen(id + 1)
     world.movers.setLen(id + 1)
+    world.getters.setLen(id + 1)
 
   if world.builders[id] == nil:
     world.builders[id] = ecsSeqBuilder[T]()
     world.movers[id] = ecsSeqMover[T]()
+    world.getters[id] = ecsSeqGetter[T]()
 
 
 proc has*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =
@@ -852,6 +860,64 @@ proc emit*[T](world: var World, event: T) =
 
   let queue = cast[EventQueue[T]](world.eventQueues[kind])
   queue.data.add(event)
+
+
+proc snapshot*(world: var World, id: EntityId): Snapshot =
+  ## Capture all components of an entity (except Meta) into an opaque snapshot.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    let marcus = w.add((Character(name: "Marcus"), Health(health: 100, maxHealth: 100)), Immediate)
+    let snap = w.snapshot(marcus)
+    assert snap != nil
+
+  let entity = world.entities[id.value]
+  let archetype = world.archetypes[entity.archetypeId]
+  let archetypeEntityId = entity.archetypeEntityId
+  let metaId = world.componentIdFrom Meta
+
+  result = Snapshot(entityId: id)
+
+  for compId in archetype.componentIds:
+    if compId != metaId:
+      let getter = world.getters[compId.int]
+      result.componentData[compId] = getter(archetype.componentLists[compId], archetypeEntityId)
+
+
+proc makeRestoringAdder(mover: Mover, snapshotSeq: EcsSeqAny): Adder =
+  result = proc(toEcsSeq: var EcsSeqAny): int =
+    var fromSeq: EcsSeqAny = snapshotSeq
+    mover(fromSeq, 0, toEcsSeq)
+
+
+proc restore*(world: var World, snap: Snapshot, id: EntityId = EntityId()) =
+  ## Restore an entity to a previously captured snapshot state.
+  ## Components removed since the snapshot are re-added.
+  ## Components added since the snapshot are removed.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    let marcus = w.add((Character(name: "Marcus"), Health(health: 100, maxHealth: 100)), Immediate)
+    let snap = w.snapshot(marcus)
+
+    for health in w.write(marcus, Health):
+      health.health = 0
+
+    w.restore(snap)
+    assert w.read(marcus, Health).health == 100
+
+  let id = if id == EntityId(): snap.entityId else: id
+
+  world.consolidateRemoveEntity(id)
+  world.addWithSpecificId(id)
+
+  var addersById: Table[ComponentId, Adder]
+  for compId, snapshotSeq in snap.componentData:
+    addersById[compId] = makeRestoringAdder(world.movers[compId.int], snapshotSeq)
+
+  world.consolidateAddComponents(id, addersById)
 
 
 iterator collect*[T](world: var World, _: typedesc[T]): T =

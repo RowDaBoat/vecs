@@ -22,6 +22,11 @@ type Mover* =
   proc(fromEcsSeq: var EcsSeqAny, index: int, toEcsSeq: var EcsSeqAny): int {.nimcall.}
 
 
+type Getter* =
+  proc(fromEcsSeq: EcsSeqAny, index: int): EcsSeqAny {.nimcall.}
+
+
+
 iterator ids*(self: EcsSeqAny): int =
   for index in 0..<self.deleted.len:
     if not self.deleted[index]:
@@ -96,3 +101,13 @@ proc ecsSeqMover*[T](): Mover =
     let element = typedFromEcsSeq[index]
     fromEcsSeq.del index
     result = typedToEcsSeq.add element
+
+
+proc ecsSeqGetter*[T](): Getter =
+  proc(fromEcsSeq: EcsSeqAny, index: int): EcsSeqAny {.nimcall.} =
+    let source = cast[EcsSeq[T]](fromEcsSeq)
+    let snap = EcsSeq[T]()
+    discard snap.add source[index]
+    snap
+
+

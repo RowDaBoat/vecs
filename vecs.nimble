@@ -21,6 +21,7 @@ task test, "Run the test suite":
   exec "nim r test/events.nim"
   exec "nim r -d:ArchetypeWords=2 test/manycomponents.nim 2>&1"
   exec "nim r test/order.nim"
+  exec "nim r test/snapshots.nim"
 
 task docs, "Generate documentation":
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"
