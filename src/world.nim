@@ -637,6 +637,28 @@ proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Defer
     world.add(result, components, mode)
 
 
+proc addEmpty*(world: var World): EntityId {.discardable.} =
+  ## Add an empty entity immediately.
+  ## The entity will have a single Meta component.
+  ## Returns the new entity's `Id`.
+  runnableExamples:
+    import examples
+
+    var w = World()
+    let id = w.addEmpty()
+
+    assert w.read(id, Meta).id == id
+
+  var archetype = world.archetypeFrom (Meta,)
+  let archetypeEntityId = archetype.add (Meta(),)
+  let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
+  let id = world.entities.add entity
+  result = EntityId(value: id)
+
+  for meta in world.write(result, Meta):
+    meta.id = result
+
+
 proc addWithSpecificId*(world: var World, id: EntityId) =
   ## Add an entity with a given id immediately.
   ## The entity will have a single Meta component.

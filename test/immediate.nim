@@ -14,6 +14,33 @@ suite "Immediate operations should":
     let marcusId = world.add(marcus, Immediate)
 
 
+  test "add an empty entity":
+    let emptyId = world.addEmpty()
+
+    checkpoint("Empty entity should exist with only Meta.")
+    check world.has(emptyId)
+    check world.read(emptyId, Meta).id == emptyId
+
+
+  test "add multiple empty entities with unique ids":
+    let firstId = world.addEmpty()
+    let secondId = world.addEmpty()
+
+    checkpoint("Each empty entity should have a unique id.")
+    check firstId != secondId
+    check world.has(firstId)
+    check world.has(secondId)
+
+
+  test "add components to an empty entity":
+    let emptyId = world.addEmpty()
+    world.add(emptyId, Character(name: "Ghost"), Immediate)
+
+    checkpoint("Empty entity should now have the added component.")
+    check world.has(emptyId, Character)
+    check world.read(emptyId, Character).name == "Ghost"
+
+
   test "add entities immediately":
     let elenaId = world.add(elena, Immediate)
 
