@@ -1,0 +1,16 @@
+nimTitle	ecsseq	ecsseq.html	module src/ecsseq		0
+nim	EcsSeqAny	ecsseq.html#EcsSeqAny	type EcsSeqAny		4
+nim	EcsSeq	ecsseq.html#EcsSeq	type EcsSeq		9
+nim	Builder	ecsseq.html#Builder	type Builder		13
+nim	Adder	ecsseq.html#Adder	type Adder		17
+nim	Mover	ecsseq.html#Mover	type Mover		21
+nim	ids	ecsseq.html#ids.i,EcsSeqAny	iterator ids(self: EcsSeqAny): int		25
+nim	add	ecsseq.html#add,EcsSeq[T],sinkT	proc add[T](self: EcsSeq[T]; item: sink T): int		31
+nim	del	ecsseq.html#del,EcsSeqAny,int	proc del(self: EcsSeqAny; index: int)		43
+nim	len	ecsseq.html#len,EcsSeqAny	proc len(self: EcsSeqAny): int		48
+nim	has	ecsseq.html#has,EcsSeqAny,int	proc has(self: EcsSeqAny; index: int): bool		52
+nim	`[]`	ecsseq.html#[],EcsSeq[T],int	proc `[]`[T](self: EcsSeq[T]; index: int): var T		58
+nim	`[]=`	ecsseq.html#[]=,EcsSeq[T],int,T	proc `[]=`[T](self: var EcsSeq[T]; index: int; value: T)		62
+nim	`$`	ecsseq.html#$,EcsSeq[T]	proc `$`[T](self: EcsSeq[T]): string		76
+nim	ecsSeqBuilder	ecsseq.html#ecsSeqBuilder	proc ecsSeqBuilder[T](): Builder		88
+nim	ecsSeqMover	ecsseq.html#ecsSeqMover	proc ecsSeqMover[T](): Mover		92

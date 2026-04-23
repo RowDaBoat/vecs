@@ -1,0 +1,9 @@
+nimTitle	componentid	componentid.html	module src/componentid		0
+nim	ArchetypeWords	componentid.html#ArchetypeWords	const ArchetypeWords		4
+nim	ComponentId	componentid.html#ComponentId	type ComponentId		7
+nim	hash	componentid.html#hash,ComponentId	proc hash(id: ComponentId): Hash		10
+nim	`==`	componentid.html#==,ComponentId,ComponentId	proc `==`(a, b: ComponentId): bool		11
+nim	`$`	componentid.html#$,ComponentId	proc `$`(id: ComponentId): string		12
+nim	nextComponentId	componentid.html#nextComponentId	var nextComponentId		15
+nim	componentIds	componentid.html#componentIds	var componentIds		16
+nim	toComponentId	componentid.html#toComponentId.m,typedesc[T]	macro toComponentId[T](typ: typedesc[T]): ComponentId		19

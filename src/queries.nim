@@ -1,0 +1,40 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
+import options
+import archetype, archetypeid, operations
+
+
+type Opt*[T] = Option[T]
+
+
+type Not*[T] = object
+  discard
+
+
+type Write*[T] = object
+  discard
+
+
+type Query*[T: tuple] = object
+  matchedArchetypes*: seq[ArchetypeId]
+  lastArchetypeCount*: int
+  lastVersion*: int
+  operations*: seq[Operation]
+
+
+template isSomething*[T](self: Opt[T], body: untyped) =
+  if self.isSome:
+    let value {.inject.} = self.get
+    body
+
+
+template isNothing*[T](self: Opt[T], body: untyped) =
+  if self.isNone:
+    body
+
+
+proc reset*[T: tuple](query: var Query[T], version: int) =
+  query.matchedArchetypes.setLen(0)
+  query.lastArchetypeCount = 0
+  query.lastVersion = version

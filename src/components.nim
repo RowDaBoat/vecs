@@ -1,0 +1,42 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
+import macros, tables, intsets
+import entityid, archetype, ecsseq, queries, operations
+
+
+type Meta* = object
+  id*: EntityId
+  operations: seq[Operation]
+
+
+proc id*(meta: Meta): EntityId =
+  meta.id
+
+
+macro WithMeta*[T: tuple](t: typedesc[T]): typedesc =
+  let tupleType = t.getTypeInst[^1]
+  result = tupleType.copyNimTree
+  result.insert(0, ident"Meta")
+
+
+macro withMeta*[T: tuple](t: T): untyped =
+  result = newNimNode(nnkTupleConstr)
+  result.add newCall(ident"Meta")
+
+  let typ = t.getTypeInst()
+
+  for i in 0..<typ.len:
+    result.add newTree(nnkBracketExpr, t, newLit(i))
+
+
+proc enqueueOperation*(self: var Meta, operation: Operation) =
+  self.operations.add operation
+
+
+proc operations*(self: Meta): seq[Operation] =
+  self.operations
+
+
+proc clearOperations*(self: var Meta) =
+  self.operations.setLen(0)

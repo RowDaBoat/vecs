@@ -1,0 +1,13 @@
+bin
+.DS_Store
+*.local.*
+*.local
+.nimble
+.envrc
+
+test/id
+test/queries
+test/world
+test/events
+test/manycomponents
+

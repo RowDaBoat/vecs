@@ -1,0 +1,27 @@
+packageName   = "vecs"
+version       = "0.0.1"
+author        = "Row"
+description   = "Vexel's ECS"
+license       = "MIT"
+
+srcDir        = "src"
+binDir        = "bin"
+skipFiles     = @[]
+
+requires "nim >= 2.0.0"
+
+task test, "Run the test suite":
+  exec "nim r test/immediate.nim"
+  exec "nim r test/deferred.nim"
+  exec "nim r test/after.nim"
+  exec "nim r test/queries.nim"
+  exec "nim r test/id.nim"
+  exec "nim r test/ecsseq.nim"
+  exec "nim r test/components.nim"
+  exec "nim r test/events.nim"
+  exec "nim r -d:ArchetypeWords=2 test/manycomponents.nim 2>&1"
+  exec "nim r test/order.nim"
+  exec "nim r test/snapshots.nim"
+
+task docs, "Generate documentation":
+  exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"

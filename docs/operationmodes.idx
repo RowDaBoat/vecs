@@ -1,0 +1,9 @@
+nimTitle	operationmodes	operationmodes.html	module src/operationmodes		0
+nim	DeferredMode	operationmodes.html#DeferredMode	OperationModeKind.DeferredMode		8
+nim	ImmediateMode	operationmodes.html#ImmediateMode	OperationModeKind.ImmediateMode		8
+nim	AfterMode	operationmodes.html#AfterMode	OperationModeKind.AfterMode		8
+nim	OperationModeKind	operationmodes.html#OperationModeKind	enum OperationModeKind		8
+nim	OperationMode	operationmodes.html#OperationMode	object OperationMode		14
+nim	Immediate	operationmodes.html#Immediate	let Immediate		22
+nim	Deferred	operationmodes.html#Deferred	let Deferred		23
+nim	after	operationmodes.html#after,Query[T: tuple]	proc after[T: tuple](query: var Query[T]): OperationMode[T]		26
