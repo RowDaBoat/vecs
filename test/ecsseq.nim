@@ -124,3 +124,19 @@ suite "EcsSeq should":
     check idx1 in collectedIds
     check idx3 in collectedIds
     check container.len == 2
+
+
+  test "not leave index in free list when reactivating via addAt":
+    let idx0 = container.add("Marcus")
+    discard container.add("Elena")
+
+    container.del(idx0)
+    container.addAt(idx0, "Grimm")
+
+    checkpoint("Reactivated slot should not be reused by add.")
+    let idx2 = container.add("Zara")
+    check idx0 != idx2
+
+    checkpoint("Both items should exist with correct values.")
+    check container[idx0] == "Grimm"
+    check container[idx2] == "Zara"

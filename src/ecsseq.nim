@@ -26,7 +26,6 @@ type Getter* =
   proc(fromEcsSeq: EcsSeqAny, index: int): EcsSeqAny {.nimcall.}
 
 
-
 iterator ids*(self: EcsSeqAny): int =
   for index in 0..<self.deleted.len:
     if not self.deleted[index]:
@@ -65,6 +64,10 @@ proc `[]`*[T](self: EcsSeq[T], index: int): var T =
 
 
 proc `[]=`*[T](self: var EcsSeq[T], index: int, value: T) =
+  self.data[index] = value
+
+
+proc addAt*[T](self: var EcsSeq[T], index: int, value: T) =
   if index >= self.data.len:
     let oldLen = self.data.len
     self.data.setLen(index + 1)
@@ -73,6 +76,11 @@ proc `[]=`*[T](self: var EcsSeq[T], index: int, value: T) =
     for i in oldLen ..< self.data.len - 1:
       self.deleted[i] = true
       self.free.add i
+
+  if self.deleted[index]:
+    let freeIndex = self.free.find(index)
+    if freeIndex >= 0:
+      self.free.del(freeIndex)
 
   self.data[index] = value
   self.deleted[index] = false
@@ -109,5 +117,3 @@ proc ecsSeqGetter*[T](): Getter =
     let snap = EcsSeq[T]()
     discard snap.add source[index]
     snap
-
-

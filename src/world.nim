@@ -676,7 +676,7 @@ proc addWithSpecificId*(world: var World, id: EntityId) =
   var archetype = world.archetypeFrom (Meta,)
   let archetypeEntityId = archetype.add (Meta(id: id),)
   let entity = Entity(archetypeId: archetype.id, archetypeEntityId: archetypeEntityId)
-  world.entities[id.value] = entity
+  world.entities.addAt(id.value, entity)
 
 proc remove*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
   ## Remove an entity from the world.
