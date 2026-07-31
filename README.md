@@ -188,6 +188,9 @@ for event in world.collect(DamageEvent):
 - [x] Text serialization
 - [x] Add `after` operation mode, that processes add/remove operations after a query is iterated
 - [x] Minimal events system
+- [ ] Serialization of world fragments
+  - [ ] Without Id-remapping
+  - [ ] With Id-remapping
 - [ ] Binary serialization
 - [ ] Integrate with [reploid](http://github.com/RowDaBoat/reploid)
 - [ ] Convenience procs

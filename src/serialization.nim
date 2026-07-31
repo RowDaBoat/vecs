@@ -7,19 +7,6 @@ import tables
 import queries
 
 
-proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[EntityId, seq[JsonNode]] =
-  for name, value in fieldPairs default T:
-    var query: Query[(Meta, typeof value)]
-
-    for (meta, component) in world.query(query):
-      if not result.hasKey(meta.id):
-        result[meta.id] = @[]
-
-      var jsonComponent = %*component
-      jsonComponent["*component"] = newJString($typeof value)
-      result[meta.id].add jsonComponent
-
-
 proc createJsonObject(entities: Table[EntityId, seq[JsonNode]]): JsonNode =
   result = newJObject()
   result["entities"] = newJArray()
@@ -54,6 +41,19 @@ proc addFromJson[T: tuple](world: var World, id: EntityId, jsonComponent: JsonNo
     if $(typeof value) == componentType:
       let componentToAdd = jsonComponent.to(typeof value)
       world.add(id, componentToAdd, Immediate)
+
+
+proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[EntityId, seq[JsonNode]] =
+  for name, value in fieldPairs default T:
+    var query: Query[(Meta, typeof value)]
+
+    for (meta, component) in world.query(query):
+      if not result.hasKey(meta.id):
+        result[meta.id] = @[]
+
+      var jsonComponent = %*component
+      jsonComponent["*component"] = newJString($typeof value)
+      result[meta.id].add jsonComponent
 
 
 proc serializeToText*[T: tuple](world: var World, tup: typedesc[T]): string =
