@@ -9,6 +9,7 @@ binDir        = "bin"
 skipFiles     = @[]
 
 requires "nim >= 2.0.0"
+requires "cborious"
 
 task test, "Run the test suite":
   exec "nim r test/immediate.nim"
@@ -22,6 +23,7 @@ task test, "Run the test suite":
   exec "nim r -d:ArchetypeWords=2 test/manycomponents.nim 2>&1"
   exec "nim r test/order.nim"
   exec "nim r test/snapshots.nim"
+  exec "nim r test/serialization.nim"
 
 task docs, "Generate documentation":
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"
