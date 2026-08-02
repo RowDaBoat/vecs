@@ -3,7 +3,7 @@
 # `vecs` is a free open source ECS library for Nim.
 import unittest
 import std/strutils
-import ../src/[examples, vecs]
+import ../../src/[examples, vecs]
 
 
 type
@@ -12,7 +12,7 @@ type
     data: seq[byte]
 
 
-suite "Binary (CBOR) serialization should":
+suite "Text (JSON) serialization should":
   setup:
     var world = World()
     let marcusId = world.add(
@@ -29,8 +29,8 @@ suite "Binary (CBOR) serialization should":
 
 
   test "round-trip component values":
-    let data = world.serializeToBinary((Character, Health, Weapon))
-    var restored = deserializeFromBinary(data, (Character, Health, Weapon))
+    let text = world.serializeToText((Character, Health, Weapon))
+    var restored = deserializeFromText(text, (Character, Health, Weapon))
 
     checkpoint("Marcus should keep his component values.")
     check restored.read(marcusId, Character) == Character(name: "Marcus", class: "Warrior")
@@ -44,8 +44,8 @@ suite "Binary (CBOR) serialization should":
 
 
   test "preserve entity ids":
-    let data = world.serializeToBinary((Character, Health, Weapon))
-    var restored = deserializeFromBinary(data, (Character, Health, Weapon))
+    let text = world.serializeToText((Character, Health, Weapon))
+    var restored = deserializeFromText(text, (Character, Health, Weapon))
 
     checkpoint("Restored entities should exist under their original ids.")
     check restored.has(marcusId)
@@ -56,23 +56,20 @@ suite "Binary (CBOR) serialization should":
     let bytes = @[0'u8, 1'u8, 2'u8, 128'u8, 200'u8, 253'u8, 254'u8, 255'u8]
     let portraitId = world.add((Portrait(name: "Marcus' portrait", data: bytes),), Immediate)
 
-    let data = world.serializeToBinary((Portrait,))
-    var restored = deserializeFromBinary(data, (Portrait,))
+    let text = world.serializeToText((Portrait,))
+    var restored = deserializeFromText(text, (Portrait,))
 
     checkpoint("Binary data should survive the round-trip unchanged.")
     check restored.read(portraitId, Portrait).data == bytes
     check restored.read(portraitId, Portrait).name == "Marcus' portrait"
 
 
-  test "store binary data as a contiguous byte sequence in the serialized output":
+  test "store binary data as an array of individual byte values in the serialized output":
     let bytes = @[10'u8, 20'u8, 30'u8, 128'u8, 200'u8, 253'u8, 254'u8, 255'u8]
     discard world.add((Portrait(name: "Elena's portrait", data: bytes),), Immediate)
 
-    let data = world.serializeToBinary((Portrait,))
+    let text = world.serializeToText((Portrait,))
 
-    var rawBytes = newString(bytes.len)
-    for i, value in bytes:
-      rawBytes[i] = char(value)
-
-    checkpoint("The exact byte sequence should appear contiguously in the serialized output.")
-    check data.find(rawBytes) != -1
+    checkpoint("Each byte value should appear as a plain readable number in the serialized text.")
+    for value in bytes:
+      check text.contains($value)

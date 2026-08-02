@@ -20,6 +20,10 @@ proc `entityId`*[T](id: Id[T]): EntityId =
   EntityId(value: id.value)
 
 
+proc `entityId=`*[T](id: var Id[T], entityId: EntityId) =
+  id.value = entityId.value
+
+
 template has*[T](world: var World, id: Id[T]): bool =
   world.has(id.entityId, T)
 

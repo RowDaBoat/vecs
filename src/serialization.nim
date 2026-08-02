@@ -2,10 +2,63 @@
 # Copyright (c) 2025 RowDaBoat
 # `vecs` is a free open source ECS library for Nim.
 import json
+import std/jsonutils
 import world
+import id
 import tables
 import queries
 import cborious
+
+
+proc toJsonHook*[T](id: Id[T], opt = initToJsonOptions()): JsonNode =
+  ## An `Id[T]`'s type parameter is a compile time constraint carrying no
+  ## runtime data, so it serializes as the `EntityId` it wraps.
+  toJson(id.entityId, opt)
+
+
+proc fromJsonHook*[T](id: var Id[T], jsonNode: JsonNode, opt = Joptions()) =
+  var entityId: EntityId
+  fromJson(entityId, jsonNode, opt)
+  id.entityId = entityId
+
+
+proc cborPack*[T](stream: Stream, id: Id[T]) =
+  ## An `Id[T]` serializes as the `EntityId` it wraps, like its JSON hook.
+  stream.cborPack(id.entityId)
+
+
+proc cborUnpack*[T](stream: Stream, id: var Id[T]) =
+  var entityId: EntityId
+  stream.cborUnpack(entityId)
+  id.entityId = entityId
+
+
+proc cborUnpack*[I, T](stream: Stream, values: var array[I, T]) =
+  ## `cborious` packs a fixed size array as a CBOR array, but has no matching
+  ## terminal case to unpack one, so its catch-all generic recurses forever.
+  ## Fixed size arrays are read back element by element, like sequences.
+  let (major, addInfo) = stream.readInitialSkippingTags()
+  doAssert major == CborMajor.Array
+
+  if addInfo == AiIndef:
+    for item in values.mitems:
+      stream.cborUnpack(item)
+
+    discard stream.readChar()
+    return
+
+  let count = int(stream.readAddInfo(addInfo))
+  var index = 0
+
+  for item in values.mitems:
+    if index < count:
+      stream.cborUnpack(item)
+
+    inc index
+
+  while index < count:
+    stream.skipCborMsg()
+    inc index
 
 
 proc createJsonObject(entities: Table[EntityId, seq[JsonNode]]): JsonNode =
@@ -40,7 +93,7 @@ iterator iteratetJsonComponents(json: JsonNode, world: var World): (EntityId, Js
 proc addFromJson[T: tuple](world: var World, id: EntityId, jsonComponent: JsonNode, componentType: string, tup: typedesc[T]) =
   for name, value in fieldPairs default T:
     if $(typeof value) == componentType:
-      let componentToAdd = jsonComponent.to(typeof value)
+      let componentToAdd = jsonComponent.jsonTo(typeof value)
       world.add(id, componentToAdd, Immediate)
 
 
@@ -52,7 +105,7 @@ proc createEntityTable*[T: tuple](world: var World, tup: typedesc[T]): Table[Ent
       if not result.hasKey(meta.id):
         result[meta.id] = @[]
 
-      var jsonComponent = %*component
+      var jsonComponent = toJson(component)
       jsonComponent["*component"] = newJString($typeof value)
       result[meta.id].add jsonComponent
 

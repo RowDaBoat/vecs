@@ -23,7 +23,10 @@ task test, "Run the test suite":
   exec "nim r -d:ArchetypeWords=2 test/manycomponents.nim 2>&1"
   exec "nim r test/order.nim"
   exec "nim r test/snapshots.nim"
-  exec "nim r test/serialization.nim"
+  exec "nim r test/serialization/simpletext.nim"
+  exec "nim r test/serialization/simplebinary.nim"
+  exec "nim r test/serialization/compositetext.nim"
+  exec "nim r test/serialization/compositebinary.nim"
 
 task docs, "Generate documentation":
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/vecs.git --index:on --outdir:docs src/vecs.nim"
