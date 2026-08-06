@@ -34,6 +34,27 @@ type
     frame: Frame
 
 
+  Inside = object
+    target: Id[Node]
+    entity: EntityId
+
+
+  Outside = object
+    inside: Inside
+
+
+  Leaf = object
+    value: float32
+
+
+  Branch = object
+    leaf: Leaf
+
+
+  Trunk = object
+    branch: Branch
+
+
 suite "Text (JSON) serialization of complex fields should":
   test "round-trip an Id[] field":
     var world = World()
@@ -96,3 +117,30 @@ suite "Text (JSON) serialization of complex fields should":
     var restored = deserializeFromText(text, (Placement,))
 
     check restored.read(entityId, Placement) == placement
+
+
+  test "round-trip ids held inside a nested object":
+    var world = World()
+    let rootId = world.add((Node(name: "root"),), Immediate) of Node
+    let holderId = world.add((Outside(inside: Inside(target: rootId, entity: rootId.entityId)),), Immediate)
+
+    let text = world.serializeToText((Node, Outside))
+    var restored = deserializeFromText(text, (Node, Outside))
+    let inside = restored.read(holderId, Outside).inside
+
+    checkpoint("An Id[] two levels down should survive.")
+    check inside.target == rootId
+
+    checkpoint("A plain EntityId two levels down should survive.")
+    check inside.entity == rootId.entityId
+
+
+  test "round-trip plain objects nested several levels deep":
+    var world = World()
+    let trunk = Trunk(branch: Branch(leaf: Leaf(value: 2.5'f32)))
+    let entityId = world.add((trunk,), Immediate)
+
+    let text = world.serializeToText((Trunk,))
+    var restored = deserializeFromText(text, (Trunk,))
+
+    check restored.read(entityId, Trunk) == trunk

@@ -135,6 +135,39 @@ world.restore(snap, targetEntityId)
 ```
 
 
+### Serialization
+Serialization takes a tuple of the component types to write, so derived or engine-owned components stay out of the output
+```nim
+# Serialize a world to CBOR, or to JSON
+let binary = world.serializeToBinary((Character, Health, Weapon))
+let text = world.serializeToText((Character, Health, Weapon))
+```
+```nim
+# Deserialize into a fresh world
+var restored = deserializeFromBinary(binary, (Character, Health, Weapon))
+```
+`Id[T]` and `EntityId` fields serialize as the entity id they refer to, and nested objects, `seq`s and fixed size arrays are walked through.
+
+
+### Adding worlds
+`add` copies entities between worlds, remapping the ids inside their components
+```nim
+# Merge a whole world into a populated one, e.g. right after deserializing it
+var loaded = deserializeFromBinary(binary, (Character, Health, Weapon))
+let mapping = world.add(loaded, (Character, Health, Weapon))
+```
+```nim
+# The returned mapping goes from the source's ids to the newly created ones
+let addedId = mapping[sourceId]
+```
+```nim
+# Copy only some entities, e.g. to lift a fragment out into a world of its own
+var fragment = World()
+discard fragment.add(world, @[entityId, childId], (Character, Health, Weapon))
+```
+Ids pointing at copied entities are remapped to their counterparts, ids pointing outside the copied set are invalidated. The source world is left unchanged.
+
+
 ### Events
 ```nim
 # Declare event types, events are regular value objects.
@@ -170,14 +203,14 @@ for event in world.collect(DamageEvent):
 ## Roadmap
 - [x] Add entities
 - [x] Archetypes
-- [x] Queries
+- [x] Queries
 - [x] Remove entities
 - [x] Support dynamic archetypes
 - [x] Add component
 - [x] Remove component
-- [x] Special Id component
+- [x] Special Id component
 - [x] Restrict generic T on queries and components procs to be tuples
-- [x] 'Not' Queries
+- [x] 'Not' Queries
 - [x] 'Opt' Queries
 - [x] 'Write' Queries
 - [x] Stable ids for components
@@ -185,18 +218,18 @@ for event in world.collect(DamageEvent):
 - [x] Convenience procs and checks
 - [x] Refactor `Id` component to a `Metadata` component with id, removal, and addition info
 - [x] Additions and removals should be enqueued and consolidated in order later
-- [x] Text serialization
+- [x] Text serialization
 - [x] Add `after` operation mode, that processes add/remove operations after a query is iterated
 - [x] Minimal events system
-- [ ] Serialization of world fragments
-  - [ ] Without Id-remapping
-  - [ ] With Id-remapping
-- [ ] Binary serialization
+- [x] Serialization of world fragments
+  - [x] Without Id-remapping
+  - [x] With Id-remapping
+- [x] Binary serialization
+- [ ] glTF serialization
 - [ ] Integrate with [reploid](http://github.com/RowDaBoat/reploid)
 - [ ] Convenience procs
   - [ ] `component` and `components` accept a list of entity ids
   - [ ] Add and Remove multiple components
-- [ ] Concurrency support
+- [ ] Concurrency support
 - [ ] Zero-allocation?
 - [ ] Spatial and custom queries
- 

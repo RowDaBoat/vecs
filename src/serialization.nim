@@ -11,8 +11,6 @@ import cborious
 
 
 proc toJsonHook*[T](id: Id[T], opt = initToJsonOptions()): JsonNode =
-  ## An `Id[T]`'s type parameter is a compile time constraint carrying no
-  ## runtime data, so it serializes as the `EntityId` it wraps.
   toJson(id.entityId, opt)
 
 
@@ -20,45 +18,6 @@ proc fromJsonHook*[T](id: var Id[T], jsonNode: JsonNode, opt = Joptions()) =
   var entityId: EntityId
   fromJson(entityId, jsonNode, opt)
   id.entityId = entityId
-
-
-proc cborPack*[T](stream: Stream, id: Id[T]) =
-  ## An `Id[T]` serializes as the `EntityId` it wraps, like its JSON hook.
-  stream.cborPack(id.entityId)
-
-
-proc cborUnpack*[T](stream: Stream, id: var Id[T]) =
-  var entityId: EntityId
-  stream.cborUnpack(entityId)
-  id.entityId = entityId
-
-
-proc cborUnpack*[I, T](stream: Stream, values: var array[I, T]) =
-  ## `cborious` packs a fixed size array as a CBOR array, but has no matching
-  ## terminal case to unpack one, so its catch-all generic recurses forever.
-  ## Fixed size arrays are read back element by element, like sequences.
-  let (major, addInfo) = stream.readInitialSkippingTags()
-  doAssert major == CborMajor.Array
-
-  if addInfo == AiIndef:
-    for item in values.mitems:
-      stream.cborUnpack(item)
-
-    discard stream.readChar()
-    return
-
-  let count = int(stream.readAddInfo(addInfo))
-  var index = 0
-
-  for item in values.mitems:
-    if index < count:
-      stream.cborUnpack(item)
-
-    inc index
-
-  while index < count:
-    stream.skipCborMsg()
-    inc index
 
 
 proc createJsonObject(entities: Table[EntityId, seq[JsonNode]]): JsonNode =
@@ -190,6 +149,106 @@ proc deserializeFromText*[T: tuple](text: string, tup: typedesc[T]): World =
   result.cleanupEmptyArchetypes()
 
 
+proc packValue[T](stream: CborStream, value: T) =
+  when T is Id:
+    stream.cborPack(value.entityId.value)
+  elif T is EntityId:
+    stream.cborPack(value.value)
+  elif T is string or T is seq[uint8]:
+    stream.cborPack(value)
+  elif T is seq or T is array:
+    stream.cborPackInt(uint64(value.len), CborMajor.Array)
+
+    for item in value:
+      stream.packValue(item)
+  elif T is object or T is tuple:
+    var fieldCount = 0
+
+    for _ in fields(value):
+      inc fieldCount
+
+    stream.cborPackInt(uint64(fieldCount), CborMajor.Map)
+
+    for name, field in fieldPairs(value):
+      stream.cborPack(name)
+      stream.packValue(field)
+  else:
+    stream.cborPack(value)
+
+
+proc unpackValue[T](stream: CborStream, value: var T)
+
+
+proc unpackMatchingField[T](stream: CborStream, value: var T, name: string): bool =
+  for fieldName, fieldValue in fieldPairs(value):
+    if fieldName == name:
+      stream.unpackValue(fieldValue)
+      return true
+
+  false
+
+
+proc unpackSequence[T](stream: CborStream, values: var seq[T]) =
+  let (major, addInfo) = stream.readInitialSkippingTags()
+  doAssert major == CborMajor.Array
+  let count = int(stream.readAddInfo(addInfo))
+  values.setLen(count)
+
+  for index in 0 ..< count:
+    stream.unpackValue(values[index])
+
+
+proc unpackArray[T](stream: CborStream, values: var T) =
+  let (major, addInfo) = stream.readInitialSkippingTags()
+  doAssert major == CborMajor.Array
+  let count = int(stream.readAddInfo(addInfo))
+  var index = 0
+
+  for item in values.mitems:
+    if index < count:
+      stream.unpackValue(item)
+
+    inc index
+
+  while index < count:
+    stream.skipCborMsg()
+    inc index
+
+
+proc unpackFields[T](stream: CborStream, value: var T) =
+  let (major, addInfo) = stream.readInitialSkippingTags()
+  doAssert major == CborMajor.Map
+  let count = int(stream.readAddInfo(addInfo))
+
+  for _ in 0 ..< count:
+    var name: string
+    stream.cborUnpack(name)
+
+    if not stream.unpackMatchingField(value, name):
+      stream.skipCborMsg()
+
+
+proc unpackValue[T](stream: CborStream, value: var T) =
+  when T is Id:
+    var raw: int
+    stream.cborUnpack(raw)
+    value.entityId = EntityId(value: raw)
+  elif T is EntityId:
+    var raw: int
+    stream.cborUnpack(raw)
+    value = EntityId(value: raw)
+  elif T is string or T is seq[uint8]:
+    stream.cborUnpack(value)
+  elif T is seq:
+    stream.unpackSequence(value)
+  elif T is array:
+    stream.unpackArray(value)
+  elif T is object or T is tuple:
+    stream.unpackFields(value)
+  else:
+    stream.cborUnpack(value)
+
+
 proc encodeComponent[T](component: T): string =
   var stream = CborStream.init()
   var fieldCount = 0
@@ -203,7 +262,7 @@ proc encodeComponent[T](component: T): string =
 
   for name, value in fieldPairs(component):
     stream.cborPack(name)
-    stream.cborPack(value)
+    stream.packValue(value)
 
   stream.data
 
@@ -236,8 +295,6 @@ proc writeBinaryEntities(stream: CborStream, entities: Table[EntityId, seq[strin
 
 
 proc serializeToBinary*[T: tuple](world: var World, tup: typedesc[T]): string =
-  ## Serialize a world to a CBOR-encoded binary string.
-  ## Use a tuple to specify the components to serialize, do not include the Meta component.
   let entities = createBinaryEntityTable(world, tup)
   var stream = CborStream.init()
   stream.writeBinaryEntities(entities)
@@ -245,8 +302,6 @@ proc serializeToBinary*[T: tuple](world: var World, tup: typedesc[T]): string =
 
 
 proc readComponentTypeName(stream: CborStream): (string, int) =
-  ## Reads a component map's header and its leading "*component" entry.
-  ## Returns the component's type name and the count of fields left to read.
   let (major, ai) = stream.readInitialSkippingTags()
   doAssert major == CborMajor.Map
   let fieldCount = int(stream.readAddInfo(ai))
@@ -266,12 +321,9 @@ proc skipRemainingFields(stream: CborStream, count: int) =
 
 
 proc setMatchingField[T](component: var T, name: string, stream: CborStream): bool =
-  ## Reads the next value into `component`'s field named `name`, if any.
-  ## Field types are primitives/seqs, so this avoids cborious's generic
-  ## object/tuple decode, which errors out when instantiated from another module.
   for fieldName, fieldValue in fieldPairs(component):
     if fieldName == name:
-      stream.cborUnpack(fieldValue)
+      stream.unpackValue(fieldValue)
       return true
 
   false
