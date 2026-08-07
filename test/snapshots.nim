@@ -103,3 +103,44 @@ suite "Snapshots should":
 
     checkpoint("Meta id should be unchanged after restore.")
     check world.read(marcusId, Meta).id == originalMeta.id
+
+
+  test "restore a removed entity without freeing its id twice":
+    let snap = world.snapshot(marcusId)
+    world.remove(marcusId, Immediate)
+
+    world.restore(snap)
+
+    checkpoint("The restored id should not be handed out to a new entity.")
+    let elenaId = world.add((Character(name: "Elena", class: "Mage"),), Immediate)
+    check elenaId != marcusId
+
+    checkpoint("Both entities should keep their own components.")
+    check world.read(marcusId, Character).name == "Marcus"
+    check world.read(elenaId, Character).name == "Elena"
+
+
+  test "not alias a restored entity with a later addition in queries":
+    let snap = world.snapshot(marcusId)
+    world.remove(marcusId, Immediate)
+    world.restore(snap)
+
+    discard world.add(
+      (Character(name: "Elena", class: "Mage"),
+       Health(health: 80, maxHealth: 80),
+       Weapon(name: "Staff", attack: 5)),
+      Immediate
+    )
+
+    var query: Query[(Character, Meta)]
+    var queriedIds: seq[EntityId]
+    var names: seq[string]
+
+    for (character, meta) in world.query(query):
+      queriedIds.add meta.id
+      names.add character.name
+
+    checkpoint("Each entity should be queried under its own id.")
+    check names == @["Marcus", "Elena"]
+    check queriedIds.len == 2
+    check queriedIds[0] != queriedIds[1]

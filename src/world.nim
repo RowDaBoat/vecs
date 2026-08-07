@@ -932,7 +932,9 @@ proc restore*(world: var World, snap: Snapshot, id: EntityId = EntityId()) =
 
   let id = if id == EntityId(): snap.entityId else: id
 
-  world.consolidateRemoveEntity(id)
+  if world.has(id):
+    world.consolidateRemoveEntity(id)
+
   world.addWithSpecificId(id)
 
   var addersById: Table[ComponentId, Adder]
