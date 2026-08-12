@@ -3,7 +3,8 @@
 `vecs` is an ECS core for game engines.
 
 - Author: Row/RowDaBoat (Me)
-- Issues are tracked as VEPs (Vecs Enhancement Prompts) in the `issues.local/` directory.
+- Issues are tracked as VEPs (Vecs Enhancement Prompts) in the `issues` directory.
+- The roadmap is tracked in the `roadmap.md` file.
 - `VEP 0` outlines how to write VEPs.
 
 Changes must be localized to the task we're focusing on, any extra change outside of our current focus will only generate friction.
@@ -13,7 +14,7 @@ Answers must be technical and honest.
 nim, ECS architecture, arrays of structures.
 
 ## Code style
-- Semantic naming over comments.
+- Semantic naming over comments, avoid comments unless absolutely necessary.
 - Never-nester principle: max 1-2 nesting levels; extract methods instead.
 - No `continue` in loops; extract the loop's body to it's own `proc` and use early returns.
 - `camelCase` for procs/variables, `PascalCase` for types.
