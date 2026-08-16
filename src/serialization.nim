@@ -3,11 +3,17 @@
 # `vecs` is a free open source ECS library for Nim.
 import json
 import std/jsonutils
+import std/macros
 import world
 import id
 import tables
 import queries
 import cborious
+
+
+template transient*() {.pragma.}
+  ## Tag a component field to keep it out of serialization. Its value is neither
+  ## written nor read back; it must be re-derivable at runtime.
 
 
 proc toJsonHook*[T](id: Id[T], opt = initToJsonOptions()): JsonNode =
@@ -181,9 +187,10 @@ proc unpackValue[T](stream: CborStream, value: var T)
 
 proc unpackMatchingField[T](stream: CborStream, value: var T, name: string): bool =
   for fieldName, fieldValue in fieldPairs(value):
-    if fieldName == name:
-      stream.unpackValue(fieldValue)
-      return true
+    when not fieldValue.hasCustomPragma(transient):
+      if fieldName == name:
+        stream.unpackValue(fieldValue)
+        return true
 
   false
 
@@ -253,16 +260,18 @@ proc encodeComponent[T](component: T): string =
   var stream = CborStream.init()
   var fieldCount = 0
 
-  for _ in fields(component):
-    inc fieldCount
+  for name, value in fieldPairs(component):
+    when not value.hasCustomPragma(transient):
+      inc fieldCount
 
   stream.cborPackInt(uint64(fieldCount + 1), CborMajor.Map)
   stream.cborPack("*component")
   stream.cborPack($typeof component)
 
   for name, value in fieldPairs(component):
-    stream.cborPack(name)
-    stream.packValue(value)
+    when not value.hasCustomPragma(transient):
+      stream.cborPack(name)
+      stream.packValue(value)
 
   stream.data
 
@@ -322,9 +331,10 @@ proc skipRemainingFields(stream: CborStream, count: int) =
 
 proc setMatchingField[T](component: var T, name: string, stream: CborStream): bool =
   for fieldName, fieldValue in fieldPairs(component):
-    if fieldName == name:
-      stream.unpackValue(fieldValue)
-      return true
+    when not fieldValue.hasCustomPragma(transient):
+      if fieldName == name:
+        stream.unpackValue(fieldValue)
+        return true
 
   false
 
