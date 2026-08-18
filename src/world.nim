@@ -853,11 +853,11 @@ proc consolidate*(world: var World) =
       for operation in operations:
         case operation.kind:
         of RemoveEntity:
-          world.consolidateRemoveEntity(meta.id)
+          world.consolidateRemoveEntity(id)
         of AddComponents:
-          world.consolidateAddComponents(meta.id, operation.addersById)
+          world.consolidateAddComponents(id, operation.addersById)
         of RemoveComponents:
-          world.consolidateRemoveComponents(meta.id, operation.compIdsToRemove)
+          world.consolidateRemoveComponents(id, operation.compIdsToRemove)
 
   world.toConsolidate.clear()
 
