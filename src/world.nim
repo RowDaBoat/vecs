@@ -414,7 +414,7 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentsToAdd: T
   var componentIds: seq[ComponentId] = @[]
 
   for componentId in componentsToAdd.keys:
-    when CHECKS_ENABLED: 
+    when CHECKS_ENABLED:
       if componentId in previousArchetype.id:
         let message = "Component " & $componentId & " already exists in Entity " & $id & "."
         raise newException(DoubleAddDefect, message)
@@ -501,15 +501,16 @@ template read*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T =
     if not world.has(id, compDesc):
       raise componentDoesNotExist(id, compDesc)
 
-  let entity = world.entities[id.value]
-  let archetype = world.archetypes[entity.archetypeIndex]
-  let archetypeEntityId = entity.archetypeEntityId
-  let compId = compDesc.toComponentId
-  let ind = archetype.getIndex(compId)
-  let ecsSeqAny = archetype.componentLists[ind]
+  block:
+    let entity = world.entities[id.value]
+    let archetype = world.archetypes[entity.archetypeIndex]
+    let archetypeEntityId = entity.archetypeEntityId
+    let compId = compDesc.toComponentId
+    let ind = archetype.getIndex(compId)
+    let ecsSeqAny = archetype.componentLists[ind]
 
-  type Retype = EcsSeq[T]
-  cast[Retype](ecsSeqAny)[archetypeEntityId]
+    type Retype = EcsSeq[T]
+    cast[Retype](ecsSeqAny)[archetypeEntityId]
 
 
 iterator write*[T](world: var World, id: EntityId, compDesc: typedesc[T]): var T =
@@ -558,18 +559,19 @@ template read*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
     assert weapon.name == "Sword"
     assert spellbook.spells == @["Fireball", "Ice Storm", "Lightning"]
 
-  world.checkEntityExists(id)
+  block:
+    world.checkEntityExists(id)
 
-  let entity = world.entities[id.value]
-  let archetype = world.archetypes[entity.archetypeIndex]
-  let archetypeEntityId = entity.archetypeEntityId
+    let entity = world.entities[id.value]
+    let archetype = world.archetypes[entity.archetypeIndex]
+    let archetypeEntityId = entity.archetypeEntityId
 
-  when CHECKS_ENABLED:
-    tup.fieldTypes:
-      if not world.has(id, typeof FieldType):
-        raise componentsDoNotExist(id, tup)
+    when CHECKS_ENABLED:
+      tup.fieldTypes:
+        if not world.has(id, typeof FieldType):
+          raise componentsDoNotExist(id, tup)
 
-  world.buildReadTuple(tup, archetype, archetypeEntityId)
+    world.buildReadTuple(tup, archetype, archetypeEntityId)
 
 
 iterator components*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): accessTuple(tup) =
@@ -639,7 +641,7 @@ proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: Operati
 
   var entity = world.entities[id.value]
   let entityArchetype = world.archetypes[entity.archetypeIndex]
-  
+
   when CHECKS_ENABLED:
     for name, value in fieldPairs components:
       let componentId = world.componentIdFrom typeof value
@@ -668,7 +670,7 @@ proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: Operati
         let operation = Operation(id: meta.id, kind: AddComponents, componentsToAdd: componentsToAdd)
         mode.query[].operations.add operation
     else:
-      
+
       for meta in world.write(id, Meta):
         let operation = Operation(id: meta.id, kind: AddComponents, componentsToAdd: componentsToAdd)
         meta.enqueueOperation(operation)
@@ -898,7 +900,7 @@ proc removesComponent(operation: Operation, componentId: ComponentId): bool =
 
 iterator query*[T: tuple](world: var World, query: var Query[T]): T.accessTuple =
   ## Query for components on entities. Components are matched based on the query's type parameter.
-  ## 
+  ##
   ## **Accessors:**
   ## - **Read access**: match entities that have the component for read only access. Just use the component's type.
   ## - **Write access**: match entities that have the comoponent for write access. Use `Write[Component]`.
