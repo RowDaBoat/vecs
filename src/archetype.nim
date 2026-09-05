@@ -115,7 +115,7 @@ iterator components*[T](archetype: Archetype, componentId: ComponentId): T =
     yield cast[EcsSeq[T]](ecsSeq)[entityId]
 
 
-proc addField[T](ecsSeqAny: EcsSeqAny, slot: int, item: sink T) =
+template addField[T](ecsSeqAny: EcsSeqAny, slot: int, item: sink T) =
   cast[EcsSeq[T]](ecsSeqAny).addAt(slot, item)
 
 

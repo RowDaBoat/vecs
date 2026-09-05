@@ -17,8 +17,8 @@ type World* = object
   archIdToIndex: Table[ArchetypeId, int]
   freeArchetype: seq[int]
   archetypes: seq[Archetype]
-  builders: seq[Builder]
-  getters: seq[Getter]
+  builders: seq[Builder] = newSeq[Builder](componentid.ArchetypeWords*sizeof(uint64)*8)
+  getters: seq[Getter] = newSeq[Getter](componentid.ArchetypeWords*sizeof(uint64)*8)
   toConsolidate: HashSet[EntityId]
   version: int = 0
   eventQueues: Table[EventKind, EventQueueBase]
@@ -142,7 +142,9 @@ proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, com
   for componentId in componentIdsToAdd:
     nextArchetypeId.incl componentId
 
-  if not world.archIdToIndex.hasKey(nextArchetypeId):
+  result = world.archIdToIndex.getOrDefault(nextArchetypeId, -1)
+
+  if result < 0:
     var builders: seq[Builder] = @[]
 
     for componentId in componentIdsToAdd:
@@ -151,7 +153,7 @@ proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, com
     let newArchetype = previousArchetype.makeNextAdding(componentIdsToAdd, builders)
     world.registerArchetype(nextArchetypeId, newArchetype)
 
-  world.archIdToIndex[nextArchetypeId]
+    result = world.archIdToIndex[nextArchetypeId]
 
 
 proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdsToRemove: seq[ComponentId]): int =
@@ -161,12 +163,13 @@ proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, c
   for componentId in componentIdsToRemove:
     nextArchetypeId.excl componentId
 
-  if not world.archIdToIndex.hasKey(nextArchetypeId):
+  result = world.archIdToIndex.getOrDefault(nextArchetypeId, -1)
+
+  if result < 0:
     let newArchetype = previousArchetype.makeNextRemoving(componentIdsToRemove)
     world.registerArchetype(nextArchetypeId, newArchetype)
 
-  world.archIdToIndex[nextArchetypeId]
-
+    result = world.archIdToIndex[nextArchetypeId]
 
 proc archetypeIdFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId =
   for name, typ in fieldPairs default T:
@@ -176,8 +179,9 @@ proc archetypeIdFrom[T: tuple](world: var World, desc: typedesc[T]): ArchetypeId
 
 proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): int =
   let archetypeId = world.archetypeIdFrom T
+  result = world.archIdToIndex.getOrDefault(archetypeId, -1)
 
-  if not world.archIdToIndex.hasKey(archetypeId):
+  if result < 0:
     var componentIds: seq[ComponentId] = @[]
     var builders: seq[Builder] = @[]
 
@@ -189,7 +193,7 @@ proc archetypeFrom[T: tuple](world: var World, tupleDesc: typedesc[T]): int =
     let newArchetype = makeArchetype(componentIds, builders)
     world.registerArchetype(archetypeId, newArchetype)
 
-  world.archIdToIndex[archetypeId]
+    result = world.archIdToIndex[archetypeId]
 
 
 # Query creation and book-keeping
@@ -457,10 +461,6 @@ proc componentIdFrom*[T](world: var World, desc: typedesc[T]): ComponentId =
   result = T.toComponentId
   let id = result.int
 
-  if world.builders.len <= id:
-    world.builders.setLen(id + 1)
-    world.getters.setLen(id + 1)
-
   if world.builders[id] == nil:
     world.builders[id] = ecsSeqBuilder[T]()
     world.getters[id] = ecsSeqGetter[T]()
@@ -485,7 +485,7 @@ proc has*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =
   compId in archetype.id
 
 
-proc read*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T =
+template read*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T =
   ## Directly read a single component of an entity.
   runnableExamples:
     import examples
@@ -504,7 +504,7 @@ proc read*[T](world: var World, id: EntityId, compDesc: typedesc[T]): T =
   let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeIndex]
   let archetypeEntityId = entity.archetypeEntityId
-  let compId = world.componentIdFrom typeof compDesc
+  let compId = compDesc.toComponentId
   let ind = archetype.getIndex(compId)
   let ecsSeqAny = archetype.componentLists[ind]
 
@@ -532,7 +532,7 @@ iterator write*[T](world: var World, id: EntityId, compDesc: typedesc[T]): var T
   let entity = world.entities[id.value]
   let archetype = world.archetypes[entity.archetypeIndex]
   let archetypeEntityId = entity.archetypeEntityId
-  let compId = world.componentIdFrom typeof T
+  let compId = compDesc.toComponentId
 
   if archetype.hasKey(compId):
     let index = archetype.getIndex(compId)
@@ -541,7 +541,7 @@ iterator write*[T](world: var World, id: EntityId, compDesc: typedesc[T]): var T
     yield cast[Retype](ecsSeqAny)[archetypeEntityId]
 
 
-proc read*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
+template read*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
   ## Direct read access to multiple components of an entity.
   ## The `T` tuple must contain no `Write`, `Opt`, or `Not` accessors.
   runnableExamples:
@@ -564,9 +564,10 @@ proc read*[T: tuple](world: var World, id: EntityId, tup: typedesc[T]): T =
   let archetype = world.archetypes[entity.archetypeIndex]
   let archetypeEntityId = entity.archetypeEntityId
 
-  tup.fieldTypes:
-    if not world.has(id, typeof FieldType):
-      raise componentsDoNotExist(id, tup)
+  when CHECKS_ENABLED:
+    tup.fieldTypes:
+      if not world.has(id, typeof FieldType):
+        raise componentsDoNotExist(id, tup)
 
   world.buildReadTuple(tup, archetype, archetypeEntityId)
 
@@ -648,7 +649,7 @@ proc add*[T: tuple](world: var World, id: EntityId, components: T, mode: Operati
 
   if mode.kind == ImmediateMode:
     var previousArchetype = world.archetypes[entity.archetypeIndex]
-    var componentIdsToAdd: seq[ComponentId] = @[]
+    var componentIdsToAdd: seq[ComponentId]
     for name, value in fieldPairs components:
       componentIdsToAdd.add world.componentIdFrom typeof value
 
