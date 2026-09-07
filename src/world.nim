@@ -3,7 +3,7 @@
 # `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables, sets
-import entityid, componentid, archetypeid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
+import entityid, componentid, archetypeid, archetype, entity, ecsseq, unsafeseq, queries, components, operations, operationmodes, events
 export entityid, components.Meta, operationmodes
 export components
 export events
@@ -287,10 +287,7 @@ template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: 
 
 
 proc componentData[T](componentList: EcsSeq[T]): ptr UncheckedArray[T] {.inline.} =
-  if componentList.len == 0:
-    return nil
-
-  cast[ptr UncheckedArray[T]](unsafeAddr componentList[0])
+  cast[ptr UncheckedArray[T]](componentList.rawPtr.rawSeqDataPtr)
 
 
 macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
