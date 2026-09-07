@@ -6,8 +6,8 @@
 const
   SAMPLE* {.intDefine.} = 1000
   WARMUP* {.intDefine.} = 1
-  ENTITY_COUNT* {.intDefine.} = 10_000
-  SELECTION_THRESHOLD* = 0.1
+  EntityCount* {.intDefine.} = 10_000
+  SelectionThreshold* = 0.1
 
 
 type

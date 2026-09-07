@@ -52,18 +52,18 @@ jobs:
 
           if ! git rev-parse --verify --quiet "$baseline^{commit}" > /dev/null; then
             echo "No baseline commit at $baseline, benchmarking without a comparison."
-            nim c -r -d:danger --nimcache:nimcache/current "benchs/vecs_bench.nim" current.csv
+            nim c -r -d:danger --nimcache:nimcache/current "benchs/vecsbench.nim" current.csv
             exit 0
           fi
 
           echo "Baseline: $baseline ($(git rev-parse --short "$baseline"))"
 
           git checkout "$baseline" -- src
-          nim c -r -d:danger --nimcache:nimcache/baseline "benchs/vecs_bench.nim" baseline.csv || rm -f baseline.csv
+          nim c -r -d:danger --nimcache:nimcache/baseline "benchs/vecsbench.nim" baseline.csv || rm -f baseline.csv
           git checkout HEAD -- src
 
           if [ ! -f baseline.csv ]; then
             echo "Baseline src/ did not build against the current benchmarks, skipping comparison."
           fi
 
-          nim c -r -d:danger --nimcache:nimcache/current "benchs/vecs_bench.nim" current.csv baseline.csv
+          nim c -r -d:danger --nimcache:nimcache/current "benchs/vecsbench.nim" current.csv baseline.csv

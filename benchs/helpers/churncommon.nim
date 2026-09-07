@@ -1,9 +1,6 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 # `vecs` is a free open source ECS library for Nim.
-## The churn workload, shared by every suite that can express it. A suite opts
-## in by defining `churnSpawn`, `churnDestroy`, `newChurnWorld` and
-## `churnIterate` over its own world type, which are mixed in below.
 import random
 import benchmarks
 
@@ -12,18 +9,14 @@ const
   ChurnSeed = 90210
   ChurnEntityCount* = 1_000_000
   ChurnCapacity* = ChurnEntityCount * 2
-    ## Headroom for libraries that want a fixed capacity up front. The churn
-    ## recycles slots rather than growing, so the extra is never occupied.
   ChurnRoundCount = 10
-  ChurnDivisor = 5 ## A fifth of the world is replaced per round.
+  ChurnDivisor = 5
   ChurnPerRound = ChurnEntityCount div ChurnDivisor
   ChurnSamples = 20
   ChurnWarmup = 1
 
 
 proc buildChurnSchedule(): seq[seq[int]] =
-  ## Per round, the positions in the live-entity array to replace. Distinct
-  ## within a round, and seeded, so every library churns identically.
   var rng = initRand(ChurnSeed)
   var pool = newSeq[int](ChurnEntityCount)
   for i in 0 ..< ChurnEntityCount:
@@ -39,8 +32,6 @@ let churnSchedule* = buildChurnSchedule()
 
 
 proc populateChurn*[W](world: var W; churned: bool) =
-  ## Fills a freshly registered world with `ChurnEntityCount` entities, and when
-  ## `churned` is set, replaces a fifth of them `ChurnRoundCount` times over.
   mixin churnSpawn, churnDestroy
 
   var handles = newSeq[typeof(world.churnSpawn())](ChurnEntityCount)
@@ -56,9 +47,6 @@ proc populateChurn*[W](world: var W; churned: bool) =
 
 
 proc withFootprint(bench: Benchmark, bytes: float): Benchmark =
-  ## Replaces the per-sample memory figures with a world footprint measured
-  ## once. The sampling loop only iterates, so sampling around it reports zero
-  ## for a world holding a million entities.
   result = bench
   result.mems = @[]
   for _ in 0 ..< max(1, bench.times.len):
@@ -67,10 +55,6 @@ proc withFootprint(bench: Benchmark, bytes: float): Benchmark =
 
 
 template addChurnRows*(suite: var BenchmarkSuite; suiteName: string) =
-  ## Appends `pristine iter` and `churn iter` to a suite already under way.
-  ## Both worlds are built before either is timed and the loop alternates
-  ## between them, because these rows are memory-bound and going second is
-  ## worth 20 ms.
   mixin newChurnWorld, churnIterate
 
   block:

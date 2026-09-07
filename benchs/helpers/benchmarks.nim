@@ -266,13 +266,11 @@ template benchmark*(benchmarkName: string, sample, warm, code: untyped): untyped
   bench
 
 
-template benchmarkWithSetup*(benchmarkName: string, sample,
-                              setup, code: untyped): untyped =
+template benchmarkWithSetup*(benchmarkName: string, sample, setup, code: untyped): untyped =
   benchmarkWithSetup(benchmarkName, sample, 1, setup, code)
 
 
-template benchmarkWithSetup*(benchmarkName: string, sample, warm,
-                              setup, code: untyped): untyped =
+template benchmarkWithSetup*(benchmarkName: string, sample, warm, setup, code: untyped): untyped =
   var bench = initBenchmark(benchmarkName, sample, warm)
 
   block:
