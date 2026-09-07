@@ -156,17 +156,22 @@ proc nextArchetypeAddingFrom(world: var World, previousArchetype: Archetype, com
     result = world.archIdToIndex[nextArchetypeId]
 
 
-proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdsToRemove: seq[ComponentId]): int =
+proc nextArchetypeRemovingFrom(world: var World, previousArchetype: Archetype, componentIdsToRemove: PackedSet[ComponentId]): int =
   let previousArchetypeId = previousArchetype.id
   var nextArchetypeId = previousArchetypeId
 
-  for componentId in componentIdsToRemove:
+  for componentId in componentIdsToRemove.items:
     nextArchetypeId.excl componentId
 
   result = world.archIdToIndex.getOrDefault(nextArchetypeId, -1)
 
   if result < 0:
-    let newArchetype = previousArchetype.makeNextRemoving(componentIdsToRemove)
+    var componentIds: seq[ComponentId]
+
+    for componentId in componentIdsToRemove.items:
+      componentIds.add componentId
+
+    let newArchetype = previousArchetype.makeNextRemoving(componentIds)
     world.registerArchetype(nextArchetypeId, newArchetype)
 
     result = world.archIdToIndex[nextArchetypeId]
@@ -432,12 +437,8 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentsToAdd: T
 proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove: PackedSet[ComponentId]) =
   var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeIndex]
-  var componentIds: seq[ComponentId]
 
-  for compId in compIdsToRemove.items:
-    componentIds.add compId
-
-  let nextIndex = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
+  let nextIndex = world.nextArchetypeRemovingFrom(previousArchetype, compIdsToRemove)
   var nextArchetype = world.archetypes[nextIndex]
 
   entity.archetypeIndex = nextIndex
