@@ -353,7 +353,7 @@ macro buildComponentColumns(world: var World, t: typedesc, archetype: untyped): 
         if isOp(fieldType, "Opt"):
           quote do:
             block:
-              let componentId = `world`.componentIdFrom typeof `componentType`
+              let componentId = `componentType`.toComponentId
 
               if `archetype`.contains(componentId):
                 let ind = `archetype`.getIndex(componentId)
@@ -364,7 +364,7 @@ macro buildComponentColumns(world: var World, t: typedesc, archetype: untyped): 
         else:
           quote do:
             block:
-              let componentId = `world`.componentIdFrom typeof `componentType`
+              let componentId = `componentType`.toComponentId
               let ind = `archetype`.getIndex(componentId)
               let componentList = cast[EcsSeq[`componentType`]](`archetype`.componentLists[ind])
               componentData(componentList)
