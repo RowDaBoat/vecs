@@ -445,6 +445,12 @@ proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove
   world.entities[id.value] = entity
 
 
+proc setMetaId(archetype: Archetype, archetypeEntityId: int, id: EntityId) {.inline.} =
+  let metaIndex = archetype.getIndex(Meta.toComponentId)
+  let metaComponents = cast[EcsSeq[Meta]](archetype.componentLists[metaIndex])
+  metaComponents[archetypeEntityId].id = id
+
+
 iterator archetypes*(world: var World): Archetype =
   ## Iterate through all the world's archetypes.
   ##
@@ -787,16 +793,14 @@ proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Defer
     let entity = Entity(archetypeIndex: archetypeIndex, archetypeEntityId: archetypeEntityId)
     result = world.allocateEntity(entity)
 
-    for meta in world.write(result, Meta):
-      meta.id = result
+    world.archetypes[archetypeIndex].setMetaId(archetypeEntityId, result)
   else:
     let archetypeIndex = world.archetypeFrom (Meta,)
     let archetypeEntityId = world.archetypes[archetypeIndex].add (Meta(),)
     let entity = Entity(archetypeIndex: archetypeIndex, archetypeEntityId: archetypeEntityId)
     result = world.allocateEntity(entity)
 
-    for meta in world.write(result, Meta):
-      meta.id = result
+    world.archetypes[archetypeIndex].setMetaId(archetypeEntityId, result)
 
     world.add(result, components, mode)
 
@@ -818,8 +822,7 @@ proc addEmpty*(world: var World): EntityId {.discardable.} =
   let entity = Entity(archetypeIndex: archetypeIndex, archetypeEntityId: archetypeEntityId)
   result = world.allocateEntity(entity)
 
-  for meta in world.write(result, Meta):
-    meta.id = result
+  world.archetypes[archetypeIndex].setMetaId(archetypeEntityId, result)
 
 
 proc addWithSpecificId*(world: var World, id: EntityId) =
