@@ -432,12 +432,21 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentsToAdd: T
 proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove: PackedSet[ComponentId]) =
   var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeIndex]
-  var componentIds: seq[ComponentId]
+  var nextArchetypeId = previousArchetype.id
 
-  for compId in compIdsToRemove.items:
-    componentIds.add compId
+  for componentId in compIdsToRemove.items:
+    nextArchetypeId.excl componentId
 
-  let nextIndex = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
+  var nextIndex = world.archIdToIndex.getOrDefault(nextArchetypeId, -1)
+
+  if nextIndex < 0:
+    var componentIds: seq[ComponentId]
+
+    for componentId in compIdsToRemove.items:
+      componentIds.add componentId
+
+    nextIndex = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
+
   var nextArchetype = world.archetypes[nextIndex]
 
   entity.archetypeIndex = nextIndex
