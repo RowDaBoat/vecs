@@ -16,6 +16,7 @@ tests/world
 tests/events
 tests/manycomponents
 tests/tbenchmarks
+tests/tremoval
 
 benchs/vecs_bench
 benchs/vecs.csv

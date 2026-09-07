@@ -3,7 +3,7 @@
 # `vecs` is a free open source ECS library for Nim.
 import std/[packedsets, hashes, macros, intsets, options]
 import typetraits, tables, sets
-import entityid, componentid, archetypeid, archetype, entity, ecsseq, queries, components, operations, operationmodes, events
+import entityid, componentid, archetypeid, archetype, entity, ecsseq, unsafeseq, queries, components, operations, operationmodes, events
 export entityid, components.Meta, operationmodes
 export components
 export events
@@ -287,10 +287,7 @@ template accessor[T](world: var World, archetype: Archetype, archetypeEntityId: 
 
 
 proc componentData[T](componentList: EcsSeq[T]): ptr UncheckedArray[T] {.inline.} =
-  if componentList.len == 0:
-    return nil
-
-  cast[ptr UncheckedArray[T]](unsafeAddr componentList[0])
+  cast[ptr UncheckedArray[T]](componentList.rawPtr.rawSeqDataPtr)
 
 
 macro buildReadTuple(world: var World, t: typedesc, archetype: untyped, archetypeEntityId: untyped): untyped =
@@ -353,10 +350,10 @@ macro buildComponentColumns(world: var World, t: typedesc, archetype: untyped): 
         if isOp(fieldType, "Opt"):
           quote do:
             block:
-              let componentId = `world`.componentIdFrom typeof `componentType`
+              let componentId = `componentType`.toComponentId
 
               if `archetype`.contains(componentId):
-                let ind = `archetype`.getIndex(componentId)
+                let ind = `archetype`.toIndexMap[componentId.int] - 1
                 let componentList = cast[EcsSeq[`componentType`]](`archetype`.componentLists[ind])
                 componentData(componentList)
               else:
@@ -364,8 +361,8 @@ macro buildComponentColumns(world: var World, t: typedesc, archetype: untyped): 
         else:
           quote do:
             block:
-              let componentId = `world`.componentIdFrom typeof `componentType`
-              let ind = `archetype`.getIndex(componentId)
+              let componentId = `componentType`.toComponentId
+              let ind = `archetype`.toIndexMap[componentId.int] - 1
               let componentList = cast[EcsSeq[`componentType`]](`archetype`.componentLists[ind])
               componentData(componentList)
 
@@ -432,17 +429,32 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentsToAdd: T
 proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove: PackedSet[ComponentId]) =
   var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeIndex]
-  var componentIds: seq[ComponentId]
+  var nextArchetypeId = previousArchetype.id
 
-  for compId in compIdsToRemove.items:
-    componentIds.add compId
+  for componentId in compIdsToRemove.items:
+    nextArchetypeId.excl componentId
 
-  let nextIndex = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
+  var nextIndex = world.archIdToIndex.getOrDefault(nextArchetypeId, -1)
+
+  if nextIndex < 0:
+    var componentIds: seq[ComponentId]
+
+    for componentId in compIdsToRemove.items:
+      componentIds.add componentId
+
+    nextIndex = world.nextArchetypeRemovingFrom(previousArchetype, componentIds)
+
   var nextArchetype = world.archetypes[nextIndex]
 
   entity.archetypeIndex = nextIndex
   entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
   world.entities[id.value] = entity
+
+
+proc setMetaId(archetype: Archetype, archetypeEntityId: int, id: EntityId) {.inline.} =
+  let metaIndex = archetype.getIndex(Meta.toComponentId)
+  let metaComponents = cast[EcsSeq[Meta]](archetype.componentLists[metaIndex])
+  metaComponents[archetypeEntityId].id = id
 
 
 iterator archetypes*(world: var World): Archetype =
@@ -787,16 +799,14 @@ proc add*[T: tuple](world: var World, components: T, mode: OperationMode = Defer
     let entity = Entity(archetypeIndex: archetypeIndex, archetypeEntityId: archetypeEntityId)
     result = world.allocateEntity(entity)
 
-    for meta in world.write(result, Meta):
-      meta.id = result
+    world.archetypes[archetypeIndex].setMetaId(archetypeEntityId, result)
   else:
     let archetypeIndex = world.archetypeFrom (Meta,)
     let archetypeEntityId = world.archetypes[archetypeIndex].add (Meta(),)
     let entity = Entity(archetypeIndex: archetypeIndex, archetypeEntityId: archetypeEntityId)
     result = world.allocateEntity(entity)
 
-    for meta in world.write(result, Meta):
-      meta.id = result
+    world.archetypes[archetypeIndex].setMetaId(archetypeEntityId, result)
 
     world.add(result, components, mode)
 
@@ -818,8 +828,7 @@ proc addEmpty*(world: var World): EntityId {.discardable.} =
   let entity = Entity(archetypeIndex: archetypeIndex, archetypeEntityId: archetypeEntityId)
   result = world.allocateEntity(entity)
 
-  for meta in world.write(result, Meta):
-    meta.id = result
+  world.archetypes[archetypeIndex].setMetaId(archetypeEntityId, result)
 
 
 proc addWithSpecificId*(world: var World, id: EntityId) =
