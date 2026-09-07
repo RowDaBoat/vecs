@@ -58,12 +58,44 @@ jobs:
 
           echo "Baseline: $baseline ($(git rev-parse --short "$baseline"))"
 
+          baseline_ready=true
           git checkout "$baseline" -- src
-          nim c -r -d:danger --nimcache:nimcache/baseline "benchs/vecsbench.nim" baseline.csv || rm -f baseline.csv
+          if ! nim c -d:danger -d:SAMPLE=100 --nimcache:nimcache/baseline \
+              -o:/tmp/vecs-benchmark-baseline "benchs/vecsbench.nim"; then
+            baseline_ready=false
+          fi
           git checkout HEAD -- src
 
-          if [ ! -f baseline.csv ]; then
+          nim c -d:danger -d:SAMPLE=100 --nimcache:nimcache/current \
+            -o:/tmp/vecs-benchmark-current "benchs/vecsbench.nim"
+
+          if [ "$baseline_ready" != true ]; then
             echo "Baseline src/ did not build against the current benchmarks, skipping comparison."
+            /tmp/vecs-benchmark-current current.csv
+            exit 0
           fi
 
-          nim c -r -d:danger --nimcache:nimcache/current "benchs/vecsbench.nim" current.csv baseline.csv
+          nim c -d:danger --nimcache:nimcache/comparison \
+            -o:/tmp/compare-benchmarks "benchs/compare_benchmarks.nim"
+
+          comparison_runs=15
+          candidate_files=()
+          baseline_files=()
+
+          for run_index in $(seq 1 "$comparison_runs"); do
+            current_file="current-${run_index}.csv"
+            baseline_file="baseline-${run_index}.csv"
+
+            if (( run_index % 2 == 1 )); then
+              /tmp/vecs-benchmark-current "$current_file" > "/tmp/current-${run_index}.log"
+              /tmp/vecs-benchmark-baseline "$baseline_file" > "/tmp/baseline-${run_index}.log"
+            else
+              /tmp/vecs-benchmark-baseline "$baseline_file" > "/tmp/baseline-${run_index}.log"
+              /tmp/vecs-benchmark-current "$current_file" > "/tmp/current-${run_index}.log"
+            fi
+
+            candidate_files+=("$current_file")
+            baseline_files+=("$baseline_file")
+          done
+
+          /tmp/compare-benchmarks "${candidate_files[@]}" -- "${baseline_files[@]}"

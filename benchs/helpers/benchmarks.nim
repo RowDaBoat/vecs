@@ -1,13 +1,20 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 # `vecs` is a free open source ECS library for Nim.
-import times, math, algorithm, strutils, tables, unicode, std/monotimes, os
+import math, algorithm, strutils, tables, std/monotimes, os
+
+
+const
+  MinimumSampleTime = 0.001
+  MaximumBatchSize = 10_000
 
 
 type
   Parameters* = object
     samples*: int
     warmup*: int
+    batchSize*: int
+    runs*: int
     maxTime*: float
     maxMem*: float
 
@@ -26,6 +33,8 @@ type
     params*: Parameters
     times*: seq[float]
     mems*: seq[float]
+    runTimes*: seq[float]
+    runMems*: seq[float]
     timeStats*: Statistics
     memStats*: Statistics
     totalTime*: float
@@ -121,6 +130,13 @@ proc finalize*(b: var Benchmark) =
   b.timeStats = calculateStatistics(b.times)
   b.memStats = calculateStatistics(b.mems)
 
+  if b.runTimes.len == 0 and b.times.len > 0:
+    b.runTimes.add b.timeStats.median
+  if b.runMems.len == 0 and b.mems.len > 0:
+    b.runMems.add b.memStats.median
+
+  b.params.runs = min(b.runTimes.len, b.runMems.len)
+
   b.totalTime = 0.0
   for t in b.times:
     b.totalTime += t
@@ -144,7 +160,9 @@ proc showSummary*(b: Benchmark) =
 proc showDetailed*(b: Benchmark) =
   echo "=".repeat(70)
   echo "Benchmark: ", b.name
-  echo "Samples: ", b.params.samples, " (warmup: ", b.params.warmup, ")"
+  echo "Samples: ", b.params.samples,
+       " (warmup: ", b.params.warmup,
+       ", batch: ", b.params.batchSize, ")"
   echo ""
 
   echo "Time Statistics:"
@@ -195,7 +213,6 @@ proc showComparison*(cmp: Comparison) =
   echo "╠═", "═".repeat(66), "═╣"
 
   let timeIcon = if cmp.isFaster: "✓" else: "✗"
-  let timeColor = if cmp.isFaster: "" else: ""
   echo "║ Time   : ", timeIcon, " ",
        (if cmp.isFaster: "FASTER" else: "SLOWER"), " by ",
        prettyPercent(abs(cmp.timeImprovement)),
@@ -232,9 +249,12 @@ proc blackBox*[T](value: T) {.noinline.} =
 
 proc initBenchmark*(benchmarkName: string, sample, warm: int): Benchmark =
   result.name = benchmarkName
-  result.params = Parameters(samples: sample, warmup: warm)
+  result.params =
+    Parameters(samples: sample, warmup: warm, batchSize: 1, runs: 1)
   result.times = newSeqOfCap[float](sample)
   result.mems = newSeqOfCap[float](sample)
+  result.runTimes = @[]
+  result.runMems = @[]
 
 
 template measure*(bench: var Benchmark, memBaseline: int, code: untyped) =
@@ -243,6 +263,25 @@ template measure*(bench: var Benchmark, memBaseline: int, code: untyped) =
   let elapsed = (getMonoTime() - t0).inNanoseconds.float / 1e9
 
   bench.times.add(elapsed)
+  bench.mems.add((getOccupiedMem() - memBaseline).float)
+
+
+proc batchSizeFor(elapsed: float, target: float): int =
+  if elapsed <= 0.0:
+    return 1
+
+  result = ceil(target / elapsed).int
+  result = clamp(result, 1, MaximumBatchSize)
+
+
+template measureRepeated(bench: var Benchmark, memBaseline, repetitions: int,
+                         code: untyped) =
+  let t0 = getMonoTime()
+  for repetitionIndex in 0 ..< repetitions:
+    code
+  let elapsed = (getMonoTime() - t0).inNanoseconds.float / 1e9
+
+  bench.times.add(elapsed / repetitions.float)
   bench.mems.add((getOccupiedMem() - memBaseline).float)
 
 
@@ -288,6 +327,37 @@ template benchmarkWithSetup*(benchmarkName: string, sample, warm, setup, code: u
   bench
 
 
+template benchmarkRepeatedWithSetup*(benchmarkName: string, sample, warm,
+                                      setup, code: untyped): untyped =
+  var bench = initBenchmark(benchmarkName, sample, warm)
+
+  block:
+    var repetitions = 1
+    block:
+      setup
+      let calibrationStart = getMonoTime()
+      code
+      let calibrationTime =
+        (getMonoTime() - calibrationStart).inNanoseconds.float / 1e9
+      repetitions = batchSizeFor(calibrationTime, MinimumSampleTime)
+
+    bench.params.batchSize = repetitions
+
+    for warmupIndex in 0 ..< warm:
+      setup
+      for repetitionIndex in 0 ..< repetitions:
+        code
+
+    for sampleIndex in 0 ..< sample:
+      let memBaseline = getOccupiedMem()
+      setup
+      measureRepeated(bench, memBaseline, repetitions):
+        code
+
+  finalize(bench)
+  bench
+
+
 proc initSuite*(name: string): BenchmarkSuite =
   result.name = name
   result.benchmarks = @[]
@@ -312,182 +382,600 @@ proc showSummary*(suite: BenchmarkSuite) =
   echo "╚═", "═".repeat(60), "═╝"
 
 
+const
+  DefaultComparisonConfidence* = 0.999
+  DefaultMinimumRelativeChange* = 0.01
+  MinimumComparisonRuns* = 15
+
+
+proc serializeSamples(values: seq[float]): string =
+  var serialized = newSeq[string](values.len)
+  for index, value in values:
+    serialized[index] = value.formatFloat(ffScientific, 10)
+
+  result = serialized.join(";")
+
+
 proc saveSummary*(suite: BenchmarkSuite, path: string) =
   var file = open(path, fmWrite)
   defer: file.close()
 
-  file.writeLine(suite.name & ",time_median,mem_median,time_seconds,mem_bytes")
+  file.writeLine(
+    suite.name &
+    ",time_median,mem_median,time_seconds,mem_bytes,time_samples,mem_samples," &
+    "batch_size,time_runs,mem_runs"
+  )
 
   for bench in suite.benchmarks:
-    let mem = prettyMem(bench.memStats.median)
+    let memory = prettyMem(bench.memStats.median)
     let time = prettyTime(bench.timeStats.median)
     file.writeLine(
-      bench.name & "," & time & "," & mem & "," &
+      bench.name & "," & time & "," & memory & "," &
       bench.timeStats.median.formatFloat(ffScientific, 10) & "," &
-      bench.memStats.median.formatFloat(ffScientific, 10)
+      bench.memStats.median.formatFloat(ffScientific, 10) & "," &
+      serializeSamples(bench.times) & "," &
+      serializeSamples(bench.mems) & "," &
+      $bench.params.batchSize & "," &
+      serializeSamples(bench.runTimes) & "," &
+      serializeSamples(bench.runMems)
     )
 
+
 type
+  ConfidenceInterval* = object
+    lower*: float
+    upper*: float
+
+  ChangeStatus* = enum
+    ChangeUnchanged
+    ChangeInconclusive
+    ChangeImproved
+    ChangeRegressed
+
+  MetricComparison = object
+    ratio: float
+    change: float
+    changeInterval: ConfidenceInterval
+    difference: float
+    status: ChangeStatus
+    hasRelativeChange: bool
+
   BenchResult* = object
     name*: string
     timeRatio*: float
     memRatio*: float
     timeImprovement*: float
     memImprovement*: float
+    timeChangeInterval*: ConfidenceInterval
+    memChangeInterval*: ConfidenceInterval
+    timeDifference*: float
+    memDifference*: float
+    timeStatus*: ChangeStatus
+    memStatus*: ChangeStatus
     timeSignificant*: bool
     memSignificant*: bool
     timeBetter*: bool
     memBetter*: bool
+    timeHasRelativeChange*: bool
+    memHasRelativeChange*: bool
     missingInBaseline*: bool
 
   BenchComp* = object
     suiteName*: string
     baselineFile*: string
     margin*: float
+    confidence*: float
+    minimumRelativeChange*: float
+    baselineRuns*: int
+    candidateRuns*: int
     results*: seq[BenchResult]
     missingInCurrent*: seq[string]
 
 
+proc parseNumber(value: string, number: var float): bool =
+  try:
+    number = parseFloat(value)
+    result = true
+  except ValueError:
+    result = false
+
+
+proc parseSamples(value: string): seq[float] =
+  for serialized in value.split(';'):
+    var number = 0.0
+    if parseNumber(serialized, number):
+      result.add(number)
+
+
+proc parseBatchSize(value: string): int =
+  try:
+    result = max(1, parseInt(value))
+  except ValueError:
+    result = 1
+
+
+proc benchmarkFromCsv(parts: seq[string], benchmark: var Benchmark): bool =
+  if parts.len < 5:
+    return false
+
+  var medianTime = 0.0
+  var medianMemory = 0.0
+  if not parseNumber(parts[3], medianTime):
+    return false
+  if not parseNumber(parts[4], medianMemory):
+    return false
+
+  benchmark = initBenchmark(parts[0], 1, 0)
+  if parts.len >= 7:
+    benchmark.times = parseSamples(parts[5])
+    benchmark.mems = parseSamples(parts[6])
+
+  if benchmark.times.len == 0:
+    benchmark.times.add(medianTime)
+  if benchmark.mems.len == 0:
+    benchmark.mems.add(medianMemory)
+  if parts.len >= 8:
+    benchmark.params.batchSize = parseBatchSize(parts[7])
+  if parts.len >= 10:
+    benchmark.runTimes = parseSamples(parts[8])
+    benchmark.runMems = parseSamples(parts[9])
+
+  if benchmark.runTimes.len == 0:
+    benchmark.runTimes.add(medianTime)
+  if benchmark.runMems.len == 0:
+    benchmark.runMems.add(medianMemory)
+
+  benchmark.params.samples = benchmark.times.len
+  finalize(benchmark)
+  result = true
+
+
 proc loadBenchmarkSuiteFromCsv*(path: string): BenchmarkSuite =
   result.benchmarks = @[]
+  if not fileExists(path):
+    return
 
-  if fileExists(path):
-    var file = open(path, fmRead)
-    defer: file.close()
+  var file = open(path, fmRead)
+  defer: file.close()
 
-    var isFirst = true
-    for line in file.lines:
-      if isFirst:
-        let headerParts = line.split(',', 1)
-        result.name = if headerParts.len > 0: headerParts[0] else: "Baseline"
-        isFirst = false
-        continue
-
-      let parts = line.split(',')
-      if parts.len < 5:
-        continue
-
-      var bench = initBenchmark(parts[0], 1, 0)
-      try:
-        let t = parseFloat(parts[3])
-        let m = parseFloat(parts[4])
-        bench.times.add(t)
-        bench.mems.add(m)
-        bench.timeStats = calculateStatistics(bench.times)
-        bench.memStats = calculateStatistics(bench.mems)
-        bench.totalTime = t
-        bench.totalMem = m
-        result.benchmarks.add(bench)
-      except ValueError:
-        continue
+  var isHeader = true
+  for line in file.lines:
+    if isHeader:
+      let headerParts = line.split(',', 1)
+      result.name = if headerParts.len > 0: headerParts[0] else: "Baseline"
+      isHeader = false
+    else:
+      var benchmark: Benchmark
+      if benchmarkFromCsv(line.split(','), benchmark):
+        result.benchmarks.add(benchmark)
 
 
-proc compareWithBaseline*(suite: BenchmarkSuite, csvPath: string,
-                         margin: float = 0.05): BenchComp =
-  result.suiteName = suite.name
-  result.baselineFile = csvPath
-  result.margin = margin
+proc benchmarkIndex(suite: BenchmarkSuite, benchmarkName: string): int =
+  for index, benchmark in suite.benchmarks:
+    if benchmark.name == benchmarkName:
+      return index
+
+  result = -1
+
+
+proc merge*(suite: var BenchmarkSuite, addition: BenchmarkSuite) =
+  if suite.name.len == 0:
+    suite.name = addition.name
+
+  for addedBenchmark in addition.benchmarks:
+    let index = suite.benchmarkIndex(addedBenchmark.name)
+    if index < 0:
+      suite.benchmarks.add(addedBenchmark)
+    else:
+      suite.benchmarks[index].times.add(addedBenchmark.times)
+      suite.benchmarks[index].mems.add(addedBenchmark.mems)
+      suite.benchmarks[index].runTimes.add(addedBenchmark.runTimes)
+      suite.benchmarks[index].runMems.add(addedBenchmark.runMems)
+      suite.benchmarks[index].params.samples = suite.benchmarks[index].times.len
+      suite.benchmarks[index].params.batchSize =
+        max(suite.benchmarks[index].params.batchSize,
+            addedBenchmark.params.batchSize)
+      finalize(suite.benchmarks[index])
+
+
+proc mergeBenchmarkSuites*(suites: openArray[BenchmarkSuite]): BenchmarkSuite =
+  for suite in suites:
+    result.merge(suite)
+
+
+proc lowerConfidenceIndex(sampleCount: int, tailProbability: float): int =
+  if sampleCount <= 1:
+    return 0
+
+  let centerIndex = sampleCount div 2
+  let centerProbability = exp(
+    lgamma((sampleCount + 1).float) -
+    lgamma((centerIndex + 1).float) -
+    lgamma((sampleCount - centerIndex + 1).float) -
+    sampleCount.float * ln(2.0)
+  )
+
+  var probabilities = newSeq[float](centerIndex + 1)
+  probabilities[centerIndex] = centerProbability
+  for index in countdown(centerIndex, 1):
+    let numerator = index.float
+    let denominator = (sampleCount - index + 1).float
+    probabilities[index - 1] =
+      probabilities[index] * numerator / denominator
+
+  var cumulativeProbability = 0.0
+  for index in 0 ..< centerIndex:
+    cumulativeProbability += probabilities[index]
+    if cumulativeProbability <= tailProbability:
+      result = index
+    else:
+      return
+
+
+proc medianConfidenceInterval*(values: seq[float],
+                               confidence: float): ConfidenceInterval =
+  if values.len == 0:
+    return
+
+  var sorted = values
+  sorted.sort()
+
+  let tailProbability = (1.0 - confidence) / 2.0
+  let lowerIndex = lowerConfidenceIndex(sorted.len, tailProbability)
+  let upperIndex = sorted.high - lowerIndex
+
+  result.lower = sorted[lowerIndex]
+  result.upper = sorted[upperIndex]
+
+
+proc classifyRelativeChange(interval: ConfidenceInterval,
+                            hasEnoughRuns: bool,
+                            minimumRelativeChange: float): ChangeStatus =
+  if interval.lower == 0.0 and interval.upper == 0.0:
+    return ChangeUnchanged
+  if not hasEnoughRuns:
+    return ChangeInconclusive
+  if interval.upper < -minimumRelativeChange:
+    return ChangeImproved
+  if interval.lower > minimumRelativeChange:
+    return ChangeRegressed
+  if interval.lower >= -minimumRelativeChange and
+      interval.upper <= minimumRelativeChange:
+    return ChangeUnchanged
+
+  result = ChangeInconclusive
+
+
+proc classifyAbsoluteChange(interval: ConfidenceInterval,
+                            hasEnoughRuns: bool): ChangeStatus =
+  if interval.lower == 0.0 and interval.upper == 0.0:
+    return ChangeUnchanged
+  if not hasEnoughRuns:
+    return ChangeInconclusive
+  if interval.upper < 0.0:
+    return ChangeImproved
+  if interval.lower > 0.0:
+    return ChangeRegressed
+
+  result = ChangeInconclusive
+
+
+proc allPositive(values: seq[float]): bool =
+  if values.len == 0:
+    return false
+
+  for value in values:
+    if value <= 0.0:
+      return false
+
+  result = true
+
+
+proc pairedDifferences(baselineValues,
+                       candidateValues: seq[float]): seq[float] =
+  result = newSeq[float](baselineValues.len)
+  for index in 0 ..< baselineValues.len:
+    result[index] = candidateValues[index] - baselineValues[index]
+
+
+proc pairedRelativeChanges(baselineValues,
+                           candidateValues: seq[float]): seq[float] =
+  result = newSeq[float](baselineValues.len)
+  for index in 0 ..< baselineValues.len:
+    result[index] = candidateValues[index] / baselineValues[index] - 1.0
+
+
+proc compareMetric(baselineValues, candidateValues: seq[float],
+                   confidence,
+                   minimumRelativeChange: float): MetricComparison =
+  if baselineValues.len == 0 or baselineValues.len != candidateValues.len:
+    result.status = ChangeInconclusive
+    return
+
+  let differences = pairedDifferences(baselineValues, candidateValues)
+  let hasEnoughRuns = baselineValues.len >= MinimumComparisonRuns
+  result.difference = calculateStatistics(differences).median
+
+  if not baselineValues.allPositive or not candidateValues.allPositive:
+    let differenceInterval =
+      medianConfidenceInterval(differences, confidence)
+    result.status = classifyAbsoluteChange(
+      differenceInterval,
+      hasEnoughRuns
+    )
+    return
+
+  let changes = pairedRelativeChanges(baselineValues, candidateValues)
+  result.hasRelativeChange = true
+  result.change = calculateStatistics(changes).median
+  result.ratio = result.change + 1.0
+  result.changeInterval = medianConfidenceInterval(changes, confidence)
+  result.status = classifyRelativeChange(
+    result.changeInterval,
+    hasEnoughRuns,
+    minimumRelativeChange
+  )
+
+
+proc benchmarkResult(baseline, candidate: Benchmark,
+                     confidence,
+                     minimumRelativeChange: float): BenchResult =
+  result.name = candidate.name
+
+  let timeComparison = compareMetric(
+    baseline.runTimes,
+    candidate.runTimes,
+    confidence,
+    minimumRelativeChange
+  )
+  let memoryComparison = compareMetric(
+    baseline.runMems,
+    candidate.runMems,
+    confidence,
+    minimumRelativeChange
+  )
+
+  result.timeRatio = timeComparison.ratio
+  result.timeImprovement = timeComparison.change
+  result.timeChangeInterval = timeComparison.changeInterval
+  result.timeDifference = timeComparison.difference
+  result.timeStatus = timeComparison.status
+  result.timeSignificant =
+    timeComparison.status in {ChangeImproved, ChangeRegressed}
+  result.timeBetter = timeComparison.status == ChangeImproved
+  result.timeHasRelativeChange = timeComparison.hasRelativeChange
+
+  result.memRatio = memoryComparison.ratio
+  result.memImprovement = memoryComparison.change
+  result.memChangeInterval = memoryComparison.changeInterval
+  result.memDifference = memoryComparison.difference
+  result.memStatus = memoryComparison.status
+  result.memSignificant =
+    memoryComparison.status in {ChangeImproved, ChangeRegressed}
+  result.memBetter = memoryComparison.status == ChangeImproved
+  result.memHasRelativeChange = memoryComparison.hasRelativeChange
+
+
+proc suiteRuns(suite: BenchmarkSuite): int =
+  if suite.benchmarks.len == 0:
+    return 0
+
+  result = min(
+    suite.benchmarks[0].runTimes.len,
+    suite.benchmarks[0].runMems.len
+  )
+
+
+proc compareBenchmarkSuites*(baseline, candidate: BenchmarkSuite,
+                             baselineName: string,
+                             confidence: float =
+                               DefaultComparisonConfidence,
+                             minimumRelativeChange: float =
+                               DefaultMinimumRelativeChange): BenchComp =
+  result.suiteName = candidate.name
+  result.baselineFile = baselineName
+  result.margin = minimumRelativeChange
+  result.confidence = confidence
+  result.minimumRelativeChange = minimumRelativeChange
+  result.baselineRuns = suiteRuns(baseline)
+  result.candidateRuns = suiteRuns(candidate)
   result.results = @[]
   result.missingInCurrent = @[]
 
-  let baseline = loadBenchmarkSuiteFromCsv(csvPath)
-
   var baselineMap = initTable[string, Benchmark]()
-  for b in baseline.benchmarks:
-    baselineMap[b.name] = b
+  for benchmark in baseline.benchmarks:
+    baselineMap[benchmark.name] = benchmark
 
-  var currentNames = initTable[string, bool]()
+  var candidateNames = initTable[string, bool]()
+  for candidateBenchmark in candidate.benchmarks:
+    candidateNames[candidateBenchmark.name] = true
+    if baselineMap.hasKey(candidateBenchmark.name):
+      let baselineBenchmark = baselineMap[candidateBenchmark.name]
+      result.results.add(
+        benchmarkResult(
+          baselineBenchmark,
+          candidateBenchmark,
+          confidence,
+          minimumRelativeChange
+        )
+      )
+    else:
+      result.results.add(
+        BenchResult(
+          name: candidateBenchmark.name,
+          missingInBaseline: true
+        )
+      )
 
-  for current in suite.benchmarks:
-    currentNames[current.name] = true
-    var res: BenchResult
-    res.name = current.name
-
-    if not baselineMap.hasKey(current.name):
-      res.missingInBaseline = true
-      result.results.add(res)
-      continue
-
-    let base = baselineMap[current.name]
-
-    res.timeRatio = current.timeStats.median / base.timeStats.median
-    res.timeImprovement =
-      (current.timeStats.median - base.timeStats.median) / base.timeStats.median
-    res.timeBetter = res.timeImprovement < 0
-    res.timeSignificant = abs(res.timeImprovement) > margin
-
-    res.memRatio = current.memStats.median / base.memStats.median
-    res.memImprovement =
-      (current.memStats.median - base.memStats.median) / base.memStats.median
-    res.memBetter = res.memImprovement < 0
-    res.memSignificant = abs(res.memImprovement) > margin
-
-    result.results.add(res)
-
-  for name, _ in baselineMap:
-    if not currentNames.hasKey(name):
-      result.missingInCurrent.add(name)
+  for benchmarkName, baselineBenchmark in baselineMap:
+    if not candidateNames.hasKey(benchmarkName):
+      result.missingInCurrent.add(baselineBenchmark.name)
 
 
-proc `$`*(comp: BenchComp): string =
+proc compareWithBaseline*(suite: BenchmarkSuite,
+                          csvPath: string): BenchComp =
+  let baseline = loadBenchmarkSuiteFromCsv(csvPath)
+  result = compareBenchmarkSuites(
+    baseline,
+    suite,
+    csvPath,
+    DefaultComparisonConfidence,
+    DefaultMinimumRelativeChange
+  )
+
+
+proc compareWithBaseline*(suite: BenchmarkSuite, csvPath: string,
+                          margin: float): BenchComp =
+  let baseline = loadBenchmarkSuiteFromCsv(csvPath)
+  result = compareBenchmarkSuites(
+    baseline,
+    suite,
+    csvPath,
+    DefaultComparisonConfidence,
+    margin
+  )
+
+
+proc changeMarker(status: ChangeStatus): string =
+  case status
+  of ChangeImproved:
+    result = "▼"
+  of ChangeRegressed:
+    result = "▲"
+  of ChangeUnchanged:
+    result = "="
+  of ChangeInconclusive:
+    result = "?"
+
+
+proc timeChangeText(benchmark: BenchResult): string =
+  if benchmark.missingInBaseline:
+    return "N/A"
+  if benchmark.timeHasRelativeChange:
+    return changeMarker(benchmark.timeStatus) & " " &
+      prettyPercent(benchmark.timeImprovement)
+
+  result = changeMarker(benchmark.timeStatus) & " " &
+    prettyTime(benchmark.timeDifference)
+
+
+proc memoryChangeText(benchmark: BenchResult): string =
+  if benchmark.missingInBaseline:
+    return "N/A"
+  if benchmark.memHasRelativeChange:
+    return changeMarker(benchmark.memStatus) & " " &
+      prettyPercent(benchmark.memImprovement)
+
+  result = changeMarker(benchmark.memStatus) & " " &
+    prettyMem(benchmark.memDifference)
+
+
+proc comparisonStatus(benchmark: BenchResult): string =
+  if benchmark.missingInBaseline:
+    return "NEW (no baseline)"
+
+  var statusParts: seq[string] = @[]
+  if benchmark.timeStatus == ChangeImproved:
+    statusParts.add("FASTER")
+  elif benchmark.timeStatus == ChangeRegressed:
+    statusParts.add("SLOWER")
+
+  if benchmark.memStatus == ChangeImproved:
+    statusParts.add("LESS MEM")
+  elif benchmark.memStatus == ChangeRegressed:
+    statusParts.add("MORE MEM")
+
+  if statusParts.len > 0:
+    return statusParts.join(" + ")
+  if benchmark.timeStatus == ChangeUnchanged and
+      benchmark.memStatus == ChangeUnchanged:
+    return "unchanged"
+
+  result = "inconclusive"
+
+
+proc `$`*(comparison: BenchComp): string =
   var lines: seq[string] = @[]
 
-  let innerWidth = 75
+  let nameWidth = 30
+  let metricWidth = 12
+  let statusWidth = 24
+  let innerWidth =
+    nameWidth + metricWidth + metricWidth + statusWidth + 9
+  let confidenceText =
+    (comparison.confidence * 100.0).formatFloat(ffDecimal, 1) &
+    "% paired-run median intervals"
+  let minimumEffectText =
+    "Minimum directional effect: " &
+    (comparison.minimumRelativeChange * 100.0).formatFloat(ffDecimal, 1) &
+    "%"
+  let runsText =
+    "Process runs: baseline " & $comparison.baselineRuns &
+    ", candidate " & $comparison.candidateRuns
 
   lines.add ""
   lines.add "╔═" & "═".repeat(innerWidth) & "═╗"
-  lines.add "║ " & ("Benchmark Comparison: " & comp.suiteName).alignLeft(innerWidth) & " ║"
-  lines.add "║ " & ("Baseline: " & comp.baselineFile).alignLeft(innerWidth) & " ║"
-  lines.add "║ " & ("Significance margin: " & prettyPercent(comp.margin)).alignLeft(innerWidth) & " ║"
-  lines.add "╠═" & "═".repeat(24) & "═╪" & "═".repeat(11) & "═╪" & "═".repeat(11) & "═╪" & "═".repeat(23) & "═╣"
-  lines.add "║ " & "Benchmark".alignLeft(24) & " │ " & "Time".alignLeft(10) & " │ " & "Memory".alignLeft(10) & " │ " & "Status".alignLeft(22) & " ║"
-  lines.add "╠═" & "═".repeat(24) & "═╪" & "═".repeat(11) & "═╪" & "═".repeat(11) & "═╪" & "═".repeat(23) & "═╣"
+  lines.add "║ " &
+    ("Benchmark Comparison: " & comparison.suiteName).alignLeft(innerWidth) &
+    " ║"
+  lines.add "║ " &
+    ("Baseline: " & comparison.baselineFile).alignLeft(innerWidth) &
+    " ║"
+  lines.add "║ " &
+    ("Confidence: " & confidenceText).alignLeft(innerWidth) &
+    " ║"
+  lines.add "║ " & minimumEffectText.alignLeft(innerWidth) & " ║"
+  lines.add "║ " & runsText.alignLeft(innerWidth) & " ║"
+  lines.add "╠═" & "═".repeat(nameWidth) &
+    "═╪" & "═".repeat(metricWidth) &
+    "═╪" & "═".repeat(metricWidth) &
+    "═╪" & "═".repeat(statusWidth) & "═╣"
+  lines.add "║ " & "Benchmark".alignLeft(nameWidth) &
+    " │ " & "Time".alignLeft(metricWidth - 1) &
+    " │ " & "Memory".alignLeft(metricWidth - 1) &
+    " │ " & "Status".alignLeft(statusWidth - 1) & " ║"
+  lines.add "╠═" & "═".repeat(nameWidth) &
+    "═╪" & "═".repeat(metricWidth) &
+    "═╪" & "═".repeat(metricWidth) &
+    "═╪" & "═".repeat(statusWidth) & "═╣"
 
-  for res in comp.results:
-    let name = (if res.missingInBaseline: res.name & "*" else: res.name).alignLeft(24)
+  for benchmark in comparison.results:
+    let benchmarkName =
+      (if benchmark.missingInBaseline:
+        benchmark.name & "*"
+       else:
+        benchmark.name)
+      .alignLeft(nameWidth)
+    let timeText = timeChangeText(benchmark).alignLeft(metricWidth - 1)
+    let memoryText = memoryChangeText(benchmark).alignLeft(metricWidth - 1)
+    let status = comparisonStatus(benchmark).alignLeft(statusWidth - 1)
 
-    let timeTxt =
-      if res.missingInBaseline:
-        "N/A"
-      elif res.timeSignificant:
-        (if res.timeBetter: "▼ " else: "▲ ") & prettyPercent(res.timeImprovement)
-      else:
-        "≈ " & prettyPercent(abs(res.timeImprovement))
+    lines.add "║ " & benchmarkName &
+      " │ " & timeText &
+      " │ " & memoryText &
+      " │ " & status & " ║"
 
-    let memTxt =
-      if res.missingInBaseline:
-        "N/A"
-      elif res.memSignificant:
-        (if res.memBetter: "▼ " else: "▲ ") & prettyPercent(res.memImprovement)
-      else:
-        "≈ " & prettyPercent(abs(res.memImprovement))
+  lines.add "╚═" & "═".repeat(nameWidth) &
+    "═╧" & "═".repeat(metricWidth) &
+    "═╧" & "═".repeat(metricWidth) &
+    "═╧" & "═".repeat(statusWidth) & "═╝"
 
-    var statusParts: seq[string] = @[]
-    if not res.missingInBaseline:
-      if res.timeSignificant:
-        statusParts.add(if res.timeBetter: "FASTER" else: "SLOWER")
-      if res.memSignificant:
-        statusParts.add(if res.memBetter: "LESS MEM" else: "MORE MEM")
-
-    let status =
-      if res.missingInBaseline:
-        "NEW (no baseline)"
-      elif statusParts.len == 0:
-        "stable"
-      else:
-        statusParts.join(" + ")
-
-    lines.add "║ " & name & " │ " & timeTxt.alignLeft(10) & " │ " & memTxt.alignLeft(10) & " │ " & status.alignLeft(22) & " ║"
-
-  lines.add "╚═" & "═".repeat(24) & "═╧" & "═".repeat(11) & "═╧" & "═".repeat(11) & "═╧" & "═".repeat(23) & "═╝"
-
-  if comp.missingInCurrent.len > 0:
+  if comparison.missingInCurrent.len > 0:
     lines.add ""
     lines.add "Removed from current suite (present in baseline only):"
-    for m in comp.missingInCurrent:
-      lines.add "  • " & m
+    for benchmarkName in comparison.missingInCurrent:
+      lines.add "  • " & benchmarkName
 
   lines.add ""
-  lines.add "Legend: ▼ = improvement  ▲ = regression  ≈ = within margin  * = no baseline"
+  lines.add(
+    "Legend: ▼ = improvement  ▲ = regression  ? = inconclusive  " &
+    "= = unchanged  * = no baseline"
+  )
+  if comparison.baselineRuns < MinimumComparisonRuns or
+      comparison.candidateRuns < MinimumComparisonRuns:
+    lines.add(
+      "At least " & $MinimumComparisonRuns &
+      " matched process runs per revision are required for a directional result."
+    )
 
-  return lines.join("\n")
+  result = lines.join("\n")

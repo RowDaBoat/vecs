@@ -15,9 +15,11 @@ tests/queries
 tests/world
 tests/events
 tests/manycomponents
+tests/tbenchmarks
 
 benchs/vecs_bench
 benchs/vecs.csv
 baseline.csv
 current.csv
-
+baseline-*.csv
+current-*.csv
