@@ -1,5 +1,8 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
 import unittest
-include "../src/unsafeSeq.nim"
+import ../src/unsafeseq
 
 
 type
@@ -11,16 +14,15 @@ type
     a: ref A
 
 
-proc addAndZero[T](v: var VSeq[T], val: var T) =
-  let source = cast[ptr byte](addr val)
-  let sequence = cast[pointer](addr v)
-  sequence.unsafeAdd(source, sizeof(T))
+proc addAndZero[T](sequence: var VSeq[T], value: var T) =
+  let source = cast[ptr byte](addr value)
+  let seqVar = cast[pointer](addr sequence)
+  seqVar.unsafeAdd(source, sizeof(T))
   zeroMem(source, sizeof(T))
 
 
-suite "VSeq with ref types - addAndZero safety":
-
-  test "ref type: value is readable after addAndZero":
+suite "VSeq should":
+  test "keep a ref readable after addAndZero":
     var refA: ref A = new A
     refA.x = 42
 
@@ -31,20 +33,23 @@ suite "VSeq with ref types - addAndZero safety":
     check sequence.len == 1
     check sequence[0].x == 42
 
-  test "ref type: ref declared in block survive, even after GC collect":
+
+  test "keep a ref declared in an inner block alive after a full collect":
     var sequence = newVSeqOfCap[ref A](4)
-      
+
     block:
       var refA: ref A = new A
       refA.x = 99
       sequence.addAndZero(refA)
 
+    checkpoint("The ref lives in the sequence now, so a full collect must not reap it.")
     GC_fullCollect()
 
     check sequence[0] != nil
     check sequence[0].x == 99
 
-  test "ref type: multiple adds keep all refs readable":
+
+  test "keep every added ref readable":
     var sequence = newVSeqOfCap[ref A](2)
 
     for i in 0 ..< 5:
@@ -56,7 +61,8 @@ suite "VSeq with ref types - addAndZero safety":
     for i in 0 ..< 5:
       check sequence[i].x == i * 10
 
-  test "ref type: reallocation preserves ref validity":
+
+  test "keep refs valid across a reallocation":
     var sequence = newVSeqOfCap[ref A](1)
 
     var refA: ref A = new A
@@ -71,7 +77,8 @@ suite "VSeq with ref types - addAndZero safety":
     check sequence[0].x == 7
     check sequence[1].x == 13
 
-  test "object with ref field: field is readable after addAndZero":
+
+  test "keep the ref field of an added object readable":
     var inner: ref A = new A
     inner.x = 55
 
@@ -87,7 +94,8 @@ suite "VSeq with ref types - addAndZero safety":
     check sequence[0].a != nil
     check sequence[0].a.x == 55
 
-  test "object with ref field: sink copy is zeroed, stored object stays valid after addAndZero":
+
+  test "keep a stored object valid after its source copy is zeroed":
     var inner: ref A = new A
     inner.x = 88
 
@@ -98,13 +106,13 @@ suite "VSeq with ref types - addAndZero safety":
     var sequence = newVSeqOfCap[B](4)
     sequence.addAndZero(b)
 
-    # The sink parameter is a local copy: zeroing it does not modify the caller's binding.
-    # The stored object in the VSeq must be intact.
+    checkpoint("Zeroing the source copy must leave the stored object intact.")
     check sequence[0].y == 3
     check sequence[0].a != nil
     check sequence[0].a.x == 88
 
-  test "object with ref field: multiple adds keep all inner refs readable":
+
+  test "keep the ref fields of every added object readable":
     var sequence = newVSeqOfCap[B](2)
 
     for i in 0 ..< 4:
@@ -121,7 +129,8 @@ suite "VSeq with ref types - addAndZero safety":
       check sequence[i].a != nil
       check sequence[i].a.x == i + 100
 
-  test "object with ref field: reallocation preserves inner ref validity":
+
+  test "keep ref fields valid across a reallocation":
     var sequence = newVSeqOfCap[B](1)
 
     for i in 0 ..< 8:
@@ -137,7 +146,8 @@ suite "VSeq with ref types - addAndZero safety":
       check sequence[i].a != nil
       check sequence[i].a.x == i * 3
 
-  test "ref type: pop does not segfault and returns valid ref":
+
+  test "return a valid ref when popped":
     var refA: ref A = new A
     refA.x = 21
 
@@ -149,7 +159,8 @@ suite "VSeq with ref types - addAndZero safety":
     check popped != nil
     check popped.x == 21
 
-  test "ref type: delete does not segfault":
+
+  test "keep the remaining refs valid after a delete":
     var sequence = newVSeqOfCap[ref A](4)
 
     for i in 0 ..< 3:
@@ -163,7 +174,8 @@ suite "VSeq with ref types - addAndZero safety":
     check sequence[0].x == 0
     check sequence[1].x == 2
 
-  test "object with ref field: clear does not segfault":
+
+  test "release objects holding refs when cleared":
     var sequence = newVSeqOfCap[B](4)
 
     for i in 0 ..< 3:
@@ -177,7 +189,8 @@ suite "VSeq with ref types - addAndZero safety":
     sequence.clear()
     check sequence.len == 0
 
-  test "ref type: del (swap-delete) does not segfault":
+
+  test "keep the remaining refs valid after a swap-delete":
     var sequence = newVSeqOfCap[ref A](4)
 
     for i in 0 ..< 4:
@@ -191,7 +204,8 @@ suite "VSeq with ref types - addAndZero safety":
     check sequence[0].x == 0
     check sequence[2].x == 10
 
-  test "object with ref field: copy preserves inner ref access":
+
+  test "keep ref fields reachable through a copy":
     var inner: ref A = new A
     inner.x = 77
 

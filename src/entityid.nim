@@ -16,10 +16,10 @@ proc generation*(e: EntityId): int = int((e.val and ENTITY_GEN_MASK) shr ENTITY_
 proc isValid*(e: EntityId): bool = e.value != INVALID_ENTITY_VALUE
 
 template makeVal(gen, val: untyped): uint64 =
-  (uint64(gen) shl ENTITY_ID_POS) or uint64(val) 
+  (uint64(gen) shl ENTITY_ID_POS) or uint64(val)
 
 proc `value=`*(e: var EntityId, val: int) =
-  e.val = makeVal(e.generation, val) 
+  e.val = makeVal(e.generation, val)
 
 proc `generation=`*(e: var EntityId, gen: int) =
   e.val = makeVal(gen, e.value)

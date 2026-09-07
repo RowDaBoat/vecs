@@ -161,7 +161,7 @@ proc moveAddingTuple*[T: tuple](fromArchetype: var Archetype, fromArchetypeEntit
     var toEcsSeq = toArchetype.componentLists[toIndex]
     var val = value
     toEcsSeq.addAt(toSlot, cast[ptr byte](addr val))
-      
+
   fromArchetype.remove(fromArchetypeEntityId)
   toSlot
 
@@ -180,7 +180,7 @@ proc moveAdding*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toArc
     let toIndex = toArchetype.getIndex(compId)
     var toEcsSeq = toArchetype.componentLists[toIndex]
     toEcsSeq.addAt(toSlot, cast[ptr byte](item.raw))
-    
+
   fromArchetype.remove(fromArchetypeEntityId)
   result = toSlot
 
@@ -196,7 +196,7 @@ proc moveRemoving*(fromArchetype: var Archetype, fromArchetypeEntityId: int, toA
       let toIndex = toArchetype.getIndex(compId)
       var toEcsSeq = toArchetype.componentLists[toIndex]
       moveEcsSeq(fromEcsSeq, fromArchetypeEntityId, toEcsSeq, toSlot)
-      
+
   fromArchetype.remove(fromArchetypeEntityId)
   result = toSlot
 

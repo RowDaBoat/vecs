@@ -1,3 +1,6 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
 import std/[hashes, macros]
 import componentid
 
@@ -19,7 +22,7 @@ macro unroll*(idx: untyped, lo, hi: static int, body: untyped): untyped =
 
 
 const ArchetypeWords* {.intdefine.} = 1
-static: assert ArchetypeWords > 0, "ArchetypeWords must be greater than 1"
+static: assert ArchetypeWords > 0, "ArchetypeWords must be greater than 0"
 
 
 type ArchetypeId* = object

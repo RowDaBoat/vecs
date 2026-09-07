@@ -325,7 +325,7 @@ type
     name*: string
     timeRatio*: float
     memRatio*: float
-    timeImprovement*: float 
+    timeImprovement*: float
     memImprovement*: float
     timeSignificant*: bool
     memSignificant*: bool
@@ -403,13 +403,13 @@ proc compareWithBaseline*(suite: BenchmarkSuite, csvPath: string,
     let base = baselineMap[current.name]
 
     res.timeRatio = current.timeStats.median / base.timeStats.median
-    res.timeImprovement = 
+    res.timeImprovement =
       (current.timeStats.median - base.timeStats.median) / base.timeStats.median
     res.timeBetter = res.timeImprovement < 0
     res.timeSignificant = abs(res.timeImprovement) > margin
 
     res.memRatio = current.memStats.median / base.memStats.median
-    res.memImprovement = 
+    res.memImprovement =
       (current.memStats.median - base.memStats.median) / base.memStats.median
     res.memBetter = res.memImprovement < 0
     res.memSignificant = abs(res.memImprovement) > margin

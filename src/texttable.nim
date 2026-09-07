@@ -52,7 +52,7 @@ proc textTable*(data: seq[seq[seq[string]]]): string =
 
   result &= separator(".", widths)
 
-  for row in 0 ..< data[0].len:  
+  for row in 0 ..< data[0].len:
     let lines = maxHeight(data, row)
     for line in 0 ..< lines:
       result &= lineText(data, widths, row, line)

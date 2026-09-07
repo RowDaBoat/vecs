@@ -7,24 +7,38 @@ import world
 type Id*[T] = object
   val: uint64 = ENTITY_ID_MASK
 
-proc value*[T](e: Id[T]): int = int(e.val and ENTITY_ID_MASK)
-proc generation*[T](e: Id[T]): int = int((e.val and ENTITY_GEN_MASK) shr ENTITY_ID_POS)
-proc isValid*[T](e: Id[T]): bool = e.value != INVALID_ENTITY_VALUE
+
+proc value*[T](e: Id[T]): int =
+  int(e.val and ENTITY_ID_MASK)
+
+
+proc generation*[T](e: Id[T]): int =
+  int((e.val and ENTITY_GEN_MASK) shr ENTITY_ID_POS)
+
+
+proc isValid*[T](e: Id[T]): bool =
+  e.value != INVALID_ENTITY_VALUE
+
 
 template makeVal(gen, val: untyped): uint64 =
-  (uint64(gen) shl ENTITY_ID_POS) or uint64(val) 
+  (uint64(gen) shl ENTITY_ID_POS) or uint64(val)
+
 
 proc `value=`*[T](e: var Id[T], val: int) =
-  e.val = makeVal(e.generation, val) 
+  e.val = makeVal(e.generation, val)
+
 
 proc `generation=`*[T](e: var Id[T], gen: int) =
   e.val = makeVal(gen, e.value)
 
+
 proc newId*[T](gen, val: int): Id[T] =
   Id[T](val: makeVal(gen, val))
 
+
 proc `of`*[T](id: EntityId, desc: typedesc[T]): Id[T] =
   result = Id[T](val: id.val)
+
 
 proc `of`*[T](id: Id[auto], desc: typedesc[T]): Id[T] =
   result = Id[T](val: id.val)

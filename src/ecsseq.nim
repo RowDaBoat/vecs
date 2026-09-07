@@ -1,7 +1,7 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 # `vecs` is a free open source ECS library for Nim.
-import unsafeSeq
+import unsafeseq
 
 type EcsSeqAny* = ref object of RootObj
   stride*: int
@@ -60,7 +60,7 @@ proc addAt*[T](self: EcsSeq[T], index: int, value: sink T) =
 
 proc len*[T](self: EcsSeq[T]): int =
   self.data.len
-  
+
 
 proc len*(self: EcsSeqAny): int =
   self.rawPtr.unsafeSeqLen()
