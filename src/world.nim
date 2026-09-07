@@ -353,7 +353,7 @@ macro buildComponentColumns(world: var World, t: typedesc, archetype: untyped): 
               let componentId = `componentType`.toComponentId
 
               if `archetype`.contains(componentId):
-                let ind = `archetype`.getIndex(componentId)
+                let ind = `archetype`.toIndexMap[componentId.int] - 1
                 let componentList = cast[EcsSeq[`componentType`]](`archetype`.componentLists[ind])
                 componentData(componentList)
               else:
@@ -362,7 +362,7 @@ macro buildComponentColumns(world: var World, t: typedesc, archetype: untyped): 
           quote do:
             block:
               let componentId = `componentType`.toComponentId
-              let ind = `archetype`.getIndex(componentId)
+              let ind = `archetype`.toIndexMap[componentId.int] - 1
               let componentList = cast[EcsSeq[`componentType`]](`archetype`.componentLists[ind])
               componentData(componentList)
 
