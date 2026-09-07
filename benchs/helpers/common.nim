@@ -1,9 +1,14 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
+
 
 const
   SAMPLE* {.intDefine.} = 1000
   WARMUP* {.intDefine.} = 1
   ENTITY_COUNT* {.intDefine.} = 10_000
   SELECTION_THRESHOLD* = 0.1
+
 
 type
   Position* = object

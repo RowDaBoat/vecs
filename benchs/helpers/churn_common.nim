@@ -1,9 +1,12 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
 ## The churn workload, shared by every suite that can express it. A suite opts
 ## in by defining `churnSpawn`, `churnDestroy`, `newChurnWorld` and
 ## `churnIterate` over its own world type, which are mixed in below.
-
 import random
 import benchmarks
+
 
 const
   ChurnSeed = 90210
@@ -16,6 +19,7 @@ const
   ChurnPerRound = ChurnEntityCount div ChurnDivisor
   ChurnSamples = 20
   ChurnWarmup = 1
+
 
 proc buildChurnSchedule(): seq[seq[int]] =
   ## Per round, the positions in the live-entity array to replace. Distinct
@@ -30,7 +34,9 @@ proc buildChurnSchedule(): seq[seq[int]] =
     rng.shuffle(pool)
     result[round] = pool[0 ..< ChurnPerRound]
 
+
 let churnSchedule* = buildChurnSchedule()
+
 
 proc populateChurn*[W](world: var W; churned: bool) =
   ## Fills a freshly registered world with `ChurnEntityCount` entities, and when
@@ -48,6 +54,7 @@ proc populateChurn*[W](world: var W; churned: bool) =
       for idx in round:
         handles[idx] = world.churnSpawn()
 
+
 proc withFootprint(bench: Benchmark, bytes: float): Benchmark =
   ## Replaces the per-sample memory figures with a world footprint measured
   ## once. The sampling loop only iterates, so sampling around it reports zero
@@ -58,6 +65,7 @@ proc withFootprint(bench: Benchmark, bytes: float): Benchmark =
     result.mems.add bytes
   finalize(result)
 
+
 template addChurnRows*(suite: var BenchmarkSuite; suiteName: string) =
   ## Appends `pristine iter` and `churn iter` to a suite already under way.
   ## Both worlds are built before either is timed and the loop alternates
@@ -66,8 +74,6 @@ template addChurnRows*(suite: var BenchmarkSuite; suiteName: string) =
   mixin newChurnWorld, churnIterate
 
   block:
-    # Only the GC heap. Pirata allocates its columns with `allocShared`, so its
-    # figure is a floor.
     let beforePristine = getOccupiedMem()
     var pristineWorld = newChurnWorld(false)
     let pristineBytes = (getOccupiedMem() - beforePristine).float

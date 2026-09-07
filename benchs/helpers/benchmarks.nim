@@ -1,8 +1,8 @@
-  # ###################################################################################################################################### #
- # ########################################################## PROFILER ################################################################## #
-# ###################################################################################################################################### #
-
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
 import times, math, algorithm, strutils, tables, unicode, std/monotimes, os
+
 
 type
   Parameters* = object
@@ -38,16 +38,13 @@ type
   Comparison* = object
     baseline*: string
     candidate*: string
-    timeRatio*: float      # candidate / baseline
+    timeRatio*: float
     memRatio*: float
-    timeImprovement*: float  # (baseline - candidate) / baseline
+    timeImprovement*: float
     memImprovement*: float
     isFaster*: bool
     usesLessMem*: bool
 
-
-
-# ==================== Formating ====================
 
 proc prettyTime*(t: float): string =
   var fac = 1.0
@@ -64,9 +61,8 @@ proc prettyTime*(t: float): string =
     suffix = "ms"
 
   let v = t * fac
-
-  # Format avec précision adaptée
   result = v.formatFloat(ffDecimal, 2) & " " & suffix
+
 
 proc prettyMem*(m: float): string =
   let sign = if m < 0: "-" else: ""
@@ -78,11 +74,11 @@ proc prettyMem*(m: float): string =
   else:
     return sign & (a / (1024 * 1024)).formatFloat(ffDecimal, 2) & " MB"
 
+
 proc prettyPercent*(p: float): string =
   let sign = if p >= 0: "+" else: ""
   return sign & (p * 100).formatFloat(ffDecimal, 1) & "%"
 
-# ==================== Calcul de statistiques ====================
 
 proc calculateStatistics*(values: seq[float]): Statistics =
   if values.len == 0:
@@ -114,12 +110,12 @@ proc calculateStatistics*(values: seq[float]): Statistics =
   else:
     result.median = sorted[mid]
 
-  # Quartiles
   let q1Idx = sorted.len div 4
   let q3Idx = (3 * sorted.len) div 4
   result.q1 = sorted[q1Idx]
   result.q3 = sorted[q3Idx]
   result.iqr = result.q3 - result.q1
+
 
 proc finalize*(b: var Benchmark) =
   b.timeStats = calculateStatistics(b.times)
@@ -133,7 +129,6 @@ proc finalize*(b: var Benchmark) =
   for m in b.mems:
     b.totalMem += m
 
-# ==================== Affichage ====================
 
 proc showSummary*(b: Benchmark) =
   echo "╭─ ", b.name, " (", b.params.samples, " samples)"
@@ -145,8 +140,9 @@ proc showSummary*(b: Benchmark) =
        ", max: ", prettyMem(b.memStats.max), ")"
   echo "╰─ Stddev: ±", prettyTime(b.timeStats.stddev)
 
+
 proc showDetailed*(b: Benchmark) =
-  echo "=" .repeat(70)
+  echo "=".repeat(70)
   echo "Benchmark: ", b.name
   echo "Samples: ", b.params.samples, " (warmup: ", b.params.warmup, ")"
   echo ""
@@ -168,13 +164,15 @@ proc showDetailed*(b: Benchmark) =
   echo "  Mean    : ", prettyMem(b.memStats.mean)
   echo "  Max     : ", prettyMem(b.memStats.max)
   echo "  Stddev  : ±", prettyMem(b.memStats.stddev)
-  echo "=" .repeat(70)
+  echo "=".repeat(70)
 
-proc notNaN(v:float):float =
+
+proc notNaN(v: float): float =
   if v.isNaN or v.classify in {fcInf, fcNegInf}:
     return 0.0
 
   return v
+
 
 proc compare*(baseline, candidate: Benchmark): Comparison =
   result.baseline = baseline.name
@@ -189,13 +187,13 @@ proc compare*(baseline, candidate: Benchmark): Comparison =
   result.isFaster = result.timeImprovement > 0
   result.usesLessMem = result.memImprovement > 0
 
+
 proc showComparison*(cmp: Comparison) =
   echo ""
   echo "╔═", "═".repeat(66), "═╗"
   echo "║ ", "Comparison: ", cmp.baseline, " vs ", cmp.candidate, " ".repeat(max(0, 66 - 14 - cmp.baseline.len - cmp.candidate.len - 4)), "║"
   echo "╠═", "═".repeat(66), "═╣"
 
-  # Time comparison
   let timeIcon = if cmp.isFaster: "✓" else: "✗"
   let timeColor = if cmp.isFaster: "" else: ""
   echo "║ Time   : ", timeIcon, " ",
@@ -204,7 +202,6 @@ proc showComparison*(cmp: Comparison) =
        " (", cmp.timeRatio.formatFloat(ffDecimal, 2), "x)",
        " ".repeat(max(0, 48 - (if cmp.isFaster: 7 else: 6) - prettyPercent(abs(cmp.timeImprovement)).len - 3 - cmp.timeRatio.formatFloat(ffDecimal, 2).len)), "║"
 
-  # Memory comparison
   let memIcon = if cmp.usesLessMem: "✓" else: "✗"
   echo "║ Memory : ", memIcon, " ",
        (if cmp.usesLessMem: "LESS" else: "MORE"), " by ",
@@ -214,7 +211,9 @@ proc showComparison*(cmp: Comparison) =
 
   echo "╚═", "═".repeat(66), "═╝"
 
+
 var blackHole* {.volatile.}: uint64
+
 
 proc blackBox*[T](value: T) {.noinline.} =
   ## Keeps `value` observable so the optimiser cannot delete the work that
@@ -230,11 +229,13 @@ proc blackBox*[T](value: T) {.noinline.} =
     acc = acc xor (bytes[i].uint64 shl ((i and 7) * 8))
   blackHole = acc
 
+
 proc initBenchmark*(benchmarkName: string, sample, warm: int): Benchmark =
   result.name = benchmarkName
   result.params = Parameters(samples: sample, warmup: warm)
   result.times = newSeqOfCap[float](sample)
   result.mems = newSeqOfCap[float](sample)
+
 
 template measure*(bench: var Benchmark, memBaseline: int, code: untyped) =
   let t0 = getMonoTime()
@@ -244,17 +245,19 @@ template measure*(bench: var Benchmark, memBaseline: int, code: untyped) =
   bench.times.add(elapsed)
   bench.mems.add((getOccupiedMem() - memBaseline).float)
 
+
 template benchmark*(benchmarkName: string, sample, code: untyped): untyped =
   benchmark(benchmarkName, sample, 1, code)
+
 
 template benchmark*(benchmarkName: string, sample, warm, code: untyped): untyped =
   var bench = initBenchmark(benchmarkName, sample, warm)
 
   block:
-    for i in 0..<warm:
+    for i in 0 ..< warm:
       code
 
-    for i in 0..<sample:
+    for i in 0 ..< sample:
       let memBaseline = getOccupiedMem()
       measure(bench, memBaseline):
         code
@@ -262,20 +265,22 @@ template benchmark*(benchmarkName: string, sample, warm, code: untyped): untyped
   finalize(bench)
   bench
 
+
 template benchmarkWithSetup*(benchmarkName: string, sample,
                               setup, code: untyped): untyped =
   benchmarkWithSetup(benchmarkName, sample, 1, setup, code)
+
 
 template benchmarkWithSetup*(benchmarkName: string, sample, warm,
                               setup, code: untyped): untyped =
   var bench = initBenchmark(benchmarkName, sample, warm)
 
   block:
-    for i in 0..<warm:
+    for i in 0 ..< warm:
       setup
       code
 
-    for i in 0..<sample:
+    for i in 0 ..< sample:
       let memBaseline = getOccupiedMem()
       setup
       measure(bench, memBaseline):
@@ -284,12 +289,15 @@ template benchmarkWithSetup*(benchmarkName: string, sample, warm,
   finalize(bench)
   bench
 
+
 proc initSuite*(name: string): BenchmarkSuite =
   result.name = name
   result.benchmarks = @[]
 
+
 proc add*(suite: var BenchmarkSuite, bench: Benchmark) =
   suite.benchmarks.add(bench)
+
 
 proc showSummary*(suite: BenchmarkSuite) =
   echo ""
@@ -304,6 +312,7 @@ proc showSummary*(suite: BenchmarkSuite) =
     echo "║ ", nameStr, " │ ", timeStr, " │ ", memStr, " ║"
 
   echo "╚═", "═".repeat(60), "═╝"
+
 
 proc saveSummary*(suite: BenchmarkSuite, path: string) =
   var file = open(path, fmWrite)
@@ -362,8 +371,8 @@ proc loadBenchmarkSuiteFromCsv*(path: string): BenchmarkSuite =
 
       var bench = initBenchmark(parts[0], 1, 0)
       try:
-        let t = parseFloat(parts[3])   # time_seconds
-        let m = parseFloat(parts[4])   # mem_bytes
+        let t = parseFloat(parts[3])
+        let m = parseFloat(parts[4])
         bench.times.add(t)
         bench.mems.add(m)
         bench.timeStats = calculateStatistics(bench.times)
@@ -373,6 +382,7 @@ proc loadBenchmarkSuiteFromCsv*(path: string): BenchmarkSuite =
         result.benchmarks.add(bench)
       except ValueError:
         continue
+
 
 proc compareWithBaseline*(suite: BenchmarkSuite, csvPath: string,
                          margin: float = 0.05): BenchComp =
@@ -419,6 +429,7 @@ proc compareWithBaseline*(suite: BenchmarkSuite, csvPath: string,
   for name, _ in baselineMap:
     if not currentNames.hasKey(name):
       result.missingInCurrent.add(name)
+
 
 proc `$`*(comp: BenchComp): string =
   var lines: seq[string] = @[]

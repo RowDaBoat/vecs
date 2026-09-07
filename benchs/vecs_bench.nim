@@ -1,16 +1,23 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+# `vecs` is a free open source ECS library for Nim.
 import times, math, tables, random, os
 import helpers/[benchmarks, churn_common, common]
 import ../src/vecs
 
+
 proc churnSpawn(w: var World): EntityId =
   w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
+
 
 proc churnDestroy(w: var World; entity: EntityId) =
   w.remove(entity, Immediate)
 
+
 proc newChurnWorld(churned: bool): World =
   result = World()
   result.populateChurn(churned)
+
 
 proc churnIterate(w: var World) =
   var q: Query[(Write[Position], Velocity)]
@@ -18,16 +25,10 @@ proc churnIterate(w: var World) =
     pos.x += vel.x
     pos.y += vel.y
 
-# =========================
-# Benchmarks
-# =========================
 
 proc runVecsBenchmarks(): BenchmarkSuite =
   var suite = initSuite("Vecs")
 
-  # ------------------------------
-  # Create entity
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "create entity",
     SAMPLE,
@@ -37,7 +38,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
       var ents: seq[EntityId]
     ),
     (
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
     )
   )
@@ -51,22 +52,19 @@ proc runVecsBenchmarks(): BenchmarkSuite =
       var w = World()
       var ents: seq[EntityId]
 
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
 
       for e in ents:
         w.remove(e, Immediate)
     ),
     (
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents[i] = w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
     )
   )
   showDetailed(suite.benchmarks[^1])
 
-  # ------------------------------
-  # Delete entity
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "delete entity",
     SAMPLE,
@@ -74,7 +72,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
     ),
     (
@@ -91,13 +89,13 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
 
       for e in ents:
         w.remove(e, Immediate)
 
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents[i] = w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
     ),
     (
@@ -107,9 +105,6 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   )
   showDetailed(suite.benchmarks[^1])
 
-  # ------------------------------
-  # Add component
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "add component",
     SAMPLE,
@@ -117,7 +112,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0),), Immediate)
     ),
     (
@@ -134,7 +129,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0),), Immediate)
 
       for e in ents:
@@ -150,9 +145,6 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   )
   showDetailed(suite.benchmarks[^1])
 
-  # ------------------------------
-  # Remove component
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "remove component",
     SAMPLE,
@@ -160,7 +152,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
     ),
     (
@@ -177,7 +169,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
 
       for e in ents:
@@ -193,9 +185,6 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   )
   showDetailed(suite.benchmarks[^1])
 
-  # ------------------------------
-  # Add + Remove component
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "add remove component",
     SAMPLE,
@@ -203,7 +192,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0),), Immediate)
     ),
     (
@@ -221,7 +210,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0),), Immediate)
 
       for e in ents:
@@ -236,16 +225,13 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   )
   showDetailed(suite.benchmarks[^1])
 
-  # ------------------------------
-  # Iteration
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "iteration",
     SAMPLE,
     WARMUP,
     (
       var w = World()
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         discard w.add((Position(x: 1.0, y: 1.0), Velocity(x: 1.0, y: 1.0)), Immediate)
       var q: Query[(Write[Position], Velocity)]
 
@@ -261,9 +247,6 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   )
   showDetailed(suite.benchmarks[^1])
 
-  # ------------------------------
-  # Read
-  # ------------------------------
   var s = 0'f32
   suite.add benchmarkWithSetup(
     "read",
@@ -272,7 +255,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0),), Immediate)
     ),
     (
@@ -283,9 +266,6 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   showDetailed(suite.benchmarks[^1])
   blackBox(s)
 
-  # ------------------------------
-  # Write
-  # ------------------------------
   suite.add benchmarkWithSetup(
     "write",
     SAMPLE,
@@ -293,7 +273,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     (
       var w = World()
       var ents: seq[EntityId]
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         ents.add w.add((Position(x: 1.0, y: 1.0),), Immediate)
     ),
     (
@@ -313,9 +293,9 @@ proc runVecsBenchmarks(): BenchmarkSuite =
     WARMUP,
     (
       var w = World()
-      for i in 0..<ENTITY_COUNT:
+      for i in 0 ..< ENTITY_COUNT:
         let e = w.add((), Immediate)
-        for j in 0..<10:
+        for j in 0 ..< 10:
           if rng.rand(1.0) < SELECTION_THRESHOLD:
             case j
             of 0: w.add(e, Position(x: 1.0, y: 1.0), Immediate)
