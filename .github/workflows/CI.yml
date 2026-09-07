@@ -58,12 +58,30 @@ jobs:
 
           echo "Baseline: $baseline ($(git rev-parse --short "$baseline"))"
 
+          baseline_ready=true
           git checkout "$baseline" -- src
-          nim c -r -d:danger --nimcache:nimcache/baseline "benchs/vecsbench.nim" baseline.csv || rm -f baseline.csv
+          if ! nim c -d:danger --nimcache:nimcache/baseline \
+              -o:/tmp/vecs-benchmark-baseline "benchs/vecsbench.nim"; then
+            baseline_ready=false
+          fi
           git checkout HEAD -- src
 
-          if [ ! -f baseline.csv ]; then
+          nim c -d:danger --nimcache:nimcache/current \
+            -o:/tmp/vecs-benchmark-current "benchs/vecsbench.nim"
+
+          if [ "$baseline_ready" != true ]; then
             echo "Baseline src/ did not build against the current benchmarks, skipping comparison."
+            /tmp/vecs-benchmark-current current.csv
+            exit 0
           fi
 
-          nim c -r -d:danger --nimcache:nimcache/current "benchs/vecsbench.nim" current.csv baseline.csv
+          nim c -d:danger --nimcache:nimcache/comparison \
+            -o:/tmp/compare-benchmarks "benchs/compare_benchmarks.nim"
+
+          /tmp/vecs-benchmark-current current-a.csv > /tmp/current-a.log
+          /tmp/vecs-benchmark-baseline baseline-a.csv > /tmp/baseline-a.log
+          /tmp/vecs-benchmark-baseline baseline-b.csv > /tmp/baseline-b.log
+          /tmp/vecs-benchmark-current current-b.csv > /tmp/current-b.log
+
+          /tmp/compare-benchmarks \
+            current-a.csv current-b.csv baseline-a.csv baseline-b.csv
