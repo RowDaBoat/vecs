@@ -21,7 +21,5 @@ benchs/vecs_bench
 benchs/vecs.csv
 baseline.csv
 current.csv
-baseline-a.csv
-baseline-b.csv
-current-a.csv
-current-b.csv
+baseline-*.csv
+current-*.csv

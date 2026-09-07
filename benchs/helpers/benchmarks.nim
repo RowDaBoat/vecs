@@ -33,6 +33,8 @@ type
     params*: Parameters
     times*: seq[float]
     mems*: seq[float]
+    runTimes*: seq[float]
+    runMems*: seq[float]
     timeStats*: Statistics
     memStats*: Statistics
     totalTime*: float
@@ -127,6 +129,13 @@ proc calculateStatistics*(values: seq[float]): Statistics =
 proc finalize*(b: var Benchmark) =
   b.timeStats = calculateStatistics(b.times)
   b.memStats = calculateStatistics(b.mems)
+
+  if b.runTimes.len == 0 and b.times.len > 0:
+    b.runTimes.add b.timeStats.median
+  if b.runMems.len == 0 and b.mems.len > 0:
+    b.runMems.add b.memStats.median
+
+  b.params.runs = min(b.runTimes.len, b.runMems.len)
 
   b.totalTime = 0.0
   for t in b.times:
@@ -244,6 +253,8 @@ proc initBenchmark*(benchmarkName: string, sample, warm: int): Benchmark =
     Parameters(samples: sample, warmup: warm, batchSize: 1, runs: 1)
   result.times = newSeqOfCap[float](sample)
   result.mems = newSeqOfCap[float](sample)
+  result.runTimes = @[]
+  result.runMems = @[]
 
 
 template measure*(bench: var Benchmark, memBaseline: int, code: untyped) =
@@ -374,6 +385,7 @@ proc showSummary*(suite: BenchmarkSuite) =
 const
   DefaultComparisonConfidence* = 0.999
   DefaultMinimumRelativeChange* = 0.01
+  MinimumComparisonRuns* = 15
 
 
 proc serializeSamples(values: seq[float]): string =
@@ -390,7 +402,8 @@ proc saveSummary*(suite: BenchmarkSuite, path: string) =
 
   file.writeLine(
     suite.name &
-    ",time_median,mem_median,time_seconds,mem_bytes,time_samples,mem_samples,batch_size"
+    ",time_median,mem_median,time_seconds,mem_bytes,time_samples,mem_samples," &
+    "batch_size,time_runs,mem_runs"
   )
 
   for bench in suite.benchmarks:
@@ -402,7 +415,9 @@ proc saveSummary*(suite: BenchmarkSuite, path: string) =
       bench.memStats.median.formatFloat(ffScientific, 10) & "," &
       serializeSamples(bench.times) & "," &
       serializeSamples(bench.mems) & "," &
-      $bench.params.batchSize
+      $bench.params.batchSize & "," &
+      serializeSamples(bench.runTimes) & "," &
+      serializeSamples(bench.runMems)
     )
 
 
@@ -501,6 +516,14 @@ proc benchmarkFromCsv(parts: seq[string], benchmark: var Benchmark): bool =
     benchmark.mems.add(medianMemory)
   if parts.len >= 8:
     benchmark.params.batchSize = parseBatchSize(parts[7])
+  if parts.len >= 10:
+    benchmark.runTimes = parseSamples(parts[8])
+    benchmark.runMems = parseSamples(parts[9])
+
+  if benchmark.runTimes.len == 0:
+    benchmark.runTimes.add(medianTime)
+  if benchmark.runMems.len == 0:
+    benchmark.runMems.add(medianMemory)
 
   benchmark.params.samples = benchmark.times.len
   finalize(benchmark)
@@ -546,8 +569,9 @@ proc merge*(suite: var BenchmarkSuite, addition: BenchmarkSuite) =
     else:
       suite.benchmarks[index].times.add(addedBenchmark.times)
       suite.benchmarks[index].mems.add(addedBenchmark.mems)
+      suite.benchmarks[index].runTimes.add(addedBenchmark.runTimes)
+      suite.benchmarks[index].runMems.add(addedBenchmark.runMems)
       suite.benchmarks[index].params.samples = suite.benchmarks[index].times.len
-      suite.benchmarks[index].params.runs += addedBenchmark.params.runs
       suite.benchmarks[index].params.batchSize =
         max(suite.benchmarks[index].params.batchSize,
             addedBenchmark.params.batchSize)
@@ -605,11 +629,11 @@ proc medianConfidenceInterval*(values: seq[float],
 
 
 proc classifyRelativeChange(interval: ConfidenceInterval,
-                            hasRepeatedRuns: bool,
+                            hasEnoughRuns: bool,
                             minimumRelativeChange: float): ChangeStatus =
   if interval.lower == 0.0 and interval.upper == 0.0:
     return ChangeUnchanged
-  if not hasRepeatedRuns:
+  if not hasEnoughRuns:
     return ChangeInconclusive
   if interval.upper < -minimumRelativeChange:
     return ChangeImproved
@@ -623,10 +647,10 @@ proc classifyRelativeChange(interval: ConfidenceInterval,
 
 
 proc classifyAbsoluteChange(interval: ConfidenceInterval,
-                            hasRepeatedRuns: bool): ChangeStatus =
+                            hasEnoughRuns: bool): ChangeStatus =
   if interval.lower == 0.0 and interval.upper == 0.0:
     return ChangeUnchanged
-  if not hasRepeatedRuns:
+  if not hasEnoughRuns:
     return ChangeInconclusive
   if interval.upper < 0.0:
     return ChangeImproved
@@ -636,47 +660,59 @@ proc classifyAbsoluteChange(interval: ConfidenceInterval,
   result = ChangeInconclusive
 
 
+proc allPositive(values: seq[float]): bool =
+  if values.len == 0:
+    return false
+
+  for value in values:
+    if value <= 0.0:
+      return false
+
+  result = true
+
+
+proc pairedDifferences(baselineValues,
+                       candidateValues: seq[float]): seq[float] =
+  result = newSeq[float](baselineValues.len)
+  for index in 0 ..< baselineValues.len:
+    result[index] = candidateValues[index] - baselineValues[index]
+
+
+proc pairedRelativeChanges(baselineValues,
+                           candidateValues: seq[float]): seq[float] =
+  result = newSeq[float](baselineValues.len)
+  for index in 0 ..< baselineValues.len:
+    result[index] = candidateValues[index] / baselineValues[index] - 1.0
+
+
 proc compareMetric(baselineValues, candidateValues: seq[float],
-                   baselineRuns, candidateRuns: int,
                    confidence,
                    minimumRelativeChange: float): MetricComparison =
-  if baselineValues.len == 0 or candidateValues.len == 0:
+  if baselineValues.len == 0 or baselineValues.len != candidateValues.len:
     result.status = ChangeInconclusive
     return
 
-  let medianConfidence = 1.0 - (1.0 - confidence) / 2.0
-  let baselineInterval =
-    medianConfidenceInterval(baselineValues, medianConfidence)
-  let candidateInterval =
-    medianConfidenceInterval(candidateValues, medianConfidence)
-  let baselineMedian = calculateStatistics(baselineValues).median
-  let candidateMedian = calculateStatistics(candidateValues).median
+  let differences = pairedDifferences(baselineValues, candidateValues)
+  let hasEnoughRuns = baselineValues.len >= MinimumComparisonRuns
+  result.difference = calculateStatistics(differences).median
 
-  let differenceInterval = ConfidenceInterval(
-    lower: candidateInterval.lower - baselineInterval.upper,
-    upper: candidateInterval.upper - baselineInterval.lower
-  )
-  let hasRepeatedRuns = baselineRuns >= 2 and candidateRuns >= 2
-
-  result.difference = candidateMedian - baselineMedian
-
-  if baselineMedian == 0.0 or baselineInterval.lower <= 0.0:
+  if not baselineValues.allPositive or not candidateValues.allPositive:
+    let differenceInterval =
+      medianConfidenceInterval(differences, confidence)
     result.status = classifyAbsoluteChange(
       differenceInterval,
-      hasRepeatedRuns
+      hasEnoughRuns
     )
     return
 
+  let changes = pairedRelativeChanges(baselineValues, candidateValues)
   result.hasRelativeChange = true
-  result.ratio = candidateMedian / baselineMedian
-  result.change = result.ratio - 1.0
-  result.changeInterval = ConfidenceInterval(
-    lower: candidateInterval.lower / baselineInterval.upper - 1.0,
-    upper: candidateInterval.upper / baselineInterval.lower - 1.0
-  )
+  result.change = calculateStatistics(changes).median
+  result.ratio = result.change + 1.0
+  result.changeInterval = medianConfidenceInterval(changes, confidence)
   result.status = classifyRelativeChange(
     result.changeInterval,
-    hasRepeatedRuns,
+    hasEnoughRuns,
     minimumRelativeChange
   )
 
@@ -687,18 +723,14 @@ proc benchmarkResult(baseline, candidate: Benchmark,
   result.name = candidate.name
 
   let timeComparison = compareMetric(
-    baseline.times,
-    candidate.times,
-    baseline.params.runs,
-    candidate.params.runs,
+    baseline.runTimes,
+    candidate.runTimes,
     confidence,
     minimumRelativeChange
   )
   let memoryComparison = compareMetric(
-    baseline.mems,
-    candidate.mems,
-    baseline.params.runs,
-    candidate.params.runs,
+    baseline.runMems,
+    candidate.runMems,
     confidence,
     minimumRelativeChange
   )
@@ -728,7 +760,10 @@ proc suiteRuns(suite: BenchmarkSuite): int =
   if suite.benchmarks.len == 0:
     return 0
 
-  result = suite.benchmarks[0].params.runs
+  result = min(
+    suite.benchmarks[0].runTimes.len,
+    suite.benchmarks[0].runMems.len
+  )
 
 
 proc compareBenchmarkSuites*(baseline, candidate: BenchmarkSuite,
@@ -869,13 +904,13 @@ proc `$`*(comparison: BenchComp): string =
     nameWidth + metricWidth + metricWidth + statusWidth + 9
   let confidenceText =
     (comparison.confidence * 100.0).formatFloat(ffDecimal, 1) &
-    "% median intervals"
+    "% paired-run median intervals"
   let minimumEffectText =
     "Minimum directional effect: " &
     (comparison.minimumRelativeChange * 100.0).formatFloat(ffDecimal, 1) &
     "%"
   let runsText =
-    "Runs: baseline " & $comparison.baselineRuns &
+    "Process runs: baseline " & $comparison.baselineRuns &
     ", candidate " & $comparison.candidateRuns
 
   lines.add ""
@@ -936,9 +971,11 @@ proc `$`*(comparison: BenchComp): string =
     "Legend: ▼ = improvement  ▲ = regression  ? = inconclusive  " &
     "= = unchanged  * = no baseline"
   )
-  if comparison.baselineRuns < 2 or comparison.candidateRuns < 2:
+  if comparison.baselineRuns < MinimumComparisonRuns or
+      comparison.candidateRuns < MinimumComparisonRuns:
     lines.add(
-      "At least two runs per revision are required for a directional result."
+      "At least " & $MinimumComparisonRuns &
+      " matched process runs per revision are required for a directional result."
     )
 
   result = lines.join("\n")
