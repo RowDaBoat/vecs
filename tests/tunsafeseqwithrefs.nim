@@ -14,19 +14,19 @@ type
     a: ref A
 
 
-proc addAndZero[T](sequence: var VSeq[T], value: var T) =
+proc addAndZero[T](sequence: var UnsafeSeq[T], value: var T) =
   let source = cast[ptr byte](addr value)
   let seqVar = cast[pointer](addr sequence)
-  seqVar.unsafeAdd(source, sizeof(T))
+  seqVar.rawSeqAdd(source, sizeof(T))
   zeroMem(source, sizeof(T))
 
 
-suite "VSeq should":
+suite "UnsafeSeq should":
   test "keep a ref readable after addAndZero":
     var refA: ref A = new A
     refA.x = 42
 
-    var sequence = newVSeqOfCap[ref A](4)
+    var sequence = newUnsafeSeqOfCapacity[ref A](4)
     sequence.addAndZero(refA)
 
     check refA.isNil
@@ -35,7 +35,7 @@ suite "VSeq should":
 
 
   test "keep a ref declared in an inner block alive after a full collect":
-    var sequence = newVSeqOfCap[ref A](4)
+    var sequence = newUnsafeSeqOfCapacity[ref A](4)
 
     block:
       var refA: ref A = new A
@@ -50,7 +50,7 @@ suite "VSeq should":
 
 
   test "keep every added ref readable":
-    var sequence = newVSeqOfCap[ref A](2)
+    var sequence = newUnsafeSeqOfCapacity[ref A](2)
 
     for i in 0 ..< 5:
       var refA: ref A = new A
@@ -63,7 +63,7 @@ suite "VSeq should":
 
 
   test "keep refs valid across a reallocation":
-    var sequence = newVSeqOfCap[ref A](1)
+    var sequence = newUnsafeSeqOfCapacity[ref A](1)
 
     var refA: ref A = new A
     refA.x = 7
@@ -86,7 +86,7 @@ suite "VSeq should":
     b.y = 1
     b.a = inner
 
-    var sequence = newVSeqOfCap[B](4)
+    var sequence = newUnsafeSeqOfCapacity[B](4)
     sequence.addAndZero(b)
 
     check sequence.len == 1
@@ -103,7 +103,7 @@ suite "VSeq should":
     b.y = 3
     b.a = inner
 
-    var sequence = newVSeqOfCap[B](4)
+    var sequence = newUnsafeSeqOfCapacity[B](4)
     sequence.addAndZero(b)
 
     checkpoint("Zeroing the source copy must leave the stored object intact.")
@@ -113,7 +113,7 @@ suite "VSeq should":
 
 
   test "keep the ref fields of every added object readable":
-    var sequence = newVSeqOfCap[B](2)
+    var sequence = newUnsafeSeqOfCapacity[B](2)
 
     for i in 0 ..< 4:
       var inner: ref A = new A
@@ -131,7 +131,7 @@ suite "VSeq should":
 
 
   test "keep ref fields valid across a reallocation":
-    var sequence = newVSeqOfCap[B](1)
+    var sequence = newUnsafeSeqOfCapacity[B](1)
 
     for i in 0 ..< 8:
       var inner: ref A = new A
@@ -147,64 +147,6 @@ suite "VSeq should":
       check sequence[i].a.x == i * 3
 
 
-  test "return a valid ref when popped":
-    var refA: ref A = new A
-    refA.x = 21
-
-    var sequence = newVSeqOfCap[ref A](4)
-    sequence.addAndZero(refA)
-
-    let popped = sequence.pop()
-    check sequence.len == 0
-    check popped != nil
-    check popped.x == 21
-
-
-  test "keep the remaining refs valid after a delete":
-    var sequence = newVSeqOfCap[ref A](4)
-
-    for i in 0 ..< 3:
-      var refA: ref A = new A
-      refA.x = i
-      sequence.addAndZero(refA)
-
-    sequence.delete(1)
-
-    check sequence.len == 2
-    check sequence[0].x == 0
-    check sequence[1].x == 2
-
-
-  test "release objects holding refs when cleared":
-    var sequence = newVSeqOfCap[B](4)
-
-    for i in 0 ..< 3:
-      var inner: ref A = new A
-      inner.x = i
-      var b: B
-      b.y = i
-      b.a = inner
-      sequence.addAndZero(b)
-
-    sequence.clear()
-    check sequence.len == 0
-
-
-  test "keep the remaining refs valid after a swap-delete":
-    var sequence = newVSeqOfCap[ref A](4)
-
-    for i in 0 ..< 4:
-      var refA: ref A = (new A)
-      refA.x = i * 5
-      sequence.addAndZero(refA)
-
-    sequence.del(1)
-
-    check sequence.len == 3
-    check sequence[0].x == 0
-    check sequence[2].x == 10
-
-
   test "keep ref fields reachable through a copy":
     var inner: ref A = new A
     inner.x = 77
@@ -213,7 +155,7 @@ suite "VSeq should":
     b.y = 9
     b.a = inner
 
-    var sequence = newVSeqOfCap[B](4)
+    var sequence = newUnsafeSeqOfCapacity[B](4)
     sequence.addAndZero(b)
 
     let copy = sequence

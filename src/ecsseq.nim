@@ -9,7 +9,7 @@ type EcsSeqAny* = ref object of RootObj
 
 
 type EcsSeq*[T] = ref object of EcsSeqAny
-  data: VSeq[T]
+  data: UnsafeSeq[T]
 
 
 type AddItemAny* = ref object of RootObj
@@ -35,8 +35,8 @@ proc ensureInitialized[T](self: EcsSeq[T]) =
 
 
 proc add*(self: EcsSeqAny, item: ptr byte): int =
-  self.rawPtr.unsafeAddAndZero(item, self.stride)
-  result = self.rawPtr.unsafeSeqLen - 1
+  self.rawPtr.rawSeqAddAndZero(item, self.stride)
+  result = self.rawPtr.rawSeqLen - 1
 
 
 proc add*[T](self: EcsSeq[T], item: sink T): int =
@@ -46,10 +46,10 @@ proc add*[T](self: EcsSeq[T], item: sink T): int =
 
 
 proc addAt*(self: EcsSeqAny, index: int, value: ptr byte) =
-  if index >= self.rawPtr.unsafeSeqLen:
-    if index >= self.rawPtr.unsafeSeqCap: self.rawPtr.growPayload(self.stride, index + 1)
-    self.rawPtr.seqLenPtr[] = index + 1
-  self.rawPtr.unsafeSetAndZero(index, value, self.stride)
+  if index >= self.rawPtr.rawSeqLen:
+    if index >= self.rawPtr.rawSeqCapacity: self.rawPtr.rawSeqGrow(self.stride, index + 1)
+    self.rawPtr.rawSeqLenPtr[] = index + 1
+  self.rawPtr.rawSeqSetAndZero(index, value, self.stride)
 
 
 proc addAt*[T](self: EcsSeq[T], index: int, value: sink T) =
@@ -63,7 +63,7 @@ proc len*[T](self: EcsSeq[T]): int =
 
 
 proc len*(self: EcsSeqAny): int =
-  self.rawPtr.unsafeSeqLen()
+  self.rawPtr.rawSeqLen()
 
 
 proc `[]`*[T](self: EcsSeq[T], index: int): var T =
@@ -84,7 +84,7 @@ proc newAddItem*[T](val: sink T): AddItem[T] =
 
 
 proc newEcsSeq*[T](): EcsSeq[T] =
-  result = EcsSeq[T](stride: sizeof(T), data: newVSeq[T]())
+  result = EcsSeq[T](stride: sizeof(T), data: newUnsafeSeq[T]())
   result.rawPtr = addr result.data
 
 
@@ -97,7 +97,7 @@ proc ecsSeqBuilder*[T](): Builder =
 
 
 proc rawGet*(self: EcsSeqAny, index: int): pointer {.inline.} =
-  self.rawPtr.unsafeGet(index, self.stride)
+  self.rawPtr.rawSeqGet(index, self.stride)
 
 
 proc moveEcsSeq*(fromEcsSeq: var EcsSeqAny, fromIndex: int, toEcsSeq: var EcsSeqAny, toIndex: int) =

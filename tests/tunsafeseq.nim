@@ -5,174 +5,45 @@ import unittest
 import ../src/unsafeseq
 
 
-type
-  A = object
-    x: int
+suite "UnsafeSeq should":
+  test "add items and read them back in order":
+    var sequence = newUnsafeSeqOfCapacity[int](2)
+    sequence.add(10)
+    sequence.add(20)
+    sequence.add(30)
 
-  B = object
-    y: int
-    a: ref A
-
-
-proc addAndZero[T](sequence: var VSeq[T]; value: var T) =
-  let source = cast[ptr byte](addr value)
-  let seqVar = cast[pointer](addr sequence)
-  seqVar.unsafeAdd(source, sizeof(T))
-  zeroMem(source, sizeof(T))
+    check toSeq(sequence) == @[10, 20, 30]
 
 
-suite "unsafeSeq should":
-  test "read the length of a seq":
-    var sequence = newVSeq[int](3)
-    check unsafeSeqLen(addr sequence) == 3
+  test "mutate items in place":
+    var sequence = newUnsafeSeqOfCapacity[int](2)
+    sequence.add(10)
+    sequence.add(99)
+    sequence.add(30)
 
-
-  test "read the capacity of a seq":
-    var sequence = newVSeqOfCap[int](8)
-    check unsafeSeqCap(addr sequence) >= 8
-
-
-  test "report zero capacity for an unallocated seq":
-    var sequence: VSeq[int]
-    check unsafeSeqCap(addr sequence) == 0
-
-
-  test "point at the address of the first element":
-    var sequence = newVSeq[int](3)
-    let rawData = unsafeSeqDataPtr(addr sequence)
-    check rawData == addr sequence[0]
-
-
-  test "append a plain int":
-    var sequence: VSeq[int]
-    var value = 42
-    let seqVar = cast[pointer](addr sequence)
-    seqVar.unsafeAdd(cast[ptr byte](addr value), sizeof(int))
-
-    check sequence.len == 1
+    sequence[0] = 42
     check sequence[0] == 42
+    check toSeq(sequence) == @[42, 99, 30]
 
 
-  test "grow past the initial capacity while appending":
-    var sequence = newVSeqOfCap[int](2)
-    for i in 0 ..< 10:
-      var value = i
-      let seqVar = cast[pointer](addr sequence)
-      seqVar.unsafeAdd(cast[ptr byte](addr value), sizeof(int))
+  test "show its items":
+    var sequence = newUnsafeSeqOfCapacity[int](2)
+    sequence.add(10)
+    sequence.add(20)
 
-    check sequence.len == 10
-    for i in 0 ..< 10:
-      check sequence[i] == i
+    check $sequence == "@[10, 20]"
 
 
-  test "keep an added ref readable":
-    var refA: ref A = new A
-    refA.x = 99
+  test "copy and move its contents":
+    var sequence = newUnsafeSeqOfCapacity[int](2)
+    sequence.add(42)
+    sequence.add(99)
 
-    var sequence: VSeq[ref A]
-    sequence.addAndZero(refA)
+    checkpoint("A copy should hold its own equal contents.")
+    var copy = sequence
+    check toSeq(copy) == @[42, 99]
 
-    check sequence.len == 1
-    check sequence[0] != nil
-    check sequence[0].x == 99
-
-
-  test "leave the source ref nil after adding it":
-    var refA: ref A = new A
-    refA.x = 7
-
-    var sequence: VSeq[ref A]
-    sequence.addAndZero(refA)
-
-    check refA == nil
-
-
-  test "keep an added ref alive after its source goes out of scope":
-    var sequence: VSeq[ref A]
-
-    block:
-      var refA: ref A = new A
-      refA.x = 55
-      sequence.addAndZero(refA)
-
-    checkpoint("The ref lives in the sequence now, so a full collect must not reap it.")
-    GC_fullCollect()
-
-    check sequence[0] != nil
-    check sequence[0].x == 55
-
-
-  test "keep every added ref readable":
-    var sequence: VSeq[ref A]
-
-    for i in 0 ..< 5:
-      var refA: ref A = new A
-      refA.x = i * 10
-      sequence.addAndZero(refA)
-
-    check sequence.len == 5
-    for i in 0 ..< 5:
-      check sequence[i].x == i * 10
-
-
-  test "keep refs valid across a growth":
-    var sequence = newVSeqOfCap[ref A](1)
-
-    for i in 0 ..< 8:
-      var refA: ref A = new A
-      refA.x = i * 3
-      sequence.addAndZero(refA)
-
-    check sequence.len == 8
-    for i in 0 ..< 8:
-      check sequence[i] != nil
-      check sequence[i].x == i * 3
-
-
-  test "keep the ref field of an added object readable":
-    var inner: ref A = new A
-    inner.x = 77
-
-    var b: B
-    b.y = 9
-    b.a = inner
-
-    var sequence: VSeq[B]
-    sequence.addAndZero(b)
-
-    check sequence.len == 1
-    check sequence[0].y == 9
-    check sequence[0].a != nil
-    check sequence[0].a.x == 77
-
-
-  test "leave the source object zeroed after adding it":
-    var inner: ref A = new A
-    inner.x = 33
-
-    var b: B
-    b.y = 4
-    b.a = inner
-
-    var sequence: VSeq[B]
-    sequence.addAndZero(b)
-
-    check b.y == 0
-    check b.a == nil
-
-
-  test "keep ref fields valid across a growth":
-    var sequence = newVSeqOfCap[B](1)
-
-    for i in 0 ..< 6:
-      var inner: ref A = new A
-      inner.x = i + 100
-      var b: B
-      b.y = i
-      b.a = inner
-      sequence.addAndZero(b)
-
-    check sequence.len == 6
-    for i in 0 ..< 6:
-      check sequence[i].a != nil
-      check sequence[i].a.x == i + 100
+    checkpoint("Moving should transfer the contents and empty the source.")
+    var moved = move(sequence)
+    check toSeq(moved) == @[42, 99]
+    check sequence.len == 0

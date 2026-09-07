@@ -52,3 +52,10 @@ suite "EcsSeq should":
     check container[0] == "Marcus"
     check container[2] == "Grimm"
     check container.len == 3
+
+
+  test "show its items":
+    discard container.add("Marcus")
+    discard container.add("Elena")
+
+    check $container == """@["Marcus", "Elena"]"""
