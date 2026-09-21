@@ -1,7 +1,7 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 # `vecs` is a free open source ECS library for Nim.
-import times, math, tables, random, os
+import times, tables, random, os
 import helpers/[benchmarks, churncommon, common]
 import ../src/vecs
 
@@ -225,7 +225,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   )
   showDetailed(suite.benchmarks[^1])
 
-  suite.add benchmarkWithSetup(
+  suite.add benchmarkRepeatedWithSetup(
     "iteration",
     SAMPLE,
     WARMUP,
@@ -248,7 +248,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   showDetailed(suite.benchmarks[^1])
 
   var s = 0'f32
-  suite.add benchmarkWithSetup(
+  suite.add benchmarkRepeatedWithSetup(
     "read",
     SAMPLE,
     WARMUP,
@@ -266,7 +266,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   showDetailed(suite.benchmarks[^1])
   blackBox(s)
 
-  suite.add benchmarkWithSetup(
+  suite.add benchmarkRepeatedWithSetup(
     "write",
     SAMPLE,
     WARMUP,
@@ -287,7 +287,7 @@ proc runVecsBenchmarks(): BenchmarkSuite =
   blackBox(s)
 
   var rng = initRand(42)
-  suite.add benchmarkWithSetup(
+  suite.add benchmarkRepeatedWithSetup(
     "heterogeneous iter",
     SAMPLE,
     WARMUP,
