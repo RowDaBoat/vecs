@@ -401,6 +401,9 @@ macro buildColumnAccessTuple(t: typedesc, componentColumns: untyped, archetypeEn
 
 
 proc consolidateRemoveEntity(world: var World, id: EntityId) =
+  if not world.has(id):
+    return
+
   let entity = world.entities[id.value]
   var archetype = world.archetypes[entity.archetypeIndex]
 
@@ -409,6 +412,9 @@ proc consolidateRemoveEntity(world: var World, id: EntityId) =
 
 
 proc consolidateAddComponents(world: var World, id: EntityId, componentsToAdd: Table[ComponentId, AddItemAny]) =
+  if not world.has(id):
+    return
+
   var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeIndex]
   var componentIds: seq[ComponentId] = @[]
@@ -430,6 +436,9 @@ proc consolidateAddComponents(world: var World, id: EntityId, componentsToAdd: T
 
 
 proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove: PackedSet[ComponentId]) =
+  if not world.has(id):
+    return
+
   var entity = world.entities[id.value]
   var previousArchetype = world.archetypes[entity.archetypeIndex]
   var componentIds: seq[ComponentId]
@@ -443,6 +452,16 @@ proc consolidateRemoveComponents(world: var World, id: EntityId, compIdsToRemove
   entity.archetypeIndex = nextIndex
   entity.archetypeEntityId = previousArchetype.moveRemoving(entity.archetypeEntityId, nextArchetype)
   world.entities[id.value] = entity
+
+
+proc applyOperation(world: var World, operation: Operation) =
+  case operation.kind:
+  of RemoveEntity:
+    world.consolidateRemoveEntity(operation.id)
+  of AddComponents:
+    world.consolidateAddComponents(operation.id, operation.componentsToAdd)
+  of RemoveComponents:
+    world.consolidateRemoveComponents(operation.id, operation.compIdsToRemove)
 
 
 iterator archetypes*(world: var World): Archetype =
@@ -877,13 +896,7 @@ proc remove*(world: var World, id: EntityId, mode: OperationMode = Deferred) =
 
 proc applyQueryOperations[T: tuple](world: var World, query: var Query[T]) {.inline.} =
   for operation in query.operations:
-    case operation.kind:
-    of RemoveEntity:
-      world.consolidateRemoveEntity(operation.id)
-    of AddComponents:
-      world.consolidateAddComponents(operation.id, operation.componentsToAdd)
-    of RemoveComponents:
-      world.consolidateRemoveComponents(operation.id, operation.compIdsToRemove)
+    world.applyOperation(operation)
 
   query.operations.setLen(0)
 
@@ -1028,21 +1041,24 @@ proc cleanupEmptyArchetypes*(world: var World) =
     inc world.version
 
 
+proc takePendingOperations(world: var World, id: EntityId): seq[Operation] =
+  if not world.has(id):
+    return
+
+  for meta in world.write(id, Meta):
+    result = meta.operations
+    meta.clearOperations()
+
+
+proc consolidateEntity(world: var World, id: EntityId) =
+  for operation in world.takePendingOperations(id):
+    world.applyOperation(operation)
+
+
 proc consolidate*(world: var World) =
   ## Consolidates all additions and removals in the world and drains all event queues.
   for id in world.toConsolidate:
-    for meta in world.write(id, Meta):
-      let operations = meta.operations
-      meta.clearOperations()
-
-      for operation in operations:
-        case operation.kind:
-        of RemoveEntity:
-          world.consolidateRemoveEntity(id)
-        of AddComponents:
-          world.consolidateAddComponents(id, operation.componentsToAdd)
-        of RemoveComponents:
-          world.consolidateRemoveComponents(id, operation.compIdsToRemove)
+    world.consolidateEntity(id)
 
   world.toConsolidate.clear()
 
