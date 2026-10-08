@@ -57,6 +57,19 @@ suite "Id should":
     check not world.has(Id[Character]().entityId)
 
 
+  test "report no component for a removed entity":
+    let id = marcusId of Character
+    world.remove(marcusId, Immediate)
+
+    checkpoint("An Id of a removed entity should not have its component.")
+    check not world.has(id)
+
+
+  test "report no component for a default Id":
+    checkpoint("A default Id should not have its component.")
+    check not world.has(Id[Character]())
+
+
   test "read a single component":
     let id = marcusId of Character
     let character = world.read(id)

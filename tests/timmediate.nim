@@ -57,6 +57,19 @@ suite "Immediate operations should":
     check not world.has(marcusId)
 
 
+  test "report no components for a removed entity":
+    world.remove(marcusId, Immediate)
+
+    checkpoint("A removed entity should have no components.")
+    check not world.has(marcusId, Character)
+    check not world.has(marcusId, Health)
+
+
+  test "report no components for an invalid entity":
+    checkpoint("A default EntityId should have no components.")
+    check not world.has(EntityId(), Character)
+
+
   test "add a component immediately":
     var sword = (Weapon(name: "Sword", attack: 10))
     world.add(marcusId, sword, Immediate)

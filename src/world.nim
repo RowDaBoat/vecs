@@ -496,7 +496,8 @@ proc has*[T](world: var World, id: EntityId, compDesc: typedesc[T]): bool =
     assert not w.has(marcus, Health)
 
   checkNotATuple(T)
-  world.checkEntityExists(id)
+  if not world.has(id):
+    return false
 
   let entity = world.entities[id.value]
   let compId = world.componentIdFrom typeof compDesc
